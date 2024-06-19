@@ -1,0 +1,89 @@
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f4f4f4;
+    color: #333;
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+h1 {
+    text-align: center;
+}
+
+.narrative {
+    margin: 20px 0;
+}
+
+.narrative img {
+    display: block;
+    margin: 0 auto;
+    max-width: 100%;
+    height: auto;
+}
+
+.code-container {
+    background-color: #2d2d2d;
+    color: #f8f8f2;
+    padding: 20px;
+    border-radius: 5px;
+    margin: 20px 0;
+}
+
+.code-container pre {
+    margin: 0;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+}
+
+.interactive {
+    margin: 20px 0;
+}
+
+.interactive label {
+    display: block;
+    margin-bottom: 5px;
+}
+
+.interactive input {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.interactive button {
+    padding: 10px 20px;
+    border: none;
+    background-color: #333;
+    color: #fff;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.interactive button:hover {
+    background-color: #555;
+}
+
+.output {
+    margin-top: 10px;
+    font-weight: bold;
+}
+
+.video-container {
+    margin: 20px 0;
+}
+
+.dialogue {
+    margin: 20px 0;
+}
+
+.code-switch {
+    font-style: italic;
+}

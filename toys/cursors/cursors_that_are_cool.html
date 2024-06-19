@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Cursor Snake Game</title>
+  <style>
+    body {
+      margin: 0;
+      overflow: hidden;
+      cursor: none;
+    }
+    canvas {
+      display: block;
+    }
+    .score {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      font-size: 24px;
+      font-family: Arial, sans-serif;
+      color: #fff;
+    }
+  </style>
+</head>
+<body>
+<canvas id="canvas"></canvas>
+<div class="score">Fruits: <span id="fruitCount">0</span></div>
+
+<script>
+  const canvas = document.getElementById('canvas');
+  const ctx = canvas.getContext('2d');
+  const fruitCountElement = document.getElementById('fruitCount');
+
+  let snake = [];
+  let fruits = [];
+  let powerUp = null;
+  let fruitCount = 0;
+  let maxFruits = 10;
+
+  const snakeSize = 20;
+  const fruitSizeRange = [10, 30];
+  const powerUpSize = 30;
+
+  const cursorData = [
+    // ... (existing cursor data) ...
+    {
+      type: 'ghost',
+      colors: ['#FFFFFF', '#D3D3D3', '#A9A9A9'],
+      particleShape: 'ghostFace'
+    },
+    {
+      type: 'sparkle',
+      colors: ['#FFC0CB', '#FFB6C1', '#FF69B4'],
+      particleShape: 'sparkle'
+    },
+    {
+      type: 'music',
+      colors: ['#9400D3', '#4B0082', '#0000FF'],
+      particleShape: 'musicNote'
+    }
+  ];
+
+  let activeCursor = cursorData[0];
+  let cursorX = 0;
+  let cursorY = 0;
+
+  function resizeCanvas() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  }
+
+  function resetGame() {
+    snake = [{x: cursorX, y: cursorY}];
+    fruits = [];
+    powerUp = null;
+    fruitCount = 0;
+    fruitCountElement.textContent = fruitCount;
+    maxFruits = 10;
+  }
+
+  function getRandomPosition() {
+    const x = Math.floor(Math.random() * (canvas.width - fruitSizeRange[1]));
+    const y = Math.floor(Math.random() * (canvas.height - fruitSizeRange[1]));
+    const size = Math.floor(Math.random() * (fruitSizeRange[1] - fruitSizeRange[0] + 1)) + fruitSizeRange[0];
+    return {x, y, size};
+  }
+
+  function spawnFruit() {
+    const newFruit = getRandomPosition();
+    fruits.push(newFruit);
+    fruitCount++;
+    fruitCountElement.textContent = fruitCount;
+  }
+
+  function update() {
+    const head = {x: cursorX, y: cursorY};
+
+    for (let i = fruits.length - 1; i >= 0; i--) {
+      const fruit = fruits[i];
+      if (distance(head, fruit) < (snakeSize + fruit.size) / 2) {
+        snake.push({...head});
+        fruits.splice(i, 1);
+        fruitCount--;
+        fruitCountElement.textContent = fruitCount;
+      }
+    }
+
+    if (powerUp && distance(head, powerUp) < (snakeSize + powerUpSize) / 2) {
+      activatePowerUp();
+      powerUp = null;
+    }
+
+    if (fruitCount > maxFruits) {
+      resetGame();
+    }
+
+    snake.unshift(head);
+    if (snake.length > 100) {
+      snake.pop();
+    }
+  }
+
+  function distance(p1, p2) {
+    const dx = p1.x - p2.x;
+    const dy = p1.y - p2.y;
+    return Math.sqrt(dx * dx + dy * dy);
+  }
+
+  function draw() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    for (let i = 0; i < snake.length; i++) {
+      const cell = snake[i];
+
+      switch (activeCursor.particleShape) {
+              // ... (existing drawing code) ...
+        case 'ghostFace':
+          drawGhostFace(cell.x, cell.y, snakeSize);
+          break;
+        case 'sparkle':
+          drawSparkle(cell.x, cell.y, snakeSize);
+          break;
+        case 'musicNote':
+          drawMusicNote(cell.x, cell.y, snakeSize);
+          break;
+      }
+
+      if (activeCursor.type === 'vine') {
+        drawVineLeaf(cell.x, cell.y, snakeSize);
+      }
+    }
+
+    for (let i = 0; i < fruits.length; i++) {
+      const fruit = fruits[i];
+      ctx.fillStyle = '#FF0000';
+      ctx.beginPath();
+      ctx.arc(fruit.x + fruit.size / 2, fruit.y + fruit.size / 2, fruit.size / 2, 0, Math.PI * 2);
+      ctx.fill();
+    }
+
+    if (powerUp) {
+      ctx.fillStyle = '#FFD700';
+      ctx.beginPath();
+      ctx.arc(powerUp.x + powerUpSize / 2, powerUp.y + powerUpSize / 2, powerUpSize / 2, 0, Math.PI * 2);
+      ctx.fill();
+
+      const powerUpCursor = cursorData.find(cursor => cursor.type === powerUp.type);
+      drawPowerUpPreview(powerUp.x, powerUp.y, powerUpSize, powerUpCursor);
+    }
+  }
+
+  // ... (existing drawing functions) ...
+
+  function drawGhostFace(x, y, size) {
+    ctx.fillStyle = activeCursor.colors[0];
+    ctx.beginPath();
+    ctx.moveTo(x, y);
+    ctx.lineTo(x + size / 2, y - size / 2);
+    ctx.lineTo(x + size, y);
+    ctx.lineTo(x + size, y + size);
+    ctx.lineTo(x, y + size);
+    ctx.closePath();
+    ctx.fill();
+
+    ctx.fillStyle = activeCursor.colors[1];
+    ctx.beginPath();
+    ctx.arc(x + size / 3, y + size / 3, size / 6, 0, Math.PI * 2);
+    ctx.arc(x + size * 2 / 3, y + size / 3, size / 6, 0, Math.PI * 2);
+    ctx.fill();
+
+    ctx.fillStyle = activeCursor.colors[2];
+    ctx.beginPath();
+    ctx.arc(x + size / 2, y + size * 2 / 3, size / 4, 0, Math.PI);
+    ctx.fill();
+  }
+
+  function drawSparkle(x, y, size) {
+    ctx.strokeStyle = activeCursor.colors[Math.floor(Math.random() * activeCursor.colors.length)];
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+
+    for (let i = 0; i < 8; i++) {
+      const angle = i * (Math.PI / 4);
+      const radius = i % 2 === 0 ? size / 2 : size / 4;
+      const sparkleX = x + Math.cos(angle) * radius;
+      const sparkleY = y + Math.sin(angle) * radius;
+      ctx.lineTo(sparkleX, sparkleY);
+    }
+
+    ctx.closePath();
+    ctx.stroke();
+  }
+
+  function drawMusicNote(x, y, size) {
+    ctx.fillStyle = activeCursor.colors[Math.floor(Math.random() * activeCursor.colors.length)];
+    ctx.beginPath();
+    ctx.ellipse(x, y, size / 4, size / 2, 0, 0, Math.PI * 2);
+    ctx.fill();
+
+    ctx.beginPath();
+    ctx.moveTo(x, y - size / 2);
+    ctx.lineTo(x, y - size);
+    ctx.lineTo(x + size / 4, y - size * 3 / 4);
+    ctx.closePath();
+    ctx.fill();
+  }
+
+  function drawPowerUpPreview(x, y, size, cursor) {
+    ctx.save();
+    ctx.translate(x + size / 2, y + size / 2);
+    ctx.scale(0.8, 0.8);
+
+    switch (cursor.particleShape) {
+            // ... (existing preview drawing code) ...
+      case 'ghostFace':
+        drawGhostFace(-size / 2, -size / 2, size);
+        break;
+      case 'sparkle':
+        drawSparkle(-size / 2, -size / 2, size);
+        break;
+      case 'musicNote':
+        drawMusicNote(-size / 2, -size / 2, size);
+        break;
+    }
+
+    ctx.restore();
+  }
+
+  function activatePowerUp() {
+    const randomCursor = cursorData[Math.floor(Math.random() * cursorData.length)];
+    activeCursor = randomCursor;
+  }
+
+  function spawnPowerUp() {
+    const randomCursor = cursorData[Math.floor(Math.random() * cursorData.length)];
+    powerUp = {
+      x: Math.floor(Math.random() * (canvas.width - powerUpSize)),
+      y: Math.floor(Math.random() * (canvas.height - powerUpSize)),
+      type: randomCursor.type
+    };
+  }
+
+  function loop() {
+    update();
+    draw();
+
+    if (Math.random() < 0.1) {
+      spawnFruit();
+    }
+
+    if (!powerUp && Math.random() < 0.005) {
+      spawnPowerUp();
+    }
+
+    if (Math.random() < 0.001) {
+      maxFruits++;
+    }
+
+    requestAnimationFrame(loop);
+  }
+
+  function onMouseMove(event) {
+    cursorX = event.clientX;
+    cursorY = event.clientY;
+  }
+
+  function onTouchMove(event) {
+    event.preventDefault();
+    cursorX = event.touches[0].clientX;
+    cursorY = event.touches[0].clientY;
+  }
+
+  window.addEventListener('resize', resizeCanvas);
+  window.addEventListener('mousemove', onMouseMove);
+  window.addEventListener('touchmove', onTouchMove);
+
+  resizeCanvas();
+  resetGame();
+  loop();
+</script>
+</body>
+</html>

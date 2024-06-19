@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Interactive Story</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div class="container">
+  <h1>Hidden Messages</h1>
+  <div class="narrative">
+    <p>Luna stared at the screen, her fingers dancing over the keyboard. As lines of code appeared, she felt the familiar rush of excitement. An animated GIF on her second monitor showed the loading bar inching forward, while the soft clacking of keys provided a comforting rhythm.</p>
+    <img src="loading-bar.gif" alt="Loading bar animation">
+    <p>The room was filled with the gentle hum of auras, each one a different shade of tranquility. Luna's thoughts were a whirl of cerulean and gold, as she deciphered the hidden message embedded in the code. The soundscape of her environment shifted from the mechanical clicks of the keyboard to the warm, amber tones of her favorite jazz playlist.</p>
+  </div>
+
+  <div class="code-container">
+            <pre>
+<code id="js-code">
+function decodeMessage(inputText) {
+    // Extracts hidden capital letters to reveal the message
+    return inputText.split('').filter(char => char === char.toUpperCase()).join('');
+}
+</code>
+            </pre>
+  </div>
+
+  <div class="interactive">
+    <label for="messageInput">Enter your message:</label>
+    <input type="text" id="messageInput" placeholder="Type a message...">
+    <button onclick="revealMessage()">Reveal Hidden Message</button>
+    <p id="output"></p>
+  </div>
+
+  <div class="video-container">
+    <video controls>
+      <source src="hacker-at-work.mp4" type="video/mp4">
+      Your browser does not support the video tag.
+    </video>
+  </div>
+
+  <div class="dialogue">
+    <p>"In the office, she kept her language formal and concise, but during a break, she switched effortlessly:</p>
+    <p class="code-switch">Can you believe this bug? Es un desastre total!"</p>
+    <p>Her coworker laughed, understanding both the technical issue and the cultural nuance.</p>
+  </div>
+</div>
+<script src="script.js"></script>
+</body>
+</html>

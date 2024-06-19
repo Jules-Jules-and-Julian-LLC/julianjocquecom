@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Blog - Julian Jocque</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="icon" type="image/x-icon" href="assets/favicon.ico">
+</head>
+<body>
+<h1>Blog</h1>
+<h2>A Beautiful Bug</h2>
+<p>
+  Many years ago I had a thought as I was falling asleep, "Could I pick apart a bunch of images to recreate a particular target?"
+  This thought lead to one of my most successful projects yet, <a href="https://github.com/okiyama/pixel-matcher">pixel-matcher</a>.
+  Once I had it in a good state, I <a href="https://www.reddit.com/r/woahdude/comments/9z3f10/into_the_digital_void_from_an_image_corruption/">posted to Reddit</a>
+  which made it to the frontpage, and resulted in quite a bit of discussion.
+</p>
+<p>
+  One post that jumped out was someone who had <a href="https://www.shadertoy.com/view/4lGBRy">recreated the effect in ShaderToy</a>.
+  To my astonishment, this in-browser implementation was able to run in real-time with multiple video feeds.
+  In contrast, my program took seconds per frame, many thousands of times slower.
+</p>
+<p>
+  I immediately got to work implementing the algorithm in OpenCL to parallelize the work, and see if I could get close to real-time.
+  This wasn't a huge issue, I've done a bit of GLSL work in the past so I was familiar with the implementation.
+  However, once I ran it, the results were completely different and not just that, <a href="https://github.com/okiyama/pixel-matcher/commit/146318291df3f3d6df175643d75105b4a631f9b5">they were utterly boring</a>!
+  Whereas my CPU native version would twist and pulse as it made its way to the final image, this new version was bizarrely
+  utilitarian. It grabbed exactly the pixels it needed, only ever working towards the optimum solution.
+</p>
+<p>
+  After a huge amount of debugging, I finally found the issue, or rather, lack of issue!
+  It turned out that the CPU native version had the distances calculated using an unsigned 8-bit integer, because of how I initialized the Numpy array.
+  8-bits gets you 0-255, so if the difference found was negative, or if it went over 255, the value would either overflow or underflow.
+</p>
+<p>
+  With this knowledge in hand, I <a href="https://github.com/okiyama/pixel-matcher/commit/cac279cc15d45acc9970e94146281ef224d478bd">intentionally introduced the overflow and underflow bug</a> and all of a sudden,
+  everything was back how it was before. Pulsing, twisting, ripping and rending, constantly evolving, and ever hypnotizing.
+</p>
+<p><a href="index.html">🏠</a></p>
+</body>
+</html>

@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Cursor Snake Game</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            cursor: none;
+        }
+        canvas {
+            display: block;
+        }
+        .score {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            font-size: 24px;
+            font-family: Arial, sans-serif;
+            color: #fff;
+        }
+    </style>
+</head>
+<body>
+<canvas id="canvas"></canvas>
+<div class="score">Length: <span id="scoreValue">0</span></div>
+
+<script>
+    const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d');
+    const scoreValue = document.getElementById('scoreValue');
+
+    let snake = [];
+    let fruit = {};
+    let powerUp = null;
+    let score = 0;
+
+    const snakeSize = 20;
+    const fruitSize = 15;
+    const powerUpSize = 20;
+
+    const cursorData = [
+        {
+            type: 'default',
+            colors: ['#4CAF50'],
+            particleShape: 'square'
+        },
+        {
+            type: 'rainbow',
+            colors: ['#ff0000', '#ff7f00', '#ffff00', '#00ff00', '#0000ff', '#4b0082', '#9400d3'],
+            particleShape: 'circle'
+        },
+        {
+            type: 'mouse',
+            colors: ['#a0522d', '#d2691e', '#f5deb3'],
+            particleShape: 'mouseFace'
+        },
+        {
+            type: 'dragon',
+            colors: ['#ff0000', '#ffa500', '#ffff00', '#008000', '#0000ff'],
+            particleShape: 'dragonFace'
+        },
+        {
+            type: 'poop',
+            colors: ['#8B4513'],
+            particleShape: 'poopEmoji'
+        }
+    ];
+
+    let activeCursor = cursorData[0];
+    let cursorX = 0;
+    let cursorY = 0;
+
+    function resizeCanvas() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+    }
+
+    function resetGame() {
+        snake = [{x: cursorX, y: cursorY}];
+        fruit = getRandomPosition();
+        powerUp = null;
+        score = 0;
+        scoreValue.textContent = score;
+    }
+
+    function getRandomPosition() {
+        const x = Math.floor(Math.random() * (canvas.width - fruitSize));
+        const y = Math.floor(Math.random() * (canvas.height - fruitSize));
+        return {x, y};
+    }
+
+    function update() {
+        const head = {x: cursorX, y: cursorY};
+
+        if (distance(head, fruit) < (snakeSize + fruitSize) / 2) {
+            score++;
+            scoreValue.textContent = score;
+            fruit = getRandomPosition();
+            snake.push({...head});
+        }
+
+        if (powerUp && distance(head, powerUp) < (snakeSize + powerUpSize) / 2) {
+            activatePowerUp();
+            powerUp = null;
+        }
+
+        snake.unshift(head);
+        if (snake.length > score) {
+            snake.pop();
+        }
+    }
+
+    function distance(p1, p2) {
+        const dx = p1.x - p2.x;
+        const dy = p1.y - p2.y;
+        return Math.sqrt(dx * dx + dy * dy);
+    }
+
+    function draw() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+        for (let i = 0; i < snake.length; i++) {
+            const cell = snake[i];
+
+            switch (activeCursor.particleShape) {
+                case 'square':
+                    ctx.fillStyle = activeCursor.colors[i % activeCursor.colors.length];
+                    ctx.fillRect(cell.x, cell.y, snakeSize, snakeSize);
+                    break;
+                case 'circle':
+                    ctx.fillStyle = activeCursor.colors[i % activeCursor.colors.length];
+                    ctx.beginPath();
+                    ctx.arc(cell.x, cell.y, snakeSize / 2, 0, Math.PI * 2);
+                    ctx.fill();
+                    break;
+                case 'mouseFace':
+                    drawMouseFace(cell.x, cell.y, snakeSize);
+                    break;
+                case 'dragonFace':
+                    drawDragonFace(cell.x, cell.y, snakeSize);
+                    break;
+                case 'poopEmoji':
+                    drawPoopEmoji(cell.x, cell.y, snakeSize);
+                    break;
+            }
+
+            if (activeCursor.type === 'vine') {
+                drawVineLeaf(cell.x, cell.y, snakeSize);
+            }
+        }
+
+        ctx.fillStyle = '#FF0000';
+        ctx.beginPath();
+        ctx.arc(fruit.x + fruitSize / 2, fruit.y + fruitSize / 2, fruitSize / 2, 0, Math.PI * 2);
+        ctx.fill();
+
+        if (powerUp) {
+            ctx.fillStyle = '#FFD700';
+            ctx.beginPath();
+            ctx.arc(powerUp.x + powerUpSize / 2, powerUp.y + powerUpSize / 2, powerUpSize / 2, 0, Math.PI * 2);
+            ctx.fill();
+        }
+    }
+
+    function drawMouseFace(x, y, size) {
+        ctx.fillStyle = activeCursor.colors[0];
+        ctx.beginPath();
+        ctx.arc(x, y, size / 2, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.fillStyle = '#FFFFFF';
+        ctx.beginPath();
+        ctx.arc(x - size / 4, y - size / 4, size / 6, 0, Math.PI * 2);
+        ctx.arc(x + size / 4, y - size / 4, size / 6, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.fillStyle = '#000000';
+        ctx.beginPath();
+        ctx.arc(x - size / 4, y - size / 4, size / 12, 0, Math.PI * 2);
+        ctx.arc(x + size / 4, y - size / 4, size / 12, 0, Math.PI * 2);
+        ctx.fill();
+    }
+
+    function drawDragonFace(x, y, size) {
+        ctx.fillStyle = activeCursor.colors[0];
+        ctx.beginPath();
+        ctx.moveTo(x, y - size / 2);
+        ctx.lineTo(x + size / 2, y);
+        ctx.lineTo(x, y + size / 2);
+        ctx.lineTo(x - size / 2, y);
+        ctx.closePath();
+        ctx.fill();
+
+        ctx.fillStyle = '#FFFFFF';
+        ctx.beginPath();
+        ctx.arc(x - size / 4, y - size / 4, size / 6, 0, Math.PI * 2);
+        ctx.arc(x + size / 4, y - size / 4, size / 6, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.fillStyle = '#000000';
+        ctx.beginPath();
+        ctx.arc(x - size / 4, y - size / 4, size / 12, 0, Math.PI * 2);
+        ctx.arc(x + size / 4, y - size / 4, size / 12, 0, Math.PI * 2);
+        ctx.fill();
+    }
+
+    function drawPoopEmoji(x, y, size) {
+        ctx.fillStyle = activeCursor.colors[0];
+        ctx.beginPath();
+        ctx.arc(x, y, size / 2, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.strokeStyle = '#000000';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(x - size / 4, y - size / 4);
+        ctx.lineTo(x + size / 4, y - size / 4);
+        ctx.moveTo(x - size / 4, y);
+        ctx.lineTo(x + size / 4, y);
+        ctx.moveTo(x - size / 4, y + size / 4);
+        ctx.lineTo(x + size / 4, y + size / 4);
+        ctx.stroke();
+    }
+
+    function drawVineLeaf(x, y, size) {
+        ctx.fillStyle = '#00FF00';
+        ctx.beginPath();
+        ctx.moveTo(x, y - size / 2);
+        ctx.quadraticCurveTo(x + size / 4, y - size / 4, x + size / 2, y);
+        ctx.quadraticCurveTo(x + size / 4, y + size / 4, x, y + size / 2);
+        ctx.quadraticCurveTo(x - size / 4, y + size / 4, x - size / 2, y);
+        ctx.quadraticCurveTo(x - size / 4, y - size / 4, x, y - size / 2);
+        ctx.closePath();
+        ctx.fill();
+    }
+
+    function activatePowerUp() {
+        const randomCursor = cursorData[Math.floor(Math.random() * cursorData.length)];
+        activeCursor = randomCursor;
+    }
+
+    function spawnPowerUp() {
+        powerUp = getRandomPosition();
+    }
+
+    function loop() {
+        update();
+        draw();
+        if (!powerUp && Math.random() < 0.01) {
+            spawnPowerUp();
+        }
+        requestAnimationFrame(loop);
+    }
+
+    function onMouseMove(event) {
+        cursorX = event.clientX;
+        cursorY = event.clientY;
+    }
+
+    window.addEventListener('resize', resizeCanvas);
+    window.addEventListener('mousemove', onMouseMove);
+
+    resizeCanvas();
+    resetGame();
+    loop();
+</script>
+</body>
+</html>
