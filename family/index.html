@@ -7,10 +7,8 @@
     <style>
         :root {
             --bg-color: #0f0404;
-            --card-red: #5c0a0a;
             --highlight-gold: #ffcf40;
             --text-white: #f0f0f0;
-            --tree-green: #0f3d0f;
         }
 
         body {
@@ -26,37 +24,60 @@
             overflow-x: hidden;
         }
 
-        /* --- WEBGL FIRE CONTAINER --- */
+        /* --- HEARTH CONTAINER --- */
         .hearth-frame {
             width: 100%;
             max-width: 800px;
             height: 350px;
             margin-top: 40px;
-            border-bottom: 4px solid #3d0505;
+            border-bottom: 8px solid #3d0505;
             box-shadow: 0 20px 50px rgba(0,0,0,0.8);
             position: relative;
-            background: #000;
+            background: #1a0a0a;
             border-radius: 8px 8px 0 0;
             overflow: hidden;
         }
 
+        /* The Wood Log Graphic */
+        .log-graphic {
+            position: absolute;
+            bottom: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80%;
+            height: 120px;
+            background: linear-gradient(to bottom, #4e342e, #281815);
+            border-radius: 20px 20px 0 0;
+            z-index: 1;
+            box-shadow: inset 0 0 20px #000;
+        }
+
+        .log-texture {
+            width: 100%; height: 100%;
+            opacity: 0.3;
+            background-image: repeating-linear-gradient(90deg, transparent, transparent 10px, #000 10px, #000 12px);
+        }
+
+        /* Fire Canvas sits ON TOP of the log */
         canvas#fire-canvas {
-            width: 100%;
-            height: 100%;
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
             display: block;
+            z-index: 2;
+            mix-blend-mode: screen; /* Makes black transparent so we see the log */
         }
 
         .hearth-overlay {
             position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: radial-gradient(circle at center bottom, transparent 20%, var(--bg-color) 90%);
+            bottom: 0; left: 0;
+            width: 100%; height: 100%;
+            background: radial-gradient(circle at center bottom, transparent 30%, var(--bg-color) 90%);
+            z-index: 3;
             pointer-events: none;
         }
 
-        /* --- MAIN CONTENT --- */
+        /* --- CONTENT --- */
         .container {
             max-width: 800px;
             width: 90%;
@@ -79,12 +100,8 @@
             line-height: 1.6;
             margin-bottom: 50px;
             color: #d1baba;
-            max-width: 600px;
-            margin-left: auto;
-            margin-right: auto;
         }
 
-        /* --- STOCKINGS (THE SITES) --- */
         .stockings-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
@@ -101,8 +118,6 @@
             border: 1px solid #8a1c1c;
             box-shadow: 0 4px 15px rgba(0,0,0,0.3);
             transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
         }
 
         .stocking-link:hover {
@@ -111,22 +126,9 @@
             border-color: var(--highlight-gold);
         }
 
-        .stocking-link h2 {
-            margin: 0;
-            font-size: 1.2rem;
-            font-weight: normal;
-        }
+        .stocking-link h2 { margin: 0; font-size: 1.2rem; font-weight: normal; }
+        .stocking-link span { display: block; margin-top: 10px; font-size: 0.8rem; color: var(--highlight-gold); font-family: 'Courier New', monospace; opacity: 0.8; }
 
-        .stocking-link span {
-            display: block;
-            margin-top: 10px;
-            font-size: 0.8rem;
-            color: var(--highlight-gold);
-            font-family: 'Courier New', monospace;
-            opacity: 0.8;
-        }
-
-        /* --- ADMIN CONTROLS (THE MANUALS) --- */
         .admin-panel {
             background: rgba(255, 255, 255, 0.05);
             border-radius: 12px;
@@ -134,21 +136,7 @@
             border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
-        .admin-title {
-            font-family: sans-serif;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            font-size: 0.9rem;
-            color: #888;
-            margin-bottom: 20px;
-        }
-
-        .action-buttons {
-            display: flex;
-            gap: 20px;
-            justify-content: center;
-            flex-wrap: wrap;
-        }
+        .action-buttons { display: flex; gap: 20px; justify-content: center; flex-wrap: wrap; }
 
         .btn-large {
             padding: 18px 30px;
@@ -157,99 +145,45 @@
             font-weight: bold;
             font-family: sans-serif;
             transition: all 0.2s;
-            flex: 1;
-            min-width: 250px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
+            flex: 1; min-width: 250px;
+            display: flex; align-items: center; justify-content: center; gap: 10px;
         }
 
-        .btn-upload {
-            background-color: var(--highlight-gold);
-            color: #3d2200;
-            font-size: 1.1rem;
-        }
+        .btn-upload { background-color: var(--highlight-gold); color: #3d2200; font-size: 1.1rem; }
+        .btn-upload:hover { background-color: #ffdb4d; transform: scale(1.02); }
+        .btn-vibe { background-color: transparent; color: #aaa; border: 1px solid #444; }
+        .btn-vibe:hover { color: white; border-color: white; background-color: rgba(255,255,255,0.05); }
 
-        .btn-upload:hover {
-            background-color: #ffdb4d;
-            transform: scale(1.02);
-            box-shadow: 0 0 20px rgba(255, 207, 64, 0.4);
-        }
-
-        .btn-vibe {
-            background-color: transparent;
-            color: #aaa;
-            border: 1px solid #444;
-        }
-
-        .btn-vibe:hover {
-            color: white;
-            border-color: white;
-            background-color: rgba(255,255,255,0.05);
-        }
-
-        /* --- SNOW --- */
-        .snowflake {
-            position: fixed;
-            top: -20px;
-            color: white;
-            opacity: 0.8;
-            pointer-events: none;
-            animation: fall linear forwards;
-            z-index: 5;
-        }
-
-        @keyframes fall {
-            to { transform: translateY(110vh); }
-        }
-
+        .snowflake { position: fixed; top: -20px; color: white; opacity: 0.8; pointer-events: none; animation: fall linear forwards; z-index: 5; }
+        @keyframes fall { to { transform: translateY(110vh); } }
     </style>
 </head>
 <body>
 
 <div class="hearth-frame">
+    <div class="log-graphic"><div class="log-texture"></div></div>
     <canvas id="fire-canvas"></canvas>
     <div class="hearth-overlay"></div>
 </div>
 
 <div class="container">
     <h1>Merry Christmas</h1>
-
     <div class="intro">
-        <p>Welcome to the Jocque Family Digital Estate.</p>
-        <p>Instead of a card, I bought you each a permanent plot of land on the internet.</p>
+        <p>Welcome to the Jocque Family Digital Estate.<br>
+            Instead of a card, I bought you each a permanent plot of land on the internet.</p>
     </div>
 
     <div class="stockings-grid">
-        <a href="https://harperjocque.com" target="_blank" class="stocking-link">
-            <h2>For Harper</h2>
-            <span>harperjocque.com</span>
-        </a>
-        <a href="https://housetype.com" target="_blank" class="stocking-link">
-            <h2>For Mom</h2>
-            <span>housetype.com</span>
-        </a>
-        <a href="https://kentjocque.com" target="_blank" class="stocking-link">
-            <h2>For Dad</h2>
-            <span>kentjocque.com</span>
-        </a>
-        <a href="https://aviankillian.com" target="_blank" class="stocking-link">
-            <h2>For Killian</h2>
-            <span>aviankillian.com</span>
-        </a>
+        <a href="https://harperjocque.com" target="_blank" class="stocking-link"><h2>For Harper</h2><span>harperjocque.com</span></a>
+        <a href="https://housetype.com" target="_blank" class="stocking-link"><h2>For Mom</h2><span>housetype.com</span></a>
+        <a href="https://kentjocque.com" target="_blank" class="stocking-link"><h2>For Dad</h2><span>kentjocque.com</span></a>
+        <a href="https://aviankillian.com" target="_blank" class="stocking-link"><h2>For Killian</h2><span>aviankillian.com</span></a>
     </div>
 
     <div class="admin-panel">
-        <div class="admin-title">Owner Controls</div>
         <div class="action-buttons">
-            <a href="/publishing" class="btn-large btn-upload">
-                <span>☁️</span> How to Upload Changes
-            </a>
-
-            <a href="/vibe-coding" class="btn-large btn-vibe">
-                <span>✨</span> How to Vibe Code
-            </a>
+            <a href="/publishing" class="btn-large btn-upload"><span>☁️</span> How to Upload Changes</a>
+            <a href="/vibe-coding" class="btn-large btn-vibe"><span>✨</span> How to Vibe Code</a>
         </div>
     </div>
 </div>
@@ -257,125 +191,58 @@
 <script>
     const canvas = document.getElementById('fire-canvas');
     const gl = canvas.getContext('webgl');
-
-    // Shader Sources
-    const vsSource = `
-            attribute vec4 position;
-            void main() { gl_Position = position; }
-        `;
-
+    const vsSource = `attribute vec4 position; void main() { gl_Position = position; }`;
     const fsSource = `
-            precision mediump float;
-            uniform vec2 resolution;
-            uniform float time;
-
-            // Simple noise function
-            float noise(vec2 st) {
-                return fract(sin(dot(st.xy, vec2(12.9898,78.233))) * 43758.5453123);
-            }
-
-            // Smooth noise
+            precision mediump float; uniform vec2 resolution; uniform float time;
+            float noise(vec2 st) { return fract(sin(dot(st.xy, vec2(12.9898,78.233))) * 43758.5453123); }
             float smoothNoise(vec2 st) {
-                vec2 i = floor(st);
-                vec2 f = fract(st);
-                vec2 u = f*f*(3.0-2.0*f);
-                return mix(mix(noise(i + vec2(0.0, 0.0)), noise(i + vec2(1.0, 0.0)), u.x),
-                           mix(noise(i + vec2(0.0, 1.0)), noise(i + vec2(1.0, 1.0)), u.x), u.y);
+                vec2 i = floor(st); vec2 f = fract(st); vec2 u = f*f*(3.0-2.0*f);
+                return mix(mix(noise(i + vec2(0.0, 0.0)), noise(i + vec2(1.0, 0.0)), u.x), mix(noise(i + vec2(0.0, 1.0)), noise(i + vec2(1.0, 1.0)), u.x), u.y);
             }
-
-            // FBM for fire texture
             float fbm(vec2 st) {
-                float value = 0.0;
-                float amplitude = 0.5;
-                for (int i = 0; i < 5; i++) {
-                    value += amplitude * smoothNoise(st);
-                    st *= 2.0;
-                    amplitude *= 0.5;
-                }
+                float value = 0.0; float amplitude = 0.5;
+                for (int i = 0; i < 5; i++) { value += amplitude * smoothNoise(st); st *= 2.0; amplitude *= 0.5; }
                 return value;
             }
-
             void main() {
                 vec2 uv = gl_FragCoord.xy / resolution.xy;
-
-                // Fire shape and movement
-                vec2 q = uv;
-                q.x *= 1.0;
-                q.y *= 2.0;
-                float strength = 1.4;
-                float T = time * 1.5;
-
-                q.x -= 0.5;
-                q.y -= 0.1;
-
-                // Distort the UVs with noise to create flames
+                vec2 q = uv; q.x *= 1.0; q.y *= 2.0;
+                float strength = 1.4; float T = time * 1.5;
+                q.x -= 0.5; q.y -= 0.1;
                 float n = fbm(strength * q - vec2(0, T));
-
                 float c = 1.0 - 16.0 * pow( max( 0.0, length(q*vec2(1.8+q.y*1.5,.75) ) - n * max( 0.0, q.y+0.25 ) ), 1.2 );
-
-                // Color mapping
                 vec3 color = vec3(1.5*c, 1.2*c*c*c, c*c*c*c*c*c);
-
-                // Darken top
                 color = mix(color, vec3(0.0), uv.y * 0.8);
-
-                gl_FragColor = vec4(color, 1.0);
+                gl_FragColor = vec4(color, 1.0); // No background, handled by mix-blend-mode
             }
         `;
-
-    // WebGL Setup
     function createShader(gl, type, source) {
-        const shader = gl.createShader(type);
-        gl.shaderSource(shader, source);
-        gl.compileShader(shader);
-        return shader;
+        const shader = gl.createShader(type); gl.shaderSource(shader, source); gl.compileShader(shader); return shader;
     }
-
-    const vertexShader = createShader(gl, gl.VERTEX_SHADER, vsSource);
-    const fragmentShader = createShader(gl, gl.FRAGMENT_SHADER, fsSource);
     const program = gl.createProgram();
-    gl.attachShader(program, vertexShader);
-    gl.attachShader(program, fragmentShader);
-    gl.linkProgram(program);
-    gl.useProgram(program);
-
+    gl.attachShader(program, createShader(gl, gl.VERTEX_SHADER, vsSource));
+    gl.attachShader(program, createShader(gl, gl.FRAGMENT_SHADER, fsSource));
+    gl.linkProgram(program); gl.useProgram(program);
     const positionBuffer = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 1, -1, -1, 1, -1, 1, 1, -1, 1, 1]), gl.STATIC_DRAW);
-
     const positionLocation = gl.getAttribLocation(program, 'position');
     gl.enableVertexAttribArray(positionLocation);
     gl.vertexAttribPointer(positionLocation, 2, gl.FLOAT, false, 0, 0);
-
     const resolutionLocation = gl.getUniformLocation(program, 'resolution');
     const timeLocation = gl.getUniformLocation(program, 'time');
-
     function resize() {
-        canvas.width = canvas.clientWidth;
-        canvas.height = canvas.clientHeight;
-        gl.viewport(0, 0, canvas.width, canvas.height);
-        gl.uniform2f(resolutionLocation, canvas.width, canvas.height);
+        canvas.width = canvas.clientWidth; canvas.height = canvas.clientHeight;
+        gl.viewport(0, 0, canvas.width, canvas.height); gl.uniform2f(resolutionLocation, canvas.width, canvas.height);
     }
-    window.addEventListener('resize', resize);
-    resize();
-
-    function render(time) {
-        gl.uniform1f(timeLocation, time * 0.001);
-        gl.drawArrays(gl.TRIANGLES, 0, 6);
-        requestAnimationFrame(render);
-    }
+    window.addEventListener('resize', resize); resize();
+    function render(time) { gl.uniform1f(timeLocation, time * 0.001); gl.drawArrays(gl.TRIANGLES, 0, 6); requestAnimationFrame(render); }
     requestAnimationFrame(render);
-
-    // Snow Script (CSS Based)
     function createSnow() {
-        const snow = document.createElement('div');
-        snow.classList.add('snowflake');
-        snow.innerHTML = '❄';
-        snow.style.left = Math.random() * 100 + 'vw';
-        snow.style.animationDuration = Math.random() * 5 + 3 + 's';
+        const snow = document.createElement('div'); snow.classList.add('snowflake'); snow.innerHTML = '❄';
+        snow.style.left = Math.random() * 100 + 'vw'; snow.style.animationDuration = Math.random() * 5 + 3 + 's';
         snow.style.fontSize = Math.random() * 10 + 10 + 'px';
-        document.body.appendChild(snow);
-        setTimeout(() => snow.remove(), 8000);
+        document.body.appendChild(snow); setTimeout(() => snow.remove(), 8000);
     }
     setInterval(createSnow, 150);
 </script>

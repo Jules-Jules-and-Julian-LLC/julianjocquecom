@@ -7,92 +7,42 @@
     <style>
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
-            background-color: #f3f4f6;
-            color: #1f2937;
-            display: flex;
-            justify-content: center;
-            padding: 40px 20px;
-            margin: 0;
-            line-height: 1.6;
+            background-color: #f3f4f6; color: #1f2937;
+            display: flex; justify-content: center;
+            padding: 40px 20px; line-height: 1.6;
         }
-
         .guide-container {
-            background: white;
-            max-width: 600px;
-            width: 100%;
-            padding: 40px;
-            border-radius: 16px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+            background: white; max-width: 600px; width: 100%;
+            padding: 40px; border-radius: 16px; box-shadow: 0 10px 25px rgba(0,0,0,0.05);
         }
-
-        .header {
-            margin-bottom: 30px;
-            border-bottom: 2px solid #e5e7eb;
-            padding-bottom: 20px;
-        }
-
-        h1 {
-            color: #111827;
-            margin: 0 0 10px 0;
-        }
-
-        .back-link {
-            text-decoration: none;
-            color: #6b7280;
-            font-size: 0.9rem;
-            display: inline-flex;
-            align-items: center;
-        }
-        .back-link:hover { color: #111827; }
-
+        .header { margin-bottom: 30px; border-bottom: 2px solid #e5e7eb; padding-bottom: 20px; }
+        .back-link { text-decoration: none; color: #6b7280; font-size: 0.9rem; }
         .credentials-box {
-            background-color: #eff6ff;
-            border: 1px solid #bfdbfe;
-            border-radius: 8px;
-            padding: 20px;
-            margin-bottom: 30px;
+            background-color: #eff6ff; border: 1px solid #bfdbfe; border-radius: 8px; padding: 20px; margin-bottom: 30px;
         }
-
-        .credentials-box strong { color: #1e40af; display: block; margin-bottom: 5px; }
-        .credentials-box code {
-            background: white;
-            padding: 2px 6px;
-            border-radius: 4px;
-            font-family: monospace;
-            border: 1px solid #bfdbfe;
-            color: #1e40af;
+        .credentials-box strong { color: #1e40af; display: block; margin-bottom: 8px; }
+        .code-block {
+            background: white; padding: 4px 8px; border-radius: 4px; font-family: monospace; border: 1px solid #bfdbfe; color: #1e40af; font-size: 1.1em;
         }
-
         .steps { padding-left: 20px; }
         .steps li { margin-bottom: 20px; font-weight: 500; font-size: 1.1rem; }
-
         .btn-launch {
-            display: inline-block;
-            background-color: #2563eb;
-            color: white;
-            text-decoration: none;
-            padding: 10px 20px;
-            border-radius: 6px;
-            font-size: 0.9rem;
-            margin-top: 5px;
+            display: inline-block; background-color: #2563eb; color: white; text-decoration: none; padding: 10px 20px; border-radius: 6px; font-size: 0.9rem; margin-top: 5px;
         }
         .btn-launch:hover { background-color: #1d4ed8; }
-
     </style>
 </head>
 <body>
-
 <div class="guide-container">
     <div class="header">
         <a href="/family" class="back-link">← Back to Family Hub</a>
         <h1>How to Publish Changes</h1>
-        <p>You have edited your <code>index.html</code> file. Here is how to make it live.</p>
     </div>
 
     <div class="credentials-box">
-        <strong>Login Info</strong>
-        Email: <code>jocquechristmas@gmail.com</code><br>
-        Password: <em>(Text Julian for the password)</em>
+        <strong>Login Credentials</strong>
+        Email: <span class="code-block">jocquechristmas@gmail.com</span><br><br>
+        Password: <span class="code-block">swan1swan</span>
     </div>
 
     <ol class="steps">
@@ -101,7 +51,8 @@
             <a href="https://dash.cloudflare.com/login" target="_blank" class="btn-launch">Launch Dashboard ↗</a>
         </li>
         <li>
-            <strong>Log In</strong> using the email above.
+            <strong>Log In</strong> with the email above. <br>
+            <em>Important: If asked, select <strong>"Continue with Google"</strong> or type the password above.</em>
         </li>
         <li>
             Click on the project named <strong>[Your Name]</strong>.
@@ -110,14 +61,12 @@
             Look for the tab or box that says <strong>"Deployments"</strong> or "Upload Assets".
         </li>
         <li>
-            <strong>Drag and Drop</strong> your entire folder (containing your index.html) into that box.
+            <strong>Drag and Drop</strong> your entire website folder into that box.
         </li>
     </ol>
-
     <p style="color: #6b7280; font-size: 0.9rem; margin-top: 30px; border-top: 1px solid #eee; padding-top: 20px;">
-        It usually takes about 10 seconds to update. Refresh your site on your phone to check!
+        Wait 10 seconds, then refresh your site on your phone!
     </p>
 </div>
-
 </body>
 </html>

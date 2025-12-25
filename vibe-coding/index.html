@@ -7,95 +7,63 @@
     <style>
         body {
             font-family: 'Courier New', Courier, monospace;
-            background-color: #111;
-            color: #0f0;
-            margin: 0;
-            padding: 40px 20px;
-            line-height: 1.6;
+            background-color: #111; color: #0f0; margin: 0; padding: 40px 20px; line-height: 1.6;
         }
-
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-        }
-
-        h1 {
-            font-size: 2.5rem;
-            border-bottom: 2px solid #0f0;
-            padding-bottom: 20px;
-            margin-bottom: 40px;
-        }
-
-        /* THE QUOTE BLOCK */
+        .container { max-width: 800px; margin: 0 auto; }
+        h1 { font-size: 2.5rem; border-bottom: 2px solid #0f0; padding-bottom: 20px; margin-bottom: 40px; }
         .quote-box {
-            background: rgba(0, 255, 0, 0.1);
-            border-left: 5px solid #0f0;
-            padding: 30px;
-            margin-bottom: 50px;
-            font-size: 1.2rem;
-            font-style: italic;
+            background: rgba(0, 255, 0, 0.1); border-left: 5px solid #0f0; padding: 30px; margin-bottom: 50px; font-size: 1.2rem; font-style: italic;
         }
-
         .step { margin-bottom: 50px; }
         .step h2 { color: #fff; margin-bottom: 10px; }
-
         .code-block {
-            background: #222;
-            color: #fff;
-            padding: 20px;
-            border-radius: 4px;
-            font-family: monospace;
-            white-space: pre-wrap;
-            border: 1px solid #444;
+            background: #222; color: #fff; padding: 20px; border-radius: 4px; font-family: monospace; white-space: pre-wrap; border: 1px solid #444; margin-bottom: 15px;
         }
-
-        .back-nav {
-            margin-bottom: 40px;
-        }
-        .back-nav a {
-            color: #888;
-            text-decoration: none;
-            font-size: 0.9rem;
-        }
+        .copy-hint { font-size: 0.8rem; color: #888; text-transform: uppercase; letter-spacing: 1px; }
+        .back-nav { margin-bottom: 40px; }
+        .back-nav a { color: #888; text-decoration: none; }
         .back-nav a:hover { color: #fff; }
-
-        a.action-link {
-            color: #0f0;
-            font-weight: bold;
-        }
+        a.action-link { color: #0f0; font-weight: bold; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <div class="back-nav">
-        <a href="/family">← Back to Hub</a>
-    </div>
+    <div class="back-nav"><a href="/family">← Back to Hub</a></div>
 
     <h1>The Manual</h1>
-
     <div class="quote-box">
         "Vibe coding lets you make a website that does something you know a website <strong>can</strong> do, even if you don't know <strong>how</strong> to make it do that."
     </div>
 
     <div class="step">
-        <h2>The Secret</h2>
-        <p>You do not need to learn HTML. You just need to be able to describe what you want.</p>
-        <p>If you can say: <em>"I want a button that makes a fart sound,"</em> you can build it.</p>
-    </div>
+        <h2>Step 1: Train the AI</h2>
+        <p>Open Gemini (or ChatGPT). Before you ask for anything, <strong>Copy and Paste this "System Instruction"</strong> into the chat. This teaches the AI how to code for <em>you</em>.</p>
 
-    <div class="step">
-        <h2>Step 1: The Request</h2>
-        <p>Go to ChatGPT, Gemini, or Claude. Treat the AI like a contractor. Be specific.</p>
-        <div class="code-block">
-            PROMPT:
-            "I have an HTML file. I want to add a music player that plays lo-fi beats. Make the player look like an old cassette tape. Write the full HTML and CSS for me."
+        <span class="copy-hint">Copy this block:</span>
+        <div class="code-block" style="border-color: #0f0;">
+            You are an expert web developer for a user who does not write code.
+            RULES:
+            1. Output a SINGLE `index.html` file.
+            2. Include all CSS inside &lt;style&gt; tags.
+            3. Include all JavaScript inside &lt;script&gt; tags.
+            4. If I ask for interactivity (clicking, sounds, animations), use modern JavaScript.
+            5. Do not explain the code. just give me the full file.
         </div>
     </div>
 
     <div class="step">
-        <h2>Step 2: The Copy/Paste</h2>
-        <p>The AI will give you code.</p>
+        <h2>Step 2: The Request</h2>
+        <p>Now, ask for what you actually want. Be specific about the "Vibe."</p>
+        <div class="code-block">
+            EXAMPLE PROMPT:
+            "I want to add a button in the center that says 'Do Not Press'. When I click it, I want a confetti explosion animation and a sound effect. Make the background red."
+        </div>
+    </div>
+
+    <div class="step">
+        <h2>Step 3: The Copy/Paste</h2>
+        <p>The AI will give you a big block of code.</p>
         <ol>
             <li>Copy that code.</li>
             <li>Open your <code>index.html</code> file on your computer.</li>
@@ -106,14 +74,13 @@
     </div>
 
     <div class="step">
-        <h2>Step 3: Test It</h2>
+        <h2>Step 4: Test & Publish</h2>
         <p>Double-click the file to open it in Chrome. Does it work?</p>
         <p>
-            <strong>If yes:</strong> <a href="/publishing" class="action-link">Go to the Upload Guide</a> to publish it.<br>
+            <strong>If yes:</strong> <a href="/publishing" class="action-link">Go to the Upload Guide</a>.<br>
             <strong>If no:</strong> Tell the AI <em>"That looks broken, fix it."</em>
         </p>
     </div>
 </div>
-
 </body>
 </html>
