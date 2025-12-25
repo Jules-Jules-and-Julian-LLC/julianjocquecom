@@ -3,160 +3,197 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>The Jocque Family Estate</title>
+    <title>Jocque Family Christmas</title>
     <style>
         :root {
-            --bg-color: #1a1a18;
-            --text-color: #e0e0e0;
-            --accent-color: #d65a31; /* Warm Hearth Orange */
-            --card-bg: #2a2a28;
-            --font-main: 'Georgia', serif;
+            --bg-color: #2b0a0a; /* Deep warm red-black */
+            --card-bg: #4a0e0e; /* Rich velvet red */
+            --gold: #ffd700;
+            --green: #1a472a;
+            --snow: #ffffff;
         }
 
         body {
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            font-family: var(--font-main);
             margin: 0;
-            padding: 40px 20px;
-            line-height: 1.6;
+            padding: 0;
+            background-color: var(--bg-color);
+            color: var(--snow);
+            font-family: 'Georgia', serif;
+            overflow-x: hidden;
+            min-height: 100vh;
             display: flex;
             flex-direction: column;
             align-items: center;
-            min-height: 100vh;
+        }
+
+        /* SNOW EFFECT CONTAINER */
+        #snow-container {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none;
+            z-index: 999;
         }
 
         .container {
-            max-width: 600px;
-            width: 100%;
+            max-width: 800px;
+            width: 90%;
             text-align: center;
+            z-index: 10;
+            padding-bottom: 50px;
+        }
+
+        /* YULE LOG HEADER */
+        .hearth-container {
+            margin-top: 20px;
+            border: 8px solid #3e2723; /* Wood frame color */
+            border-radius: 4px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.8);
+            overflow: hidden;
+            line-height: 0;
+        }
+
+        iframe {
+            width: 100%;
+            height: 300px; /* Nice cinematic height */
+            border: none;
         }
 
         h1 {
+            font-size: 3rem;
+            color: var(--gold);
+            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+            margin: 30px 0 10px 0;
             font-weight: normal;
-            font-size: 2.5rem;
-            margin-bottom: 0.5rem;
-            color: var(--accent-color);
-            letter-spacing: 1px;
-        }
-
-        .subtitle {
-            font-style: italic;
-            opacity: 0.8;
-            margin-bottom: 3rem;
-            font-size: 1.1rem;
         }
 
         .intro {
-            margin-bottom: 4rem;
-            font-size: 1.1rem;
-            padding: 0 10px;
+            font-size: 1.2rem;
+            line-height: 1.6;
+            margin-bottom: 40px;
+            color: #e0d0d0;
         }
 
-        /* The Links List */
-        .estate-list {
-            list-style: none;
-            padding: 0;
+        /* STOCKING LINKS */
+        .stockings {
             display: flex;
-            flex-direction: column;
+            flex-wrap: wrap;
+            justify-content: center;
             gap: 20px;
         }
 
-        .estate-link {
-            display: block;
-            background-color: var(--card-bg);
-            padding: 20px;
+        .stocking-tag {
+            background-color: var(--green);
+            color: var(--snow);
             text-decoration: none;
-            color: var(--text-color);
-            border: 1px solid #333;
-            border-radius: 4px;
-            transition: all 0.3s ease;
+            padding: 20px 30px;
+            border-radius: 8px;
+            font-size: 1.2rem;
+            border: 2px solid #2d5a3f;
+            transition: transform 0.2s, box-shadow 0.2s;
+            min-width: 200px;
             position: relative;
-            overflow: hidden;
         }
 
-        .estate-link:hover {
-            border-color: var(--accent-color);
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(214, 90, 49, 0.1);
+        .stocking-tag:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(255, 215, 0, 0.3); /* Gold glow */
+            background-color: #235c35;
         }
 
-        .estate-name {
-            font-size: 1.4rem;
-            display: block;
-            margin-bottom: 5px;
+        .stocking-tag::before {
+            content: '🎁';
+            margin-right: 10px;
         }
 
-        .estate-url {
-            font-family: 'Courier New', monospace;
-            font-size: 0.9rem;
-            opacity: 0.6;
-            color: var(--accent-color);
-        }
-
-        /* Footer / Manual Link */
         .footer {
-            margin-top: auto; /* Pushes to bottom */
-            padding-top: 60px;
+            margin-top: 60px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
             font-size: 0.9rem;
-            font-family: sans-serif;
-            opacity: 0.5;
+            opacity: 0.8;
         }
 
         .footer a {
-            color: var(--text-color);
-            text-decoration: underline;
+            color: var(--gold);
+            text-decoration: none;
+            border-bottom: 1px dotted var(--gold);
         }
 
-        .footer a:hover {
-            color: var(--accent-color);
+        /* Snowflake CSS */
+        .snowflake {
+            position: absolute;
+            top: -10px;
+            color: white;
+            font-size: 1em;
+            opacity: 0.8;
+            animation: fall linear infinite;
+        }
+
+        @keyframes fall {
+            to { transform: translateY(100vh); }
         }
     </style>
 </head>
 <body>
 
+<div id="snow-container"></div>
+
 <div class="container">
-    <h1>The Jocque Digital Estate</h1>
-    <div class="subtitle">Est. Christmas 2025</div>
 
-    <p class="intro">
-        We spend our lives in digital spaces owned by landlords.
-        This year, I wanted to give you land.
-        A permanent home on the web that belongs only to you.
-    </p>
+    <div class="hearth-container">
+        <iframe
+                src="https://www.youtube.com/embed/L_LUpnjgPso?autoplay=1&mute=1&loop=1&controls=0&playlist=L_LUpnjgPso"
+                allow="autoplay; encrypted-media"
+                allowfullscreen>
+        </iframe>
+    </div>
 
-    <ul class="estate-list">
-        <li>
-            <a href="https://harperjocque.com" class="estate-link" target="_blank">
-                <span class="estate-name">For Harper</span>
-                <span class="estate-url">harperjocque.com</span>
-            </a>
-        </li>
-        <li>
-            <a href="https://housetype.com" class="estate-link" target="_blank">
-                <span class="estate-name">For Mom</span>
-                <span class="estate-url">housetype.com</span>
-            </a>
-        </li>
-        <li>
-            <a href="https://kentjocque.com" class="estate-link" target="_blank">
-                <span class="estate-name">For Dad</span>
-                <span class="estate-url">kentjocque.com</span>
-            </a>
-        </li>
-        <li>
-            <a href="https://aviankillian.com" class="estate-link" target="_blank">
-                <span class="estate-name">For Killian</span>
-                <span class="estate-url">aviankillian.com</span>
-            </a>
-        </li>
-    </ul>
+    <h1>Merry Christmas</h1>
+
+    <div class="intro">
+        <p>Welcome to the Jocque Family Digital Estate.</p>
+        <p>Instead of a card this year, I bought you each a plot of land on the internet.
+            A permanent home that belongs only to you.</p>
+    </div>
+
+    <div class="stockings">
+        <a href="https://harperjocque.com" target="_blank" class="stocking-tag">For Harper</a>
+        <a href="https://housetype.com" target="_blank" class="stocking-tag">For Mom</a>
+        <a href="https://kentjocque.com" target="_blank" class="stocking-tag">For Dad</a>
+        <a href="https://aviankillian.com" target="_blank" class="stocking-tag">For Killian</a>
+    </div>
 
     <div class="footer">
-        <p>You have the keys.</p>
-        <p><a href="/vibe-coding">Read the Owner's Manual &rarr;</a></p>
+        <p>Your site is yours to keep and change forever.</p>
+        <p>
+            <a href="/vibe-coding.html">Read the Owner's Manual</a> |
+            <a href="/cloudflare-guide.html">How to Upload Changes</a>
+        </p>
     </div>
 </div>
+
+<script>
+    const snowContainer = document.getElementById('snow-container');
+
+    function createSnowflake() {
+        const snowflake = document.createElement('div');
+        snowflake.classList.add('snowflake');
+        snowflake.innerHTML = '❄';
+        snowflake.style.left = Math.random() * 100 + 'vw';
+        snowflake.style.animationDuration = Math.random() * 3 + 2 + 's'; // between 2-5s
+        snowflake.style.opacity = Math.random();
+        snowflake.style.fontSize = Math.random() * 10 + 10 + 'px';
+
+        snowContainer.appendChild(snowflake);
+
+        // Remove after animation
+        setTimeout(() => {
+            snowflake.remove();
+        }, 5000);
+    }
+
+    setInterval(createSnowflake, 100); // New snowflake every 100ms
+</script>
 
 </body>
 </html>
