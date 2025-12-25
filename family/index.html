@@ -6,194 +6,378 @@
     <title>Jocque Family Christmas</title>
     <style>
         :root {
-            --bg-color: #2b0a0a; /* Deep warm red-black */
-            --card-bg: #4a0e0e; /* Rich velvet red */
-            --gold: #ffd700;
-            --green: #1a472a;
-            --snow: #ffffff;
+            --bg-color: #0f0404;
+            --card-red: #5c0a0a;
+            --highlight-gold: #ffcf40;
+            --text-white: #f0f0f0;
+            --tree-green: #0f3d0f;
         }
 
         body {
             margin: 0;
             padding: 0;
             background-color: var(--bg-color);
-            color: var(--snow);
+            color: var(--text-white);
             font-family: 'Georgia', serif;
-            overflow-x: hidden;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
             align-items: center;
+            overflow-x: hidden;
         }
 
-        /* SNOW EFFECT CONTAINER */
-        #snow-container {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
+        /* --- WEBGL FIRE CONTAINER --- */
+        .hearth-frame {
+            width: 100%;
+            max-width: 800px;
+            height: 350px;
+            margin-top: 40px;
+            border-bottom: 4px solid #3d0505;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.8);
+            position: relative;
+            background: #000;
+            border-radius: 8px 8px 0 0;
+            overflow: hidden;
+        }
+
+        canvas#fire-canvas {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+
+        .hearth-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at center bottom, transparent 20%, var(--bg-color) 90%);
             pointer-events: none;
-            z-index: 999;
         }
 
+        /* --- MAIN CONTENT --- */
         .container {
             max-width: 800px;
             width: 90%;
             text-align: center;
             z-index: 10;
-            padding-bottom: 50px;
-        }
-
-        /* YULE LOG HEADER */
-        .hearth-container {
-            margin-top: 20px;
-            border: 8px solid #3e2723; /* Wood frame color */
-            border-radius: 4px;
-            box-shadow: 0 0 20px rgba(0,0,0,0.8);
-            overflow: hidden;
-            line-height: 0;
-        }
-
-        iframe {
-            width: 100%;
-            height: 300px; /* Nice cinematic height */
-            border: none;
+            padding-bottom: 80px;
         }
 
         h1 {
-            font-size: 3rem;
-            color: var(--gold);
-            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
-            margin: 30px 0 10px 0;
+            font-size: 3.5rem;
+            color: var(--highlight-gold);
+            text-shadow: 0 0 20px rgba(255, 207, 64, 0.3);
+            margin: 20px 0 10px 0;
+            letter-spacing: 2px;
             font-weight: normal;
         }
 
         .intro {
-            font-size: 1.2rem;
+            font-size: 1.3rem;
             line-height: 1.6;
-            margin-bottom: 40px;
-            color: #e0d0d0;
+            margin-bottom: 50px;
+            color: #d1baba;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
         }
 
-        /* STOCKING LINKS */
-        .stockings {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
+        /* --- STOCKINGS (THE SITES) --- */
+        .stockings-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
             gap: 20px;
+            margin-bottom: 60px;
         }
 
-        .stocking-tag {
-            background-color: var(--green);
-            color: var(--snow);
+        .stocking-link {
+            background: linear-gradient(145deg, #6e0e0e, #4a0606);
+            color: var(--text-white);
             text-decoration: none;
-            padding: 20px 30px;
-            border-radius: 8px;
-            font-size: 1.2rem;
-            border: 2px solid #2d5a3f;
-            transition: transform 0.2s, box-shadow 0.2s;
-            min-width: 200px;
+            padding: 30px 20px;
+            border-radius: 4px;
+            border: 1px solid #8a1c1c;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            transition: all 0.3s ease;
             position: relative;
+            overflow: hidden;
         }
 
-        .stocking-tag:hover {
+        .stocking-link:hover {
             transform: translateY(-5px);
-            box-shadow: 0 5px 15px rgba(255, 215, 0, 0.3); /* Gold glow */
-            background-color: #235c35;
+            box-shadow: 0 10px 25px rgba(255, 64, 64, 0.2);
+            border-color: var(--highlight-gold);
         }
 
-        .stocking-tag::before {
-            content: '🎁';
-            margin-right: 10px;
+        .stocking-link h2 {
+            margin: 0;
+            font-size: 1.2rem;
+            font-weight: normal;
         }
 
-        .footer {
-            margin-top: 60px;
-            padding-top: 20px;
-            border-top: 1px solid rgba(255, 255, 255, 0.2);
+        .stocking-link span {
+            display: block;
+            margin-top: 10px;
+            font-size: 0.8rem;
+            color: var(--highlight-gold);
+            font-family: 'Courier New', monospace;
+            opacity: 0.8;
+        }
+
+        /* --- ADMIN CONTROLS (THE MANUALS) --- */
+        .admin-panel {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 40px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .admin-title {
+            font-family: sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 2px;
             font-size: 0.9rem;
-            opacity: 0.8;
+            color: #888;
+            margin-bottom: 20px;
         }
 
-        .footer a {
-            color: var(--gold);
+        .action-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn-large {
+            padding: 18px 30px;
+            border-radius: 6px;
             text-decoration: none;
-            border-bottom: 1px dotted var(--gold);
+            font-weight: bold;
+            font-family: sans-serif;
+            transition: all 0.2s;
+            flex: 1;
+            min-width: 250px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
         }
 
-        /* Snowflake CSS */
-        .snowflake {
-            position: absolute;
-            top: -10px;
+        .btn-upload {
+            background-color: var(--highlight-gold);
+            color: #3d2200;
+            font-size: 1.1rem;
+        }
+
+        .btn-upload:hover {
+            background-color: #ffdb4d;
+            transform: scale(1.02);
+            box-shadow: 0 0 20px rgba(255, 207, 64, 0.4);
+        }
+
+        .btn-vibe {
+            background-color: transparent;
+            color: #aaa;
+            border: 1px solid #444;
+        }
+
+        .btn-vibe:hover {
             color: white;
-            font-size: 1em;
+            border-color: white;
+            background-color: rgba(255,255,255,0.05);
+        }
+
+        /* --- SNOW --- */
+        .snowflake {
+            position: fixed;
+            top: -20px;
+            color: white;
             opacity: 0.8;
-            animation: fall linear infinite;
+            pointer-events: none;
+            animation: fall linear forwards;
+            z-index: 5;
         }
 
         @keyframes fall {
-            to { transform: translateY(100vh); }
+            to { transform: translateY(110vh); }
         }
+
     </style>
 </head>
 <body>
 
-<div id="snow-container"></div>
+<div class="hearth-frame">
+    <canvas id="fire-canvas"></canvas>
+    <div class="hearth-overlay"></div>
+</div>
 
 <div class="container">
-
-    <div class="hearth-container">
-        <iframe
-                src="https://www.youtube.com/embed/L_LUpnjgPso?autoplay=1&mute=1&loop=1&controls=0&playlist=L_LUpnjgPso"
-                allow="autoplay; encrypted-media"
-                allowfullscreen>
-        </iframe>
-    </div>
-
     <h1>Merry Christmas</h1>
 
     <div class="intro">
         <p>Welcome to the Jocque Family Digital Estate.</p>
-        <p>Instead of a card this year, I bought you each a plot of land on the internet.
-            A permanent home that belongs only to you.</p>
+        <p>Instead of a card, I bought you each a permanent plot of land on the internet.</p>
     </div>
 
-    <div class="stockings">
-        <a href="https://harperjocque.com" target="_blank" class="stocking-tag">For Harper</a>
-        <a href="https://housetype.com" target="_blank" class="stocking-tag">For Mom</a>
-        <a href="https://kentjocque.com" target="_blank" class="stocking-tag">For Dad</a>
-        <a href="https://aviankillian.com" target="_blank" class="stocking-tag">For Killian</a>
+    <div class="stockings-grid">
+        <a href="https://harperjocque.com" target="_blank" class="stocking-link">
+            <h2>For Harper</h2>
+            <span>harperjocque.com</span>
+        </a>
+        <a href="https://housetype.com" target="_blank" class="stocking-link">
+            <h2>For Mom</h2>
+            <span>housetype.com</span>
+        </a>
+        <a href="https://kentjocque.com" target="_blank" class="stocking-link">
+            <h2>For Dad</h2>
+            <span>kentjocque.com</span>
+        </a>
+        <a href="https://aviankillian.com" target="_blank" class="stocking-link">
+            <h2>For Killian</h2>
+            <span>aviankillian.com</span>
+        </a>
     </div>
 
-    <div class="footer">
-        <p>Your site is yours to keep and change forever.</p>
-        <p>
-            <a href="/vibe-coding.html">Read the Owner's Manual</a> |
-            <a href="/cloudflare-guide.html">How to Upload Changes</a>
-        </p>
+    <div class="admin-panel">
+        <div class="admin-title">Owner Controls</div>
+        <div class="action-buttons">
+            <a href="/publishing" class="btn-large btn-upload">
+                <span>☁️</span> How to Upload Changes
+            </a>
+
+            <a href="/vibe-coding" class="btn-large btn-vibe">
+                <span>✨</span> How to Vibe Code
+            </a>
+        </div>
     </div>
 </div>
 
 <script>
-    const snowContainer = document.getElementById('snow-container');
+    const canvas = document.getElementById('fire-canvas');
+    const gl = canvas.getContext('webgl');
 
-    function createSnowflake() {
-        const snowflake = document.createElement('div');
-        snowflake.classList.add('snowflake');
-        snowflake.innerHTML = '❄';
-        snowflake.style.left = Math.random() * 100 + 'vw';
-        snowflake.style.animationDuration = Math.random() * 3 + 2 + 's'; // between 2-5s
-        snowflake.style.opacity = Math.random();
-        snowflake.style.fontSize = Math.random() * 10 + 10 + 'px';
+    // Shader Sources
+    const vsSource = `
+            attribute vec4 position;
+            void main() { gl_Position = position; }
+        `;
 
-        snowContainer.appendChild(snowflake);
+    const fsSource = `
+            precision mediump float;
+            uniform vec2 resolution;
+            uniform float time;
 
-        // Remove after animation
-        setTimeout(() => {
-            snowflake.remove();
-        }, 5000);
+            // Simple noise function
+            float noise(vec2 st) {
+                return fract(sin(dot(st.xy, vec2(12.9898,78.233))) * 43758.5453123);
+            }
+
+            // Smooth noise
+            float smoothNoise(vec2 st) {
+                vec2 i = floor(st);
+                vec2 f = fract(st);
+                vec2 u = f*f*(3.0-2.0*f);
+                return mix(mix(noise(i + vec2(0.0, 0.0)), noise(i + vec2(1.0, 0.0)), u.x),
+                           mix(noise(i + vec2(0.0, 1.0)), noise(i + vec2(1.0, 1.0)), u.x), u.y);
+            }
+
+            // FBM for fire texture
+            float fbm(vec2 st) {
+                float value = 0.0;
+                float amplitude = 0.5;
+                for (int i = 0; i < 5; i++) {
+                    value += amplitude * smoothNoise(st);
+                    st *= 2.0;
+                    amplitude *= 0.5;
+                }
+                return value;
+            }
+
+            void main() {
+                vec2 uv = gl_FragCoord.xy / resolution.xy;
+
+                // Fire shape and movement
+                vec2 q = uv;
+                q.x *= 1.0;
+                q.y *= 2.0;
+                float strength = 1.4;
+                float T = time * 1.5;
+
+                q.x -= 0.5;
+                q.y -= 0.1;
+
+                // Distort the UVs with noise to create flames
+                float n = fbm(strength * q - vec2(0, T));
+
+                float c = 1.0 - 16.0 * pow( max( 0.0, length(q*vec2(1.8+q.y*1.5,.75) ) - n * max( 0.0, q.y+0.25 ) ), 1.2 );
+
+                // Color mapping
+                vec3 color = vec3(1.5*c, 1.2*c*c*c, c*c*c*c*c*c);
+
+                // Darken top
+                color = mix(color, vec3(0.0), uv.y * 0.8);
+
+                gl_FragColor = vec4(color, 1.0);
+            }
+        `;
+
+    // WebGL Setup
+    function createShader(gl, type, source) {
+        const shader = gl.createShader(type);
+        gl.shaderSource(shader, source);
+        gl.compileShader(shader);
+        return shader;
     }
 
-    setInterval(createSnowflake, 100); // New snowflake every 100ms
-</script>
+    const vertexShader = createShader(gl, gl.VERTEX_SHADER, vsSource);
+    const fragmentShader = createShader(gl, gl.FRAGMENT_SHADER, fsSource);
+    const program = gl.createProgram();
+    gl.attachShader(program, vertexShader);
+    gl.attachShader(program, fragmentShader);
+    gl.linkProgram(program);
+    gl.useProgram(program);
 
+    const positionBuffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 1, -1, -1, 1, -1, 1, 1, -1, 1, 1]), gl.STATIC_DRAW);
+
+    const positionLocation = gl.getAttribLocation(program, 'position');
+    gl.enableVertexAttribArray(positionLocation);
+    gl.vertexAttribPointer(positionLocation, 2, gl.FLOAT, false, 0, 0);
+
+    const resolutionLocation = gl.getUniformLocation(program, 'resolution');
+    const timeLocation = gl.getUniformLocation(program, 'time');
+
+    function resize() {
+        canvas.width = canvas.clientWidth;
+        canvas.height = canvas.clientHeight;
+        gl.viewport(0, 0, canvas.width, canvas.height);
+        gl.uniform2f(resolutionLocation, canvas.width, canvas.height);
+    }
+    window.addEventListener('resize', resize);
+    resize();
+
+    function render(time) {
+        gl.uniform1f(timeLocation, time * 0.001);
+        gl.drawArrays(gl.TRIANGLES, 0, 6);
+        requestAnimationFrame(render);
+    }
+    requestAnimationFrame(render);
+
+    // Snow Script (CSS Based)
+    function createSnow() {
+        const snow = document.createElement('div');
+        snow.classList.add('snowflake');
+        snow.innerHTML = '❄';
+        snow.style.left = Math.random() * 100 + 'vw';
+        snow.style.animationDuration = Math.random() * 5 + 3 + 's';
+        snow.style.fontSize = Math.random() * 10 + 10 + 'px';
+        document.body.appendChild(snow);
+        setTimeout(() => snow.remove(), 8000);
+    }
+    setInterval(createSnow, 150);
+</script>
 </body>
 </html>

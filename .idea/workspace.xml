@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="89d5799f-be08-4a56-885d-3f8f10f05731" name="Changes" comment="Add family.html">
-      <change afterPath="$PROJECT_DIR$/manual/cloudflare-guide.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/manual/vibe-coding.html" afterDir="false" />
+    <list default="true" id="89d5799f-be08-4a56-885d-3f8f10f05731" name="Changes" comment="Update">
       <change beforePath="$PROJECT_DIR$/family/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/family/index.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -75,7 +73,7 @@
       <option name="presentableId" value="Default" />
       <updated>1766703075411</updated>
       <workItem from="1766703077365" duration="805000" />
-      <workItem from="1766704000790" duration="303000" />
+      <workItem from="1766704000790" duration="785000" />
     </task>
     <task id="LOCAL-00001" summary="Add family.html">
       <option name="closed" value="true" />
@@ -85,7 +83,15 @@
       <option name="project" value="LOCAL" />
       <updated>1766703197147</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="Update">
+      <option name="closed" value="true" />
+      <created>1766704328547</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1766704328547</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -93,6 +99,7 @@
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Add family.html" />
-    <option name="LAST_COMMIT_MESSAGE" value="Add family.html" />
+    <MESSAGE value="Update" />
+    <option name="LAST_COMMIT_MESSAGE" value="Update" />
   </component>
 </project>
