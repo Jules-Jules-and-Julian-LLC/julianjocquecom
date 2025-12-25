@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Jocque Family Estate</title>
+    <style>
+        :root {
+            --bg-color: #1a1a18;
+            --text-color: #e0e0e0;
+            --accent-color: #d65a31; /* Warm Hearth Orange */
+            --card-bg: #2a2a28;
+            --font-main: 'Georgia', serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: var(--font-main);
+            margin: 0;
+            padding: 40px 20px;
+            line-height: 1.6;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 600px;
+            width: 100%;
+            text-align: center;
+        }
+
+        h1 {
+            font-weight: normal;
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            color: var(--accent-color);
+            letter-spacing: 1px;
+        }
+
+        .subtitle {
+            font-style: italic;
+            opacity: 0.8;
+            margin-bottom: 3rem;
+            font-size: 1.1rem;
+        }
+
+        .intro {
+            margin-bottom: 4rem;
+            font-size: 1.1rem;
+            padding: 0 10px;
+        }
+
+        /* The Links List */
+        .estate-list {
+            list-style: none;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .estate-link {
+            display: block;
+            background-color: var(--card-bg);
+            padding: 20px;
+            text-decoration: none;
+            color: var(--text-color);
+            border: 1px solid #333;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .estate-link:hover {
+            border-color: var(--accent-color);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(214, 90, 49, 0.1);
+        }
+
+        .estate-name {
+            font-size: 1.4rem;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .estate-url {
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            opacity: 0.6;
+            color: var(--accent-color);
+        }
+
+        /* Footer / Manual Link */
+        .footer {
+            margin-top: auto; /* Pushes to bottom */
+            padding-top: 60px;
+            font-size: 0.9rem;
+            font-family: sans-serif;
+            opacity: 0.5;
+        }
+
+        .footer a {
+            color: var(--text-color);
+            text-decoration: underline;
+        }
+
+        .footer a:hover {
+            color: var(--accent-color);
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>The Jocque Digital Estate</h1>
+    <div class="subtitle">Est. Christmas 2025</div>
+
+    <p class="intro">
+        We spend our lives in digital spaces owned by landlords.
+        This year, I wanted to give you land.
+        A permanent home on the web that belongs only to you.
+    </p>
+
+    <ul class="estate-list">
+        <li>
+            <a href="https://harperjocque.com" class="estate-link" target="_blank">
+                <span class="estate-name">For Harper</span>
+                <span class="estate-url">harperjocque.com</span>
+            </a>
+        </li>
+        <li>
+            <a href="https://housetype.com" class="estate-link" target="_blank">
+                <span class="estate-name">For Mom</span>
+                <span class="estate-url">housetype.com</span>
+            </a>
+        </li>
+        <li>
+            <a href="https://kentjocque.com" class="estate-link" target="_blank">
+                <span class="estate-name">For Dad</span>
+                <span class="estate-url">kentjocque.com</span>
+            </a>
+        </li>
+        <li>
+            <a href="https://aviankillian.com" class="estate-link" target="_blank">
+                <span class="estate-name">For Killian</span>
+                <span class="estate-url">aviankillian.com</span>
+            </a>
+        </li>
+    </ul>
+
+    <div class="footer">
+        <p>You have the keys.</p>
+        <p><a href="/vibe-coding">Read the Owner's Manual &rarr;</a></p>
+    </div>
+</div>
+
+</body>
+</html>
