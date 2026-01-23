@@ -1,0 +1,148 @@
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  background: #070A10;
+  color: #EAF0FF;
+  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+  overflow: hidden;
+}
+
+#c {
+  width: 100vw;
+  height: 100vh;
+  display: block;
+  cursor: crosshair;
+}
+
+#hud {
+  position: fixed;
+  left: 16px;
+  top: 16px;
+  z-index: 5;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  pointer-events: none;
+}
+
+#hud .row {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  pointer-events: none;
+}
+
+#hud .row.small {
+  opacity: 0.9;
+}
+
+.pill {
+  background: rgba(255,255,255,0.07);
+  border: 1px solid rgba(255,255,255,0.12);
+  padding: 8px 10px;
+  border-radius: 999px;
+  font-size: 13px;
+  line-height: 1;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  pointer-events: none;
+}
+
+.pill input[type="range"]{
+  vertical-align: middle;
+  width: 140px;
+}
+
+.pill.btn {
+  pointer-events: auto;
+  cursor: pointer;
+  border-radius: 999px;
+  font-weight: 600;
+}
+.pill.btn:hover {
+  background: rgba(255,255,255,0.10);
+}
+
+#overlay {
+  position: fixed;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  z-index: 10;
+  background: radial-gradient(800px 500px at 50% 40%, rgba(130,180,255,0.15), rgba(0,0,0,0.65));
+  padding: 24px;
+}
+
+.card {
+  width: min(720px, 92vw);
+  background: rgba(10, 14, 24, 0.82);
+  border: 1px solid rgba(255,255,255,0.14);
+  border-radius: 16px;
+  padding: 18px 18px 16px 18px;
+  box-shadow: 0 24px 70px rgba(0,0,0,0.55);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+
+h1 {
+  margin: 0 0 8px 0;
+  font-size: 22px;
+}
+.lead {
+  margin: 0 0 14px 0;
+  opacity: 0.95;
+}
+
+.controls {
+  display: grid;
+  gap: 10px;
+  margin: 12px 0 14px 0;
+}
+.control {
+  display: grid;
+  grid-template-columns: 160px 1fr;
+  gap: 10px;
+  align-items: start;
+}
+.control .k {
+  font-weight: 700;
+  opacity: 0.95;
+}
+.control .d {
+  opacity: 0.9;
+}
+
+.note {
+  margin: 10px 0 12px 0;
+  opacity: 0.95;
+}
+
+.actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin: 10px 0 10px 0;
+}
+
+button {
+  appearance: none;
+  border: 1px solid rgba(255,255,255,0.16);
+  background: rgba(255,255,255,0.10);
+  color: #EAF0FF;
+  padding: 10px 12px;
+  border-radius: 12px;
+  font-weight: 700;
+  cursor: pointer;
+}
+button:hover { background: rgba(255,255,255,0.14); }
+button.secondary { background: rgba(255,255,255,0.06); }
+button.secondary:hover { background: rgba(255,255,255,0.10); }
+
+.tiny { font-size: 12px; opacity: 0.85; margin: 8px 0 0 0; }
+.muted { opacity: 0.7; }
+
+@media (max-width: 520px){
+  .control { grid-template-columns: 1fr; }
+  #hud { left: 10px; top: 10px; }
+}

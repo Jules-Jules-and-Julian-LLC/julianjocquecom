@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Momentum Cutter — Trackball Toy</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <canvas id="c"></canvas>
+
+  <div id="hud" aria-hidden="true">
+    <div class="row">
+      <div class="pill" id="statusPill">Raw Trackball: <span id="lockState">OFF</span></div>
+      <div class="pill">Speed <span id="speedReadout">0</span></div>
+      <div class="pill">Heat <span id="heatReadout">0%</span></div>
+      <div class="pill">Score <span id="scoreReadout">0</span></div>
+    </div>
+    <div class="row small">
+      <div class="pill">Sensitivity <input id="sens" type="range" min="0.2" max="4.0" step="0.05" value="1.35" /></div>
+      <div class="pill">Zoom <input id="zoom" type="range" min="0.6" max="1.4" step="0.01" value="1.00" /></div>
+      <button class="pill btn" id="resetBtn" title="Resets the world (UI click only)">Reset</button>
+    </div>
+  </div>
+
+  <div id="overlay">
+    <div class="card">
+      <h1>Momentum Cutter</h1>
+      <p class="lead">A <strong>trackball-native</strong> toy: spin the ball to build momentum. Smash asteroids to split them smaller and smaller until they pop.</p>
+
+      <div class="controls">
+        <div class="control">
+          <div class="k">Trackball motion</div>
+          <div class="d">Adds thrust in the direction you roll. If your trackball keeps spinning, thrust keeps coming.</div>
+        </div>
+        <div class="control">
+          <div class="k">Stop the ball sharply</div>
+          <div class="d">Triggers a strong “mag-brake” (no buttons needed). This is the “stop on a dime” move.</div>
+        </div>
+      </div>
+
+      <p class="note">
+        <strong>Important:</strong> For the “infinite fling” feel, this uses the Pointer Lock API (“raw trackball mode”).
+        Click the button below (or the canvas) to lock. Press <strong>Esc</strong> to unlock.
+      </p>
+
+      <div class="actions">
+        <button id="startBtn">Click to Start (Lock Pointer)</button>
+        <button id="startNoLockBtn" class="secondary">Start without Pointer Lock</button>
+      </div>
+
+      <p class="tiny">
+        If it feels too sensitive or too sluggish, adjust <strong>Sensitivity</strong> once you’re in.
+        On a normal mouse this will feel… kind of awful (by design). On a trackball, it should feel like you’re throwing a puck forever.
+      </p>
+
+      <div id="supportMsg" class="tiny muted"></div>
+    </div>
+  </div>
+
+  <script src="main.js"></script>
+</body>
+</html>

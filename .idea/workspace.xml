@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
   <component name="ChangeListManager">
-    <list default="true" id="89d5799f-be08-4a56-885d-3f8f10f05731" name="Changes" comment="Update">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/family/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/family/index.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/manual/cloudflare-guide.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/manual/vibe-coding.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/publishing/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/publishing/index.html" afterDir="false" />
+    <list default="true" id="e78bf4a9-838f-42d3-92b5-6643cc3bcc46" name="Changes" comment="just a *bit* of censorship">
+      <change beforePath="$PROJECT_DIR$/blog.html" beforeDir="false" afterPath="$PROJECT_DIR$/blog.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -23,25 +22,10 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="GitHubPullRequestSearchHistory">{
-  &quot;lastFilter&quot;: {
-    &quot;state&quot;: &quot;OPEN&quot;,
-    &quot;assignee&quot;: &quot;okiyama&quot;
-  }
-}</component>
-  <component name="GithubPullRequestsUISettings">{
-  &quot;selectedUrlAndAccountId&quot;: {
-    &quot;url&quot;: &quot;https://github.com/Jules-Jules-and-Julian-LLC/julianjocquecom.git&quot;,
-    &quot;accountId&quot;: &quot;f26889f4-50b2-4b1c-b822-771e07145a3d&quot;
-  }
-}</component>
   <component name="ProjectColorInfo">{
-  &quot;associatedIndex&quot;: 7
+  &quot;associatedIndex&quot;: 8
 }</component>
-  <component name="ProjectId" id="37MBUFCfCIOFGu46zJjK5KUO9QT" />
-  <component name="ProjectLevelVcsManager">
-    <ConfirmationsSetting value="2" id="Add" />
-  </component>
+  <component name="ProjectId" id="361soe05EZLli6yWDoDOX8sysM1" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
@@ -49,69 +33,85 @@
   <component name="PropertiesComponent">{
   &quot;keyToString&quot;: {
     &quot;DefaultHtmlFileTemplate&quot;: &quot;HTML File&quot;,
-    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.typescript.service.memoryLimit.init&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
-    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
-    &quot;javascript.preferred.runtime.type.id&quot;: &quot;node&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/lamab/Projects/julianjocquecom&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/Julian/WebstormProjects/julianjocquecom&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
     &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
     &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;,
     &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
 }</component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\Julian\WebstormProjects\julianjocquecom\games" />
+    </key>
+  </component>
+  <component name="RunManager">
+    <configuration name="index.html" type="JavascriptDebugType" temporary="true" nameIsGenerated="true" uri="http://localhost:63342/julianjocquecom/index.html" useBuiltInWebServerPort="true">
+      <method v="2" />
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="JavaScript Debug.index.html" />
+      </list>
+    </recent_temporary>
+  </component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-js-predefined-d6986cc7102b-9b0f141eb926-JavaScript-WS-253.29346.143" />
+        <option value="bundled-js-predefined-1d06a55b98c1-0b3e54e931b4-JavaScript-WS-241.18034.50" />
       </set>
     </attachedChunks>
   </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
-      <changelist id="89d5799f-be08-4a56-885d-3f8f10f05731" name="Changes" comment="" />
-      <created>1766703075411</created>
+      <changelist id="e78bf4a9-838f-42d3-92b5-6643cc3bcc46" name="Changes" comment="" />
+      <created>1764185587716</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
-      <updated>1766703075411</updated>
-      <workItem from="1766703077365" duration="805000" />
-      <workItem from="1766704000790" duration="1586000" />
+      <updated>1764185587716</updated>
+      <workItem from="1764185588737" duration="687000" />
+      <workItem from="1764347197128" duration="94000" />
+      <workItem from="1764347297232" duration="32000" />
+      <workItem from="1764347334218" duration="2360000" />
+      <workItem from="1764432330667" duration="2204000" />
+      <workItem from="1764521769105" duration="5795000" />
+      <workItem from="1764814738439" duration="658000" />
+      <workItem from="1764821428749" duration="2160000" />
+      <workItem from="1765143482448" duration="237000" />
+      <workItem from="1768402838758" duration="2774000" />
+      <workItem from="1768497013205" duration="1327000" />
+      <workItem from="1768500940766" duration="35000" />
     </task>
-    <task id="LOCAL-00001" summary="Add family.html">
+    <task id="LOCAL-00001" summary="Update I guess to prod why not">
       <option name="closed" value="true" />
-      <created>1766703197147</created>
+      <created>1764538350310</created>
       <option name="number" value="00001" />
       <option name="presentableId" value="LOCAL-00001" />
       <option name="project" value="LOCAL" />
-      <updated>1766703197147</updated>
+      <updated>1764538350310</updated>
     </task>
-    <task id="LOCAL-00002" summary="Update">
+    <task id="LOCAL-00002" summary="just a *bit* of censorship">
       <option name="closed" value="true" />
-      <created>1766704328547</created>
+      <created>1764815631282</created>
       <option name="number" value="00002" />
       <option name="presentableId" value="LOCAL-00002" />
       <option name="project" value="LOCAL" />
-      <updated>1766704328547</updated>
+      <updated>1764815631282</updated>
     </task>
-    <task id="LOCAL-00003" summary="Update">
-      <option name="closed" value="true" />
-      <created>1766704960488</created>
-      <option name="number" value="00003" />
-      <option name="presentableId" value="LOCAL-00003" />
-      <option name="project" value="LOCAL" />
-      <updated>1766704960488</updated>
-    </task>
-    <option name="localTasksCounter" value="4" />
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Add family.html" />
-    <MESSAGE value="Update" />
-    <option name="LAST_COMMIT_MESSAGE" value="Update" />
+    <MESSAGE value="Update I guess to prod why not" />
+    <MESSAGE value="just a *bit* of censorship" />
+    <option name="LAST_COMMIT_MESSAGE" value="just a *bit* of censorship" />
   </component>
 </project>

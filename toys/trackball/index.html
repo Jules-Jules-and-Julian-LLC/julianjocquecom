@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <title>Trackball Toybox</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div id="app">
+    <canvas id="c"></canvas>
+
+    <div id="hud" aria-hidden="true">
+      <div id="topbar">
+        <div id="brand">
+          <div id="title">Trackball Toybox</div>
+          <div id="subtitle">8 motion‑only mini toys • designed for trackball flick joy</div>
+        </div>
+
+        <div id="controls">
+          <button id="lockBtn" class="btn">Lock pointer</button>
+          <button id="unlockBtn" class="btn secondary" style="display:none;">Unlock</button>
+          <button id="resetBtn" class="btn secondary">Reset</button>
+        </div>
+      </div>
+
+      <div id="modes"></div>
+
+      <div id="info">
+        <div id="modeName">—</div>
+        <div id="modeDesc">—</div>
+        <div id="modeHint">Move the trackball. Click a mode above (or hover ~0.8s).</div>
+      </div>
+
+      <div id="corner">
+        <div class="pill" id="pillPhase">Phase 1</div>
+        <div class="pill" id="pillScore">0</div>
+        <div class="pill" id="pillFps">—</div>
+      </div>
+    </div>
+
+    <div id="overlay">
+      <div class="card">
+        <div class="big">Move your trackball.</div>
+        <div class="small">
+          These toys use <b>motion only</b>. No keyboard required.
+          <br/>
+          For the best “infinite fling” feel, click <b>Lock pointer</b>.
+        </div>
+        <div class="small muted">
+          Tip: If you ever lose your cursor, press <b>Esc</b> to exit pointer lock.
+        </div>
+        <div class="row">
+          <button id="startBtn" class="btn">Start</button>
+          <button id="startLockBtn" class="btn secondary">Start + Lock pointer</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <script src="main.js"></script>
+</body>
+</html>
