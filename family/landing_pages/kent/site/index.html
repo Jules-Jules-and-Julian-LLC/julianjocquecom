@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kent Jocque // Telemetry</title>
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;700&family=Roboto+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --uom-blue: #00274C;
+            --uom-maize: #FFCB05;
+            --white: #FFFFFF;
+            --grid-line: 1px solid var(--white);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--uom-blue);
+            color: var(--white);
+            font-family: 'Roboto Mono', monospace;
+            height: 100vh;
+            width: 100vw;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden; /* Lock scroll for desktop dashboard feel */
+        }
+
+        /* --- LAYOUT GRID --- */
+        .dashboard {
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            grid-template-rows: 60px 1fr 150px;
+            height: 100%;
+            width: 100%;
+            border: var(--grid-line);
+        }
+
+        /* --- HEADER --- */
+        .header {
+            grid-column: 1 / -1;
+            grid-row: 1;
+            border-bottom: var(--grid-line);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 20px;
+            background: rgba(0,0,0,0.2);
+        }
+
+        .header-title {
+            font-family: 'Oswald', sans-serif;
+            font-size: 2rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--uom-maize);
+        }
+
+        .telemetry-status {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: bold;
+            font-size: 0.9rem;
+            color: var(--white);
+        }
+
+        .status-dot {
+            width: 12px;
+            height: 12px;
+            background-color: #ff3b3b;
+            border-radius: 50%; /* Only exception to hard angles? Actually, let's make it square for this aesthetic */
+            border-radius: 0; 
+            animation: blink 1s infinite;
+        }
+
+        @keyframes blink {
+            0% { opacity: 1; }
+            50% { opacity: 0; }
+            100% { opacity: 1; }
+        }
+
+        /* --- SIDEBAR (SPECS) --- */
+        .sidebar {
+            grid-column: 1;
+            grid-row: 2 / -1;
+            border-right: var(--grid-line);
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            gap: 40px;
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .spec-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .label {
+            color: var(--uom-maize);
+            font-size: 0.8rem;
+            opacity: 0.8;
+            letter-spacing: 1px;
+        }
+
+        .value {
+            font-family: 'Oswald', sans-serif;
+            font-size: 1.8rem;
+            text-transform: uppercase;
+            line-height: 1.1;
+        }
+
+        /* --- MAIN CONTENT (RADAR CHART) --- */
+        .main-stage {
+            grid-column: 2;
+            grid-row: 2;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            background-image: 
+                linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,0.05) 1px, transparent 1px);
+            background-size: 50px 50px;
+        }
+
+        /* Radar Chart Container */
+        .radar-container {
+            width: 400px;
+            height: 400px;
+            position: relative;
+        }
+
+        /* The Pentagon Axis */
+        .radar-axis {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 300px;
+            height: 300px;
+            /* Using CSS clip-path to make a pentagon background */
+            clip-path: polygon(50% 0%, 100% 38%, 82% 100%, 18% 100%, 0% 38%);
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.2); /* Clip path hides border, so we use an overlay */
+        }
+        
+        /* Grid rings for the radar (concentric pentagons) */
+        .radar-ring {
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            clip-path: polygon(50% 0%, 100% 38%, 82% 100%, 18% 100%, 0% 38%);
+            background: transparent;
+            border: 1px solid rgba(255,255,255,0.1); /* Not visible with clip-path, using pseudo-elements instead? */
+        }
+
+        /* Since simple borders don't work with clip-path polygons easily without svg, 
+           we will use SVG for the chart to ensure it looks "Engineering Precision" clean. 
+           It is embedded HTML/CSS, perfectly valid. */
+        
+        svg.radar-chart {
+            width: 100%;
+            height: 100%;
+            overflow: visible;
+        }
+
+        .axis-line {
+            stroke: rgba(255, 255, 255, 0.2);
+            stroke-width: 1;
+        }
+
+        .grid-poly {
+            fill: none;
+            stroke: rgba(255, 255, 255, 0.2);
+            stroke-width: 1;
+        }
+
+        .data-poly {
+            fill: rgba(255, 203, 5, 0.6); /* Maize with opacity */
+            stroke: var(--uom-maize);
+            stroke-width: 2;
+            filter: drop-shadow(0 0 10px rgba(255, 203, 5, 0.5));
+            animation: pulse-data 3s infinite alternate;
+        }
+
+        @keyframes pulse-data {
+            0% { fill-opacity: 0.4; }
+            100% { fill-opacity: 0.7; }
+        }
+
+        .radar-label {
+            fill: var(--white);
+            font-family: 'Oswald', sans-serif;
+            font-size: 14px;
+            text-transform: uppercase;
+            text-anchor: middle;
+        }
+
+        /* --- FOOTER (DRIVER NOTES) --- */
+        .footer {
+            grid-column: 2;
+            grid-row: 3;
+            border-top: var(--grid-line);
+            padding: 20px 30px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            background: rgba(0,0,0,0.3);
+        }
+
+        .footer-header {
+            font-family: 'Oswald', sans-serif;
+            color: var(--uom-maize);
+            font-size: 1.2rem;
+            letter-spacing: 1px;
+            margin-bottom: 5px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .footer-header::before {
+            content: '';
+            display: block;
+            width: 20px;
+            height: 4px;
+            background: var(--uom-maize);
+        }
+
+        .note-content {
+            font-size: 0.9rem;
+            line-height: 1.6;
+            max-width: 800px;
+            color: #ddd;
+        }
+
+        /* --- MOBILE RESPONSIVENESS --- */
+        @media (max-width: 768px) {
+            body {
+                overflow-y: auto;
+                height: auto;
+            }
+            .dashboard {
+                display: flex;
+                flex-direction: column;
+                border: none;
+            }
+            .header {
+                position: sticky;
+                top: 0;
+                z-index: 100;
+                background: var(--uom-blue);
+                padding: 15px;
+            }
+            .header-title { font-size: 1.5rem; }
+            
+            .sidebar {
+                border-right: none;
+                border-bottom: var(--grid-line);
+                flex-direction: row;
+                flex-wrap: wrap;
+                gap: 20px;
+                padding: 20px;
+            }
+            .main-stage {
+                height: 400px;
+                border-bottom: var(--grid-line);
+            }
+            .radar-container {
+                width: 100%;
+                max-width: 350px;
+                height: 350px;
+            }
+            .footer {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="dashboard">
+        <!-- HEADER -->
+        <header class="header">
+            <div class="header-title">Kent Jocque // Data Sheet</div>
+            <div class="telemetry-status">
+                <div class="status-dot"></div>
+                LIVE TELEMETRY
+            </div>
+        </header>
+
+        <!-- SIDEBAR -->
+        <aside class="sidebar">
+            <div class="spec-group">
+                <span class="label">ORIGIN</span>
+                <span class="value">Michigan</span>
+            </div>
+            <div class="spec-group">
+                <span class="label">TEAM</span>
+                <span class="value">Jocque Family</span>
+            </div>
+            <div class="spec-group">
+                <span class="label">ROLE</span>
+                <span class="value">Chief Engineer<br>& Dad</span>
+            </div>
+            <div class="spec-group">
+                <span class="label">STATUS</span>
+                <span class="value" style="color: var(--uom-maize);">Legendary</span>
+            </div>
+            
+            <!-- Extra decorative data block -->
+            <div style="margin-top: auto; font-size: 0.7rem; opacity: 0.5;">
+                SYS_ID: 1985-KJ-ENG<br>
+                UPTIME: 99.99%<br>
+                CORE_TEMP: NOMINAL
+            </div>
+        </aside>
+
+        <!-- MAIN STAGE: TRACK MAP -->
+        <main class="main-stage">
+            <div class="track-wrapper">
+                <!-- Telemetry Overlay -->
+                <div class="telemetry-overlay">
+                    <div class="tele-box">
+                        <div class="tele-label">TRACK</div>
+                        <div class="tele-value">MONZA</div>
+                    </div>
+                    <div class="tele-box">
+                        <div class="tele-label">LEADER</div>
+                        <div class="tele-value" style="color: #FFCB05">KENT</div>
+                    </div>
+                    <div class="tele-box">
+                        <div class="tele-label">GAP TO MAX</div>
+                        <div class="tele-value" id="gap-timer">+0.000</div>
+                    </div>
+                    <div class="tele-box">
+                        <div class="tele-label">SPEED</div>
+                        <div class="tele-value" id="speed-trap">320 <span style="font-size:0.5em">KPH</span></div>
+                    </div>
+                </div>
+
+                <!-- Live Attribute Radar Overlay -->
+                <div class="radar-overlay">
+                    <div class="radar-title">DRIVER ATTRIBUTES</div>
+                    <svg class="mini-radar" viewBox="0 0 200 200">
+                        <!-- Grid -->
+                        <polygon points="100,20 176,75 147,165 53,165 24,75" fill="none" stroke="rgba(255,255,255,0.3)" stroke-width="1" />
+                        <polygon points="100,60 138,87 123,132 77,132 62,87" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="1" />
+                        
+                        <!-- Axis -->
+                        <line x1="100" y1="100" x2="100" y2="20" stroke="rgba(255,255,255,0.1)" />
+                        <line x1="100" y1="100" x2="176" y2="75" stroke="rgba(255,255,255,0.1)" />
+                        <line x1="100" y1="100" x2="147" y2="165" stroke="rgba(255,255,255,0.1)" />
+                        <line x1="100" y1="100" x2="53" y2="165" stroke="rgba(255,255,255,0.1)" />
+                        <line x1="100" y1="100" x2="24" y2="75" stroke="rgba(255,255,255,0.1)" />
+
+                        <!-- Dynamic Shape -->
+                        <polygon id="live-stats" points="100,20 176,75 147,165 53,165 24,75" fill="rgba(255, 203, 5, 0.5)" stroke="#FFCB05" stroke-width="2" />
+                        
+                        <!-- Labels -->
+                        <text x="100" y="15" fill="#fff" font-size="8" text-anchor="middle">PATIENCE</text>
+                        <text x="185" y="75" fill="#fff" font-size="8" text-anchor="start">WISDOM</text>
+                        <text x="150" y="175" fill="#fff" font-size="8" text-anchor="middle">SPIRIT</text>
+                        <text x="50" y="175" fill="#fff" font-size="8" text-anchor="middle">HUMOR</text>
+                        <text x="15" y="75" fill="#fff" font-size="8" text-anchor="end">STRENGTH</text>
+                    </svg>
+                </div>
+
+                <!-- The Track -->
+                <svg class="track-svg" viewBox="0 0 800 450" preserveAspectRatio="xMidYMid meet">
+                    <!-- Glow Filter -->
+                    <defs>
+                        <filter id="glow">
+                            <feGaussianBlur stdDeviation="2.5" result="coloredBlur"/>
+                            <feMerge>
+                                <feMergeNode in="coloredBlur"/>
+                                <feMergeNode in="SourceGraphic"/>
+                            </feMerge>
+                        </filter>
+                    </defs>
+
+                    <!-- Track Path (Corrected Continuous Loop) -->
+                    <path id="race-track" 
+                          d="M 100 350 L 500 350 L 520 340 L 540 350 C 650 350 700 300 700 250 L 680 150 L 660 160 L 640 140 L 450 140 C 430 140 420 120 400 120 C 380 120 370 140 350 140 L 250 140 L 240 130 L 230 150 C 150 180 100 250 80 300 L 70 290 L 60 310 L 100 350"
+                          fill="none" 
+                          stroke="rgba(255,255,255,0.2)" 
+                          stroke-width="20"
+                          stroke-linejoin="round"
+                          stroke-linecap="round"
+                    />
+                    
+                    <!-- The Racing Line (Center) -->
+                    <path id="racing-line" 
+                          d="M 100 350 L 500 350 L 520 340 L 540 350 C 650 350 700 300 700 250 L 680 150 L 660 160 L 640 140 L 450 140 C 430 140 420 120 400 120 C 380 120 370 140 350 140 L 250 140 L 240 130 L 230 150 C 150 180 100 250 80 300 L 70 290 L 60 310 L 100 350"
+                          fill="none" 
+                          stroke="#00274C" 
+                          stroke-width="2"
+                          stroke-dasharray="10 20"
+                    />
+
+                    <!-- Cars -->
+                    <!-- KENT (Maize) -->
+                    <circle id="car-kent" r="8" fill="#FFCB05" stroke="#FFFFFF" stroke-width="2" />
+                    <!-- VER (Red Bull Blue) -->
+                    <circle id="car-ver" r="6" fill="#1E41FF" stroke="#FF0000" stroke-width="2" />
+
+                    <!-- Labels -->
+                    <text x="300" y="380" fill="white" font-family="Oswald" font-size="12" text-anchor="middle" opacity="0.5">MAIN STRAIGHT</text>
+                    <text x="700" y="300" fill="white" font-family="Oswald" font-size="12" text-anchor="middle" opacity="0.5">PARABOLICA</text>
+                    <text x="50" y="300" fill="white" font-family="Oswald" font-size="12" text-anchor="middle" opacity="0.5">RETTIFILO</text>
+                </svg>
+            </div>
+        </main>
+
+        <style>
+            /* Extra styles for the track map */
+            .track-wrapper {
+                width: 100%;
+                height: 100%;
+                position: relative;
+                background: radial-gradient(circle at center, #0a1f35 0%, #000000 100%);
+                overflow: hidden;
+            }
+
+            .telemetry-overlay {
+                position: absolute;
+                top: 20px;
+                left: 20px;
+                display: flex;
+                gap: 20px;
+                z-index: 10;
+            }
+
+            .tele-box {
+                background: rgba(0,0,0,0.6);
+                border: 1px solid rgba(255,255,255,0.3);
+                padding: 10px 15px;
+                min-width: 100px;
+            }
+
+            .tele-label {
+                font-size: 0.7rem;
+                color: #888;
+                margin-bottom: 2px;
+            }
+
+            .tele-value {
+                font-family: 'Oswald', sans-serif;
+                font-size: 1.5rem;
+                color: var(--uom-maize);
+            }
+
+            /* Radar Overlay */
+            .radar-overlay {
+                position: absolute;
+                bottom: 20px;
+                right: 20px;
+                background: rgba(0,0,0,0.8);
+                border: 1px solid rgba(255,255,255,0.3);
+                padding: 10px;
+                width: 220px;
+                height: 220px;
+                z-index: 10;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .radar-title {
+                font-family: 'Oswald', sans-serif;
+                font-size: 0.8rem;
+                color: #888;
+                margin-bottom: 5px;
+                width: 100%;
+                text-align: center;
+                border-bottom: 1px solid rgba(255,255,255,0.1);
+                padding-bottom: 5px;
+            }
+
+            .mini-radar {
+                width: 100%;
+                height: 100%;
+                overflow: visible;
+            }
+
+            /* Car pulsing */
+            #car-kent { 
+                filter: drop-shadow(0 0 8px #FFCB05); 
+                z-index: 5;
+            }
+            #car-ver { 
+                filter: drop-shadow(0 0 5px #1E41FF); 
+            }
+        </style>
+
+        <script>
+            // --- VIBE CODING: F1 RACE SIMULATION ---
+            
+            const trackPath = document.getElementById('race-track');
+            const carKENT = document.getElementById('car-kent');
+            const carVER = document.getElementById('car-ver');
+            const radarShape = document.getElementById('live-stats');
+            const totalLength = trackPath.getTotalLength();
+            
+            // Driver Config
+            const drivers = [
+                { 
+                    id: 'KENT', 
+                    element: carKENT, 
+                    distance: 200, // Starts ahead
+                    baseSpeed: 1.8, // Whooping Speed
+                },
+                { 
+                    id: 'VER', 
+                    element: carVER, 
+                    distance: 0, 
+                    baseSpeed: 1.4, // Fast, but not Kent fast
+                }
+            ];
+
+            // Radar Stats Animation
+            // Base radius for 5 points (Top, TR, BR, BL, TL)
+            // Center is 100,100. Max radius ~80.
+            const stats = [
+                { angle: -Math.PI/2, radius: 80, label: 'Patience' },
+                { angle: -Math.PI/2 + (Math.PI*2)/5, radius: 80, label: 'Wisdom' },
+                { angle: -Math.PI/2 + 2*(Math.PI*2)/5, radius: 80, label: 'Spirit' },
+                { angle: -Math.PI/2 + 3*(Math.PI*2)/5, radius: 80, label: 'Humor' },
+                { angle: -Math.PI/2 + 4*(Math.PI*2)/5, radius: 80, label: 'Strength' }
+            ];
+            
+            let time = 0;
+
+            function updateRadar() {
+                // Generate points string
+                const points = stats.map((stat, i) => {
+                    // Create a "breathing" effect using sine waves with different offsets
+                    const variance = Math.sin(time * 0.05 + i) * 5 + Math.cos(time * 0.1) * 3; 
+                    // Base value is high (near max), fluctuating slightly
+                    const r = stat.radius + variance - 5; // -5 to keep it inside max
+                    
+                    const x = 100 + r * Math.cos(stat.angle);
+                    const y = 100 + r * Math.sin(stat.angle);
+                    return `${x},${y}`;
+                }).join(' ');
+
+                radarShape.setAttribute('points', points);
+            }
+
+
+            // Update Loop
+            function raceLoop() {
+                time++;
+                updateRadar();
+
+                drivers.forEach(driver => {
+                    // 1. Calculate Sector Speed (Simple Monza Profile)
+                    const pct = (driver.distance % totalLength) / totalLength;
+                    let sectorSpeed = 2.0; 
+
+                    // Monza: Fast straights, slow chicanes
+                    // Using approx % based on new path
+                    if (pct > 0.05 && pct < 0.15) sectorSpeed = 2.5; // Main Straight
+                    if (pct > 0.25 && pct < 0.35) sectorSpeed = 0.8; // Rettifilo/Curva section
+                    if (pct > 0.45 && pct < 0.55) sectorSpeed = 0.9; // Lesmo/Ascari complex
+                    if (pct > 0.70 && pct < 0.90) sectorSpeed = 2.2; // Back Straight
+                    if (pct > 0.90 && pct < 0.98) sectorSpeed = 1.0; // Parabolica
+
+                    // 2. Move Driver
+                    const currentSpeed = driver.baseSpeed * sectorSpeed;
+                    driver.distance += currentSpeed;
+                    
+                    // 3. Update DOM Position
+                    const point = trackPath.getPointAtLength(driver.distance % totalLength);
+                    driver.element.setAttribute('cx', point.x);
+                    driver.element.setAttribute('cy', point.y);
+
+                    // Update Telemetry for Leader (KENT)
+                    if (driver.id === 'KENT') {
+                        // Simulated Speed
+                        const displaySpeed = Math.floor(currentSpeed * 100) + 100;
+                        document.getElementById('speed-trap').innerHTML = displaySpeed + ' <span style="font-size:0.5em">KPH</span>';
+                    }
+                });
+
+                // 4. Calculate Gap (Kent is always ahead in logic, but let's show visual gap)
+                // If Kent is lapping Max, this math gets tricky, but simple distance diff works for visual
+                const distDiff = drivers[0].distance - drivers[1].distance;
+                const gapTime = (distDiff / 500).toFixed(3); // Rough scale
+                document.getElementById('gap-timer').innerText = "+" + gapTime + "s";
+                
+                requestAnimationFrame(raceLoop);
+            }
+
+            raceLoop();
+
+        </script>
+
+
+
+        <!-- FOOTER: DRIVER NOTES -->
+        <footer class="footer">
+            <div class="footer-header">DRIVER NOTES</div>
+            <div class="note-content">
+                System Analysis complete. The subject demonstrates exceptional stability under pressure. 
+                "Quiet Strength" metrics are exceeding standard limitations. 
+                <br><br>
+                [PLACEHOLDER FOR HEARTFELT LETTER: Dad, your engineering mind built more than just solutions; it built a foundation for all of us...]
+            </div>
+        </footer>
+    </div>
+
+    <!-- Navigation Links -->
+    <div style="position: fixed; bottom: 20px; left: 20px; z-index: 100; font-family: 'Roboto Mono', monospace; font-size: 0.8rem;">
+        <a href="hand_coded/" style="color: #FFCB05; text-decoration: none; margin-right: 15px;">Simple Version</a>
+        <a href="https://julianjocque.com/family" style="color: #888; text-decoration: none;">Family Hub</a>
+    </div>
+</body>
+</html>

@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!--
+        KILLIAN'S SIMPLE LANDING PAGE
+        =============================
+        This is a beginner-friendly version you can learn from!
+
+        Everything between <!-- and --> is a comment (notes for you, not shown on the page)
+    -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Killian - Field Guide</title>
+
+    <!-- STYLES: This is where we make things look nice -->
+    <style>
+        /* The body is the whole page */
+        body {
+            background-color: #f4e4bc;       /* Parchment color */
+            color: #2b241e;                  /* Dark ink */
+            font-family: 'Georgia', serif;   /* Classic book font */
+            margin: 0;
+            padding: 40px;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* The main specimen plate card */
+        .plate {
+            background: rgba(255, 255, 255, 0.3);
+            padding: 40px;
+            max-width: 600px;
+            border: 4px solid #2b241e;
+            position: relative;
+        }
+
+        /* Double border effect */
+        .plate::before {
+            content: '';
+            position: absolute;
+            top: 6px;
+            left: 6px;
+            right: 6px;
+            bottom: 6px;
+            border: 1px solid #2b241e;
+            pointer-events: none;
+        }
+
+        /* Header section */
+        header {
+            text-align: center;
+            border-bottom: 2px solid #2b241e;
+            padding-bottom: 20px;
+            margin-bottom: 30px;
+        }
+
+        h1 {
+            font-size: 2rem;
+            margin-bottom: 5px;
+            letter-spacing: 2px;
+        }
+
+        /* Scientific name styling */
+        .scientific {
+            font-style: italic;
+            color: #594e42;
+        }
+
+        /* Data table */
+        .data-table {
+            margin: 30px 0;
+        }
+
+        .data-row {
+            display: flex;
+            border-bottom: 1px solid rgba(43, 36, 30, 0.2);
+            padding: 12px 0;
+        }
+
+        .label {
+            width: 120px;
+            font-weight: bold;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            letter-spacing: 1px;
+            color: #594e42;
+        }
+
+        .value {
+            flex: 1;
+        }
+
+        /* Field notes section */
+        .field-notes {
+            line-height: 1.8;
+            text-align: justify;
+            margin: 30px 0;
+        }
+
+        /* First letter drop cap effect */
+        .field-notes::first-letter {
+            font-size: 3rem;
+            float: left;
+            line-height: 1;
+            margin-right: 10px;
+            font-weight: bold;
+        }
+
+        /* Footer */
+        footer {
+            margin-top: 30px;
+            padding-top: 15px;
+            border-top: 1px solid #2b241e;
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: #594e42;
+        }
+
+        /* Links */
+        a {
+            color: #2b241e;
+        }
+
+        a:hover {
+            color: #594e42;
+        }
+
+        /* Navigation */
+        .nav-link {
+            margin-top: 20px;
+            text-align: center;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="plate">
+        <header>
+            <h1>Fig 1. The Killian</h1>
+            <p class="scientific">Frater in Lege (The Great Spotted Birder)</p>
+        </header>
+
+        <div class="data-table">
+            <div class="data-row">
+                <span class="label">Habitat</span>
+                <span class="value">High Altitude / Rocky Mountains</span>
+            </div>
+            <div class="data-row">
+                <span class="label">Plumage</span>
+                <span class="value">Performance Fleece & Flannel</span>
+            </div>
+            <div class="data-row">
+                <span class="label">Call</span>
+                <span class="value">"Shh! Did you hear that?"</span>
+            </div>
+            <div class="data-row">
+                <span class="label">Diet</span>
+                <span class="value">Trail Mix & Craft Brews</span>
+            </div>
+        </div>
+
+        <p class="field-notes">
+            A patient and solitary creature, The Killian is most often found motionless on hiking trails, weighed down by an enormous cylindrical lens. He displays a remarkable ability to freeze for hours at a time, waiting for the perfect moment.
+        </p>
+
+        <footer>
+            <span>Plate No. 1</span>
+            <span>Est. 2025</span>
+        </footer>
+
+        <div class="nav-link">
+            <a href="../">View Full Version</a> |
+            <a href="https://julianjocque.com/family">Family Hub</a>
+        </div>
+    </div>
+</body>
+</html>

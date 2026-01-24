@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!--
+        MOM'S SIMPLE LANDING PAGE (arahjocque.com)
+        =========================================
+        This is a beginner-friendly version you can learn from!
+
+        Everything between <!-- and --> is a comment (notes for you, not shown on the page)
+    -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>housetype</title>
+
+    <!-- STYLES: This is where we make things look nice -->
+    <style>
+        /* The body is the whole page */
+        body {
+            background-color: #fdfbf7;       /* Warm paper color */
+            color: #2c2c2c;                  /* Dark ink color */
+            font-family: 'Georgia', serif;   /* Classic book font */
+            margin: 0;
+            padding: 40px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* The main paper-like card */
+        .paper {
+            background-color: white;
+            padding: 60px;
+            max-width: 550px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+
+        /* A decorative tape effect at the top */
+        .tape {
+            position: absolute;
+            top: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 30px;
+            background-color: rgba(255, 255, 255, 0.6);
+            border: 1px dashed #ddd;
+        }
+
+        /* The main heading */
+        h1 {
+            font-size: 2rem;
+            margin-bottom: 5px;
+            font-weight: normal;
+        }
+
+        /* The blinking cursor effect */
+        .cursor {
+            display: inline-block;
+            width: 12px;
+            height: 24px;
+            background-color: #2c2c2c;
+            margin-left: 5px;
+            animation: blink 1s infinite;
+        }
+
+        /* Animation for the blinking cursor */
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+
+        /* Handwritten-style subtitle */
+        .subtitle {
+            font-style: italic;
+            color: #666;
+            margin-bottom: 40px;
+        }
+
+        /* Regular paragraphs */
+        p {
+            line-height: 2;
+            margin-bottom: 20px;
+        }
+
+        /* The signature at the bottom */
+        .signature {
+            font-style: italic;
+            text-align: right;
+            margin-top: 40px;
+            color: #666;
+            font-size: 1.2rem;
+        }
+
+        /* Links */
+        a {
+            color: #6b8c42;                  /* Leaf green */
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        /* Navigation */
+        .nav-link {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+            font-size: 0.9rem;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="paper">
+        <div class="tape"></div>
+
+        <h1>housetype<span class="cursor"></span></h1>
+        <p class="subtitle">notes from the quiet room</p>
+
+        <p>
+            This is a space for quiet thoughts.
+            A digital garden that grows in private,
+            away from the noise of the open web.
+        </p>
+
+        <p>
+            No algorithms, no feeds, just peace.
+        </p>
+
+        <p>
+            This is the simple version.
+            Visit the <a href="../">full version</a> for the complete experience.
+        </p>
+
+        <div class="signature">
+            - With love
+        </div>
+
+        <div class="nav-link">
+            <a href="https://julianjocque.com/family">Back to Family Hub</a>
+        </div>
+    </div>
+</body>
+</html>

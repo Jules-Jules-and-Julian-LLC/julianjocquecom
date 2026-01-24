@@ -3,84 +3,230 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>The Art of Vibe Coding</title>
+    <title>How to Vibe Code</title>
     <style>
         body {
-            font-family: 'Courier New', Courier, monospace;
-            background-color: #111; color: #0f0; margin: 0; padding: 40px 20px; line-height: 1.6;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+            background-color: #f8f5ff;
+            color: #1f2937;
+            padding: 40px 20px;
+            line-height: 1.7;
         }
-        .container { max-width: 800px; margin: 0 auto; }
-        h1 { font-size: 2.5rem; border-bottom: 2px solid #0f0; padding-bottom: 20px; margin-bottom: 40px; }
-        .quote-box {
-            background: rgba(0, 255, 0, 0.1); border-left: 5px solid #0f0; padding: 30px; margin-bottom: 50px; font-size: 1.2rem; font-style: italic;
+        .container {
+            max-width: 700px;
+            margin: 0 auto;
+            background: white;
+            padding: 50px;
+            border-radius: 16px;
+            box-shadow: 0 10px 40px rgba(100, 50, 200, 0.1);
         }
-        .step { margin-bottom: 50px; }
-        .step h2 { color: #fff; margin-bottom: 10px; }
-        .code-block {
-            background: #222; color: #fff; padding: 20px; border-radius: 4px; font-family: monospace; white-space: pre-wrap; border: 1px solid #444; margin-bottom: 15px;
+        .back-nav { margin-bottom: 30px; }
+        .back-nav a { color: #6b7280; text-decoration: none; font-size: 0.9rem; }
+        .back-nav a:hover { color: #111; }
+        h1 {
+            font-size: 2.2rem;
+            margin-bottom: 10px;
+            color: #5b21b6;
         }
-        .copy-hint { font-size: 0.8rem; color: #888; text-transform: uppercase; letter-spacing: 1px; }
-        .back-nav { margin-bottom: 40px; }
-        .back-nav a { color: #888; text-decoration: none; }
-        .back-nav a:hover { color: #fff; }
-        a.action-link { color: #0f0; font-weight: bold; }
+        .tagline {
+            font-size: 1.2rem;
+            color: #6b7280;
+            margin-bottom: 40px;
+            border-bottom: 2px solid #ede9fe;
+            padding-bottom: 30px;
+        }
+        .step {
+            margin-bottom: 40px;
+            padding-left: 60px;
+            position: relative;
+        }
+        .step-number {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #8b5cf6, #6d28d9);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+        .step h2 {
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+            color: #374151;
+        }
+        .step p {
+            color: #4b5563;
+            margin-bottom: 15px;
+        }
+        .copy-box {
+            background: #f5f3ff;
+            border: 2px solid #ddd6fe;
+            border-radius: 8px;
+            padding: 20px;
+            font-family: monospace;
+            font-size: 0.95rem;
+            white-space: pre-wrap;
+            line-height: 1.5;
+            margin: 15px 0;
+            position: relative;
+        }
+        .copy-label {
+            position: absolute;
+            top: -10px;
+            left: 15px;
+            background: #8b5cf6;
+            color: white;
+            font-size: 0.7rem;
+            padding: 2px 10px;
+            border-radius: 4px;
+            font-family: sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .tip {
+            background: #fefce8;
+            border-left: 4px solid #facc15;
+            padding: 15px 20px;
+            border-radius: 0 8px 8px 0;
+            margin: 20px 0;
+        }
+        .tip strong { color: #854d0e; }
+        .example-prompt {
+            background: #ecfdf5;
+            border: 1px solid #a7f3d0;
+            border-radius: 8px;
+            padding: 20px;
+            font-style: italic;
+            color: #065f46;
+        }
+        .action-link {
+            display: inline-block;
+            background: #5b21b6;
+            color: white;
+            text-decoration: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 500;
+            margin-top: 10px;
+        }
+        .action-link:hover { background: #4c1d95; }
+        .ai-links {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin: 15px 0;
+        }
+        .ai-links a {
+            display: inline-block;
+            padding: 10px 20px;
+            border: 2px solid #ddd6fe;
+            border-radius: 8px;
+            text-decoration: none;
+            color: #5b21b6;
+            font-weight: 500;
+        }
+        .ai-links a:hover { background: #f5f3ff; }
+        .final-note {
+            background: #f3f4f6;
+            padding: 25px;
+            border-radius: 12px;
+            margin-top: 40px;
+            text-align: center;
+        }
+        .final-note h3 { color: #374151; margin-bottom: 10px; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <div class="back-nav"><a href="/family">← Back to Hub</a></div>
+    <div class="back-nav"><a href="/family">&larr; Back to Family Hub</a></div>
 
-    <h1>The Manual</h1>
-    <div class="quote-box">
-        "Vibe coding lets you make a website that does something you know a website <strong>can</strong> do, even if you don't know <strong>how</strong> to make it do that."
-    </div>
+    <h1>How to Vibe Code</h1>
+    <p class="tagline">
+        Making websites without knowing how to code. <br>
+        You describe what you want, the AI builds it.
+    </p>
 
     <div class="step">
-        <h2>Step 1: Train the AI</h2>
-        <p>Open Gemini (or ChatGPT). Before you ask for anything, <strong>Copy and Paste this "System Instruction"</strong> into the chat. This teaches the AI how to code for <em>you</em>.</p>
-
-        <span class="copy-hint">Copy this block:</span>
-        <div class="code-block" style="border-color: #0f0;">
-            You are an expert web developer for a user who does not write code.
-            RULES:
-            1. Output a SINGLE `index.html` file.
-            2. Include all CSS inside &lt;style&gt; tags.
-            3. Include all JavaScript inside &lt;script&gt; tags.
-            4. If I ask for interactivity (clicking, sounds, animations), use modern JavaScript.
-            5. Do not explain the code. just give me the full file.
+        <div class="step-number">1</div>
+        <h2>Open an AI Chat</h2>
+        <p>Pick one of these AI assistants (they all work similarly):</p>
+        <div class="ai-links">
+            <a href="https://gemini.google.com" target="_blank">Google Gemini</a>
+            <a href="https://chat.openai.com" target="_blank">ChatGPT</a>
+            <a href="https://claude.ai" target="_blank">Claude</a>
         </div>
     </div>
 
     <div class="step">
-        <h2>Step 2: The Request</h2>
-        <p>Now, ask for what you actually want. Be specific about the "Vibe."</p>
-        <div class="code-block">
-            EXAMPLE PROMPT:
-            "I want to add a button in the center that says 'Do Not Press'. When I click it, I want a confetti explosion animation and a sound effect. Make the background red."
+        <div class="step-number">2</div>
+        <h2>Give It These Instructions First</h2>
+        <p>Before asking for anything, copy and paste this message to teach the AI how to help you:</p>
+        <div class="copy-box">
+            <span class="copy-label">Copy this first</span>
+You are helping me build a simple website. I don't know how to code.
+
+Rules:
+- Give me ONE complete file called index.html
+- Put all the styling inside the file (no separate files)
+- Put any interactive stuff inside the file too
+- Don't explain the code, just give me the file
+- Make it look nice on phones too</div>
+    </div>
+
+    <div class="step">
+        <div class="step-number">3</div>
+        <h2>Describe What You Want</h2>
+        <p>Now just tell the AI what you're imagining. Be specific about colors, feelings, and what should happen when someone visits.</p>
+        <div class="example-prompt">
+            "I want a page with my name in big letters at the top. The background should be a calm blue color. Below my name, add a photo placeholder and a short paragraph about me. When someone hovers over my name, it should glow a little."
+        </div>
+        <div class="tip">
+            <strong>Tip:</strong> The more details you give, the better it works. Mention colors, feelings, what things should do when clicked, etc.
         </div>
     </div>
 
     <div class="step">
-        <h2>Step 3: The Copy/Paste</h2>
-        <p>The AI will give you a big block of code.</p>
-        <ol>
-            <li>Copy that code.</li>
-            <li>Open your <code>index.html</code> file on your computer.</li>
-            <li><strong>Delete everything in the file.</strong> (Yes, really).</li>
-            <li>Paste the new code.</li>
-            <li>Save.</li>
+        <div class="step-number">4</div>
+        <h2>Save the Code</h2>
+        <p>The AI will give you a big block of code. Here's what to do:</p>
+        <ol style="margin-left: 20px; color: #4b5563;">
+            <li style="margin-bottom: 10px;">Select ALL the code the AI gives you and copy it</li>
+            <li style="margin-bottom: 10px;">Open your <strong>site</strong> folder on your computer</li>
+            <li style="margin-bottom: 10px;">Open the file called <strong>index.html</strong> (right-click &rarr; Open With &rarr; Notepad or TextEdit)</li>
+            <li style="margin-bottom: 10px;">Select everything in that file and delete it</li>
+            <li style="margin-bottom: 10px;">Paste the new code</li>
+            <li style="margin-bottom: 10px;">Save the file (Ctrl+S on Windows, Cmd+S on Mac)</li>
         </ol>
     </div>
 
     <div class="step">
-        <h2>Step 4: Test & Publish</h2>
-        <p>Double-click the file to open it in Chrome. Does it work?</p>
-        <p>
-            <strong>If yes:</strong> <a href="/publishing" class="action-link">Go to the Upload Guide</a>.<br>
-            <strong>If no:</strong> Tell the AI <em>"That looks broken, fix it."</em>
-        </p>
+        <div class="step-number">5</div>
+        <h2>Preview It</h2>
+        <p>Double-click the <strong>index.html</strong> file. It will open in your web browser so you can see what it looks like.</p>
+        <div class="tip">
+            <strong>Not quite right?</strong> Go back to the AI and say something like: "The text is too small" or "Make the background darker" or "That looks broken, please fix it." Keep refining until you're happy!
+        </div>
+    </div>
+
+    <div class="step">
+        <div class="step-number">6</div>
+        <h2>Publish It</h2>
+        <p>Once it looks good, upload it to make it live on the internet:</p>
+        <a href="/publishing" class="action-link">Go to Publishing Guide &rarr;</a>
+    </div>
+
+    <div class="final-note">
+        <h3>That's it!</h3>
+        <p>You just made a website without writing any code yourself. <br>Keep experimenting and asking the AI for changes until it's perfect.</p>
     </div>
 </div>
+
 </body>
 </html>

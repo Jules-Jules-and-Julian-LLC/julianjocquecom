@@ -1,0 +1,17 @@
+# IDE
+.idea/
+
+# Python
+venv/
+__pycache__/
+*.py[cod]
+*.egg-info/
+.env
+
+# Credentials & local files
+cookies.txt
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db

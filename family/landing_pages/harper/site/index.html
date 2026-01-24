@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Harper - Ghost Zone Database</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            height: 100vh;
+            width: 100vw;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            /* Ghost Zone Vortex Background */
+            background: radial-gradient(circle at center, #1a1a1a 0%, #000000 40%, #0f0014 100%);
+            font-family: 'Courier New', 'Courier', monospace; /* FanFic / Terminal Font */
+            color: #39ff14; /* Ecto Green Text */
+        }
+
+        /* Animated Ghost Zone Fog */
+        .fog {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 200%;
+            height: 200%;
+            background: repeating-linear-gradient(
+                45deg,
+                transparent,
+                transparent 20px,
+                rgba(57, 255, 20, 0.05) 20px,
+                rgba(57, 255, 20, 0.05) 40px
+            );
+            animation: drift 20s linear infinite;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        @keyframes drift {
+            0% { transform: translate(-10%, -10%) rotate(0deg); }
+            100% { transform: translate(-20%, -20%) rotate(10deg); }
+        }
+
+        /* Fenton Works / Sims Pad Style Card */
+        .card {
+            background: rgba(0, 0, 0, 0.85);
+            border-radius: 15px;
+            /* Glowing Ecto-Border */
+            border: 3px solid #39ff14;
+            box-shadow: 
+                0 0 20px #39ff14, 
+                inset 0 0 20px rgba(57, 255, 20, 0.3);
+            padding: 30px;
+            width: 90%;
+            max-width: 600px;
+            text-align: center;
+            position: relative;
+            max-height: 95vh;
+            overflow-y: auto;
+            scrollbar-width: none;
+        }
+        .card::-webkit-scrollbar { display: none; }
+
+        /* Avatar Container */
+        .avatar-container {
+            display: flex;
+            justify-content: center;
+            align-items: flex-end; /* Align bottom so heads align */
+            margin-bottom: 20px;
+            gap: 30px;
+            position: relative;
+            padding-top: 60px; /* Space for Plumbob */
+        }
+
+        .avatar-wrapper {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* Fixed Plumbob (Sims Crystal) */
+        .plumbob {
+            width: 40px;
+            height: 70px;
+            position: absolute;
+            top: -90px;
+            left: 50%;
+            transform: translateX(-50%);
+            animation: bob 2s ease-in-out infinite alternate, spinPlumbob 4s linear infinite;
+            z-index: 20; /* Ensure it's above everything */
+            transform-style: preserve-3d;
+        }
+
+        .plumbob-top, .plumbob-bottom {
+            width: 0;
+            height: 0;
+            position: absolute;
+            left: 0;
+            border-left: 20px solid transparent;
+            border-right: 20px solid transparent;
+            filter: drop-shadow(0 0 5px #39ff14);
+        }
+
+        .plumbob-top {
+            top: 0;
+            border-bottom: 35px solid rgba(57, 255, 20, 0.8);
+        }
+        
+        /* Add facets to top */
+        .plumbob-top::after {
+            content: '';
+            position: absolute;
+            left: -20px;
+            top: 0;
+            width: 0;
+            height: 0;
+            border-left: 20px solid transparent;
+            border-right: 20px solid transparent;
+            border-bottom: 35px solid rgba(255, 255, 255, 0.3); /* Shine */
+            transform: scaleX(0.5);
+        }
+
+        .plumbob-bottom {
+            bottom: 0;
+            border-top: 35px solid rgba(0, 200, 0, 0.8);
+        }
+        
+         /* Add facets to bottom */
+         .plumbob-bottom::after {
+            content: '';
+            position: absolute;
+            left: -20px;
+            bottom: 35px; /* Adjust relative to border-top */
+            width: 0;
+            height: 0;
+            border-left: 20px solid transparent;
+            border-right: 20px solid transparent;
+            border-top: 35px solid rgba(0, 100, 0, 0.3); /* Shadow */
+            transform: scaleX(0.5);
+        }
+
+        @keyframes bob {
+            0% { transform: translateX(-50%) translateY(0); }
+            100% { transform: translateX(-50%) translateY(-15px); }
+        }
+        @keyframes spinPlumbob {
+            0% { transform: translateX(-50%) rotateY(0deg); }
+            100% { transform: translateX(-50%) rotateY(360deg); }
+        }
+
+        /* CSS Cartoon Faces */
+        .avatar {
+            width: 100px;
+            height: 100px;
+            position: relative;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .avatar:hover { transform: scale(1.05); }
+
+        .head {
+            width: 70px;
+            height: 85px;
+            background-color: #ffe0bd; /* Pale Skin */
+            border-radius: 25px; /* Oval-ish */
+            position: absolute;
+            bottom: 0;
+            left: 15px;
+            z-index: 5;
+            box-shadow: 2px 2px 5px rgba(0,0,0,0.5);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .eyes {
+            display: flex;
+            gap: 12px;
+            margin-top: 10px;
+            z-index: 6;
+        }
+
+        .eye {
+            width: 14px;
+            height: 8px;
+            background: white;
+            border-radius: 50%;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(0,0,0,0.1);
+        }
+
+        .pupil {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            position: absolute;
+            top: 1px;
+            left: 4px;
+        }
+
+        .mouth {
+            width: 20px;
+            height: 8px;
+            border-bottom: 2px solid #dba784;
+            border-radius: 50%;
+            margin-top: 15px;
+        }
+
+        /* --- ME (Left) --- */
+        /* Features: Pale Skin, Light Blonde Hair, Green Eyes */
+        
+        .me .head { background-color: #fff0e0; } /* Very Pale */
+
+        .me .hair-top {
+            position: absolute;
+            top: -10px;
+            left: -5px;
+            width: 80px;
+            height: 35px;
+            background-color: #faf0be; /* Light Blonde */
+            border-radius: 20px 20px 5px 5px;
+            z-index: 10;
+        }
+        
+        /* Little hair tuft */
+        .me .hair-top::before {
+            content: '';
+            position: absolute;
+            top: -5px;
+            left: 20px;
+            width: 30px;
+            height: 20px;
+            background-color: #faf0be;
+            border-radius: 50% 50% 0 0;
+            transform: rotate(-10deg);
+        }
+
+        .me .pupil { background-color: #4caf50; border: 1px solid #2e7d32; } /* Green Eyes */
+
+        /* --- HARPER (Right) --- */
+        /* Features: Brunette (Dark Brown), Shoulder Length, Dark Brown Eyes */
+
+        .harper .head { background-color: #f5d0a9; } /* Slightly warmer/fair */
+
+        .harper .hair-back {
+            position: absolute;
+            top: 10px;
+            left: 5px;
+            width: 90px;
+            height: 90px;
+            background-color: #4a3b2a; /* Dark Brunette */
+            border-radius: 20px;
+            z-index: 1; /* Behind head */
+        }
+
+        .harper .hair-top {
+            position: absolute;
+            top: -5px;
+            left: 5px;
+            width: 76px; /* Slightly wider than head width adjustment */
+            height: 30px;
+            background-color: #4a3b2a;
+            border-radius: 30px 30px 0 0;
+            z-index: 10;
+        }
+        
+        /* Side bangs/hair framing */
+        .harper .hair-top::before, .harper .hair-top::after {
+            content: '';
+            position: absolute;
+            top: 25px;
+            width: 15px;
+            height: 40px;
+            background-color: #4a3b2a;
+        }
+        .harper .hair-top::before { left: -5px; border-radius: 0 0 0 10px; }
+        .harper .hair-top::after { right: -5px; border-radius: 0 0 10px 0; }
+
+        .harper .pupil { background-color: #3b240b; border: 1px solid #1a1005; } /* Dark Brown Eyes */
+
+
+        /* Rotating Emoji */
+        .connector-icon {
+            font-size: 2.5rem;
+            animation: spin 6s linear infinite;
+            filter: drop-shadow(0 0 5px #39ff14);
+            cursor: pointer;
+            user-select: none;
+            transition: transform 0.2s;
+            color: #fff;
+            align-self: center;
+        }
+        
+        .connector-icon:hover { animation-duration: 1s; }
+        .connector-icon:active { transform: scale(0.8); }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        /* Stats Section */
+        .stats-container {
+            margin-bottom: 25px;
+            text-align: left;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            /* Tech Panel Background */
+            background: rgba(0, 20, 0, 0.5);
+            padding: 20px;
+            border-radius: 10px;
+            border: 1px solid #39ff14;
+        }
+
+        .stat-row {
+            cursor: pointer;
+            position: relative;
+        }
+
+        .stat-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            font-weight: bold;
+            letter-spacing: 1px;
+            text-shadow: 0 0 5px #39ff14;
+            color: #ccffcc;
+        }
+        
+        .stat-row:hover .stat-label { color: #fff; text-shadow: 0 0 8px #fff; }
+
+        .progress-bar-bg {
+            width: 100%;
+            height: 18px;
+            background: #001a00;
+            border-radius: 4px;
+            border: 1px solid #39ff14;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Ectoplasm Bar Fill */
+        .progress-bar-fill {
+            height: 100%;
+            border-radius: 2px;
+            background: linear-gradient(90deg, #39ff14 0%, #00ff00 50%, #ccffcc 100%);
+            box-shadow: 0 0 10px #39ff14;
+            width: 0%; 
+            animation: fillUp 1.5s ease-out forwards, breathe 3s ease-in-out infinite;
+            position: relative;
+        }
+
+        /* Bubbling Ectoplasm Effect */
+        .progress-bar-fill::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: repeating-linear-gradient(
+                90deg,
+                transparent,
+                transparent 10px,
+                rgba(255,255,255,0.4) 10px,
+                rgba(255,255,255,0.4) 12px
+            );
+            animation: flow 1s linear infinite;
+        }
+
+        @keyframes flow {
+            from { background-position: 0 0; }
+            to { background-position: 20px 0; }
+        }
+
+        @keyframes fillUp { to { width: var(--target-width); } }
+        @keyframes breathe {
+            0% { width: calc(var(--target-width) - 2%); opacity: 0.9; }
+            50% { width: var(--target-width); opacity: 1; }
+            100% { width: calc(var(--target-width) - 2%); opacity: 0.9; }
+        }
+
+        /* FanFic Text Style */
+        .message {
+            font-size: 0.95rem;
+            line-height: 1.6;
+            text-align: left;
+            background: rgba(0, 0, 0, 0.6);
+            padding: 20px;
+            border-radius: 5px;
+            border-left: 3px solid #39ff14;
+            color: #ccffcc;
+            font-family: 'Consolas', 'Monaco', monospace;
+            text-shadow: 0 0 2px #39ff14;
+            position: relative;
+        }
+        
+        /* Blinking cursor effect at end of text */
+        .message::after {
+            content: '_';
+            animation: blink 1s step-end infinite;
+        }
+        
+        @keyframes blink { 50% { opacity: 0; } }
+
+        /* Easter Egg */
+        .ghost {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            font-size: 3rem;
+            animation: fadeGhost 3s ease-in-out infinite alternate;
+            opacity: 0.6;
+            cursor: pointer;
+            z-index: 100;
+            transition: all 0.5s ease;
+            filter: drop-shadow(0 0 10px #39ff14);
+        }
+        
+        .ghost:hover {
+            opacity: 1;
+            filter: drop-shadow(0 0 20px #fff);
+            transform: scale(1.2);
+        }
+
+        @keyframes fadeGhost {
+            0% { opacity: 0.2; transform: translateY(0); }
+            100% { opacity: 0.8; transform: translateY(-15px); }
+        }
+
+        /* Particle System */
+        .particle {
+            position: absolute;
+            font-size: 1.5rem;
+            pointer-events: none;
+            animation: floatUp 1.5s ease-out forwards;
+            z-index: 20;
+            color: #39ff14;
+            text-shadow: 0 0 5px #39ff14;
+        }
+
+        @keyframes floatUp {
+            0% { opacity: 1; transform: translateY(0) scale(0.5); }
+            100% { opacity: 0; transform: translateY(-50px) scale(1.5); }
+        }
+
+        /* Scanline Overlay */
+        .scanlines {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(to bottom, rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%);
+            background-size: 100% 4px;
+            pointer-events: none;
+            z-index: 10;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="fog"></div>
+    <div class="scanlines"></div>
+
+    <div class="card" id="card">
+        <div class="avatar-container">
+            <!-- ME: Pale, Blonde, Green Eyes -->
+            <div class="avatar me" title="Me" onclick="pulse(this)">
+                <div class="head">
+                    <div class="hair-top"></div>
+                    <div class="eyes">
+                        <div class="eye"><div class="pupil"></div></div>
+                        <div class="eye"><div class="pupil"></div></div>
+                    </div>
+                    <div class="mouth"></div>
+                </div>
+            </div>
+
+            <div class="connector-icon" id="connector" onclick="cycleEmoji()">👻</div>
+            
+            <!-- HARPER: Brunette, Shoulder length, Dark eyes + Plumbob -->
+            <div class="avatar-wrapper">
+                <div class="plumbob">
+                    <div class="plumbob-top"></div>
+                    <div class="plumbob-bottom"></div>
+                </div>
+                
+                <div class="avatar harper" title="Harper" onclick="pulse(this)">
+                    <div class="hair-back"></div>
+                    <div class="head">
+                        <div class="hair-top"></div>
+                        <div class="eyes">
+                            <div class="eye"><div class="pupil"></div></div>
+                            <div class="eye"><div class="pupil"></div></div>
+                        </div>
+                        <div class="mouth"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="stats-container">
+            <!-- Weirdness -->
+            <div class="stat-row" onclick="spawnParticles(event, '🌀')">
+                <span class="stat-label"><span>Weirdness</span><span>110%</span></span>
+                <div class="progress-bar-bg">
+                    <div class="progress-bar-fill" style="--target-width: 100%; animation-delay: 0.1s;"></div>
+                </div>
+            </div>
+            
+            <!-- Independence -->
+            <div class="stat-row" onclick="spawnParticles(event, '🔥')">
+                <span class="stat-label"><span>Independence</span><span>High</span></span>
+                <div class="progress-bar-bg">
+                    <div class="progress-bar-fill" style="--target-width: 95%; animation-delay: 0.3s;"></div>
+                </div>
+            </div>
+
+            <!-- Animal Instinct -->
+            <div class="stat-row" onclick="spawnParticles(event, '🐾')">
+                <span class="stat-label"><span>Animal Instinct</span><span>Max</span></span>
+                <div class="progress-bar-bg">
+                    <div class="progress-bar-fill" style="--target-width: 100%; animation-delay: 0.5s;"></div>
+                </div>
+            </div>
+
+            <!-- Biological Clarity -->
+            <div class="stat-row" onclick="spawnParticles(event, '🧬')">
+                <span class="stat-label"><span>Biological Clarity</span><span>Crystal</span></span>
+                <div class="progress-bar-bg">
+                    <div class="progress-bar-fill" style="--target-width: 98%; animation-delay: 0.7s;"></div>
+                </div>
+            </div>
+
+             <!-- Social Butterfly Tolerance -->
+             <div class="stat-row" onclick="spawnParticles(event, '✨')">
+                <span class="stat-label"><span>Tolerance of 'Social Butterfly' (Me)</span><span>Saintly</span></span>
+                <div class="progress-bar-bg">
+                    <div class="progress-bar-fill" style="--target-width: 88%; animation-delay: 0.9s;"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="message">
+            I proudly claim you are weirder than me. People are consistently charmed, replying, "Wow, I would love to meet her." 
+            <br><br>
+            You are fiercely independent, with an intelligence that is astoundingly broad and strange. Our mother noted it was 
+            "quite striking how she only did imaginary play in the context of animals, not people." 
+            <br><br>
+            You have this amazingly clear view of biology.
+        </div>
+    </div>
+
+    <div class="ghost" id="ghost" onclick="moveGhost()">👻</div>
+
+    <!-- Navigation Links -->
+    <div style="position: fixed; bottom: 20px; left: 20px; z-index: 100; font-family: 'Courier New', monospace; font-size: 0.8rem;">
+        <a href="hand_coded/" style="color: #39ff14; text-decoration: none; margin-right: 15px;">Simple Version</a>
+        <a href="https://julianjocque.com/family" style="color: #666; text-decoration: none;">Family Hub</a>
+    </div>
+
+    <script>
+        // 1. Cycle Emoji
+        const connector = document.getElementById('connector');
+        const emojis = ['👻', '💚', '💍', '👽', '🔥', '🧬', '🐾'];
+        let emojiIndex = 0;
+
+        function cycleEmoji() {
+            emojiIndex = (emojiIndex + 1) % emojis.length;
+            connector.innerText = emojis[emojiIndex];
+            const speeds = ['1s', '2s', '4s', '0.5s'];
+            connector.style.animationDuration = speeds[Math.floor(Math.random() * speeds.length)];
+        }
+
+        // 2. Pulse Avatar (Flash White)
+        function pulse(element) {
+            // Target the 'head' inside to avoid hiding the hair-back or plumbob
+            const head = element.querySelector('.head');
+            if(head) {
+                 const originalBg = window.getComputedStyle(head).backgroundColor;
+                 head.style.backgroundColor = '#fff';
+                 setTimeout(() => {
+                    head.style.backgroundColor = originalBg;
+                 }, 100);
+            }
+        }
+
+        // 3. Particle System
+        function spawnParticles(event, char) {
+            for (let i = 0; i < 5; i++) {
+                const particle = document.createElement('div');
+                particle.classList.add('particle');
+                particle.innerText = char;
+                
+                const x = event.clientX + (Math.random() * 40 - 20);
+                const y = event.clientY + (Math.random() * 40 - 20);
+                
+                particle.style.left = `${x}px`;
+                particle.style.top = `${y}px`;
+                
+                document.body.appendChild(particle);
+
+                setTimeout(() => {
+                    particle.remove();
+                }, 1500);
+            }
+        }
+
+        // 4. Ghost Interaction
+        const ghost = document.getElementById('ghost');
+        function moveGhost() {
+            const x = Math.random() * (window.innerWidth - 100);
+            const y = Math.random() * (window.innerHeight - 100);
+            
+            ghost.style.left = `${x}px`;
+            ghost.style.top = `${y}px`;
+            ghost.style.bottom = 'auto';
+            ghost.style.right = 'auto';
+            
+            const say = document.createElement('div');
+            say.innerText = "Goin' Ghost!";
+            say.style.position = 'fixed';
+            say.style.left = `${x}px`;
+            say.style.top = `${y - 40}px`;
+            say.style.color = '#39ff14';
+            say.style.fontFamily = 'Courier New';
+            say.style.fontWeight = 'bold';
+            say.style.fontSize = '1.2rem';
+            say.style.textShadow = '0 0 5px #000';
+            say.style.pointerEvents = 'none';
+            say.style.animation = 'floatUp 1s forwards';
+            document.body.appendChild(say);
+            
+            setTimeout(() => say.remove(), 1000);
+        }
+    </script>
+</body>
+</html>

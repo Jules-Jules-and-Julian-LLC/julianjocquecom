@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fig 1. The Killian</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Crimson+Text:ital,wght@0,400;0,600;1,400&family=Playfair+Display:ital,wght@0,700;1,700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --parchment: #f4e4bc;
+            --ink: #2b241e;
+            --faded-ink: #594e42;
+            --sepia-filter: sepia(100%) contrast(120%) grayscale(30%);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--parchment);
+            color: var(--ink);
+            font-family: 'Crimson Text', serif;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            /* Old paper vignette */
+            box-shadow: inset 0 0 150px rgba(60, 45, 30, 0.2);
+            /* Texture overlay pattern */
+            background-image: url("data:image/svg+xml,%3Csvg width='200' height='200' viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.08'/%3E%3C/svg%3E");
+        }
+
+        /* The Book Plate Container */
+        .plate-container {
+            width: 100%;
+            max-width: 800px;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 40px;
+            position: relative;
+            /* Double Line Border (Thick + Thin) */
+            border: 6px solid var(--ink);
+            outline: 2px solid var(--ink);
+            outline-offset: 6px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        /* --- HEADER --- */
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            border-bottom: 2px solid var(--ink);
+            padding-bottom: 20px;
+        }
+
+        h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 3rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+            line-height: 1;
+        }
+
+        .scientific-name {
+            font-family: 'Playfair Display', serif;
+            font-style: italic;
+            font-size: 1.4rem;
+            color: var(--faded-ink);
+        }
+
+        /* --- ILLUSTRATION --- */
+        .illustration-frame {
+            width: 100%;
+            margin-bottom: 30px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .specimen-photo {
+            width: 80%;
+            /* Maintain aspect ratio */
+            aspect-ratio: 4 / 3; 
+            object-fit: cover;
+            border: 1px solid var(--ink);
+            box-shadow: 4px 4px 0 rgba(0,0,0,0.1);
+            margin-bottom: 15px;
+            
+            /* The Filter for that "Copperplate/Old Photo" look */
+            filter: sepia(0.8) contrast(1.1) grayscale(0.4);
+            transition: filter 0.5s ease, opacity 0.8s ease-in-out;
+            opacity: 1;
+        }
+        
+        .specimen-photo:hover {
+            /* Reveal true color on hover slightly */
+            filter: sepia(0.3) contrast(1.0) grayscale(0.1);
+        }
+
+        .caption {
+            font-size: 0.95rem;
+            font-style: italic;
+            color: var(--faded-ink);
+            max-width: 80%;
+            text-align: center;
+            transition: opacity 0.8s ease-in-out;
+            opacity: 1;
+        }
+
+        /* --- CONTENT GRID --- */
+        .field-data {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            align-items: start;
+        }
+
+        /* --- TAXONOMY TABLE --- */
+        .taxonomy-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 1.1rem;
+        }
+
+        .taxonomy-table tr {
+            border-bottom: 1px solid rgba(43, 36, 30, 0.3);
+        }
+        
+        .taxonomy-table tr:last-child {
+            border-bottom: none;
+        }
+
+        .taxonomy-table td {
+            padding: 12px 5px;
+            vertical-align: top;
+        }
+
+        .label {
+            font-weight: 700;
+            width: 35%;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+            letter-spacing: 1px;
+            color: var(--faded-ink);
+        }
+
+        /* --- FIELD NOTES --- */
+        .field-notes {
+            line-height: 1.8;
+            font-size: 1.2rem;
+            text-align: justify;
+        }
+        
+        .field-notes::first-letter {
+            font-family: 'Playfair Display', serif;
+            font-size: 3.5rem;
+            float: left;
+            line-height: 0.8;
+            margin-right: 10px;
+            margin-top: -5px;
+            font-weight: 700;
+        }
+
+        /* --- FOOTER --- */
+        footer {
+            margin-top: 50px;
+            border-top: 1px solid var(--ink);
+            padding-top: 15px;
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-weight: 600;
+            color: var(--faded-ink);
+        }
+
+        /* --- RESPONSIVE --- */
+        @media (max-width: 768px) {
+            body { padding: 10px; }
+            .plate-container { 
+                padding: 20px; 
+                outline-offset: 4px; /* Tighten border for small screens */
+            }
+            h1 { font-size: 2rem; }
+            .scientific-name { font-size: 1.1rem; }
+            .engraving-placeholder { width: 100%; }
+            .field-data { grid-template-columns: 1fr; gap: 30px; }
+            footer { flex-direction: column; align-items: center; gap: 10px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="plate-container">
+        <header>
+            <h1>Fig 1. The Killian</h1>
+            <div class="scientific-name">Frater in Lege (The Great Spotted Birder)</div>
+        </header>
+
+        <main>
+            <figure class="illustration-frame">
+                <!-- The Specimen Photo -->
+                <img id="specimen-img" class="specimen-photo" alt="Observed Specimen">
+                <figcaption class="caption">Specimen observed in natural habitat, utilizing heavy telescopic optics.</figcaption>
+            </figure>
+
+            <div class="field-data">
+                <!-- Taxonomy -->
+                <table class="taxonomy-table">
+                    <tr>
+                        <td class="label">Habitat</td>
+                        <td>High Altitude / Rocky Mountains</td>
+                    </tr>
+                    <tr>
+                        <td class="label">Plumage</td>
+                        <td>Performance Fleece & Flannel</td>
+                    </tr>
+                    <tr>
+                        <td class="label">Call</td>
+                        <td>"Shh! Did you hear that?"</td>
+                    </tr>
+                    <tr>
+                        <td class="label">Diet</td>
+                        <td>Trail Mix & Craft Brews</td>
+                    </tr>
+                </table>
+
+                <!-- Field Notes -->
+                <article class="field-notes">
+                    A patient and solitary creature, The Killian is most often found motionless on hiking trails, weighed down by an enormous cylindrical lens. He displays a remarkable ability to freeze for hours at a time, waiting for the perfect moment to capture the image of a lesser avian species.
+                </article>
+            </div>
+        </main>
+
+        <footer>
+            <span>Plate No. 1 — The Jocque Family Collection</span>
+            <span>Est. 2025</span>
+        </footer>
+    </div>
+
+    <script>
+        // CONFIGURATION:
+        // Add your image filenames and their specific captions here.
+        const specimenData = [
+            { src: 'specimen_1.jpg', caption: 'Fig 1.A — Specimen observed in alert posture, scanning for predators.' },
+            { src: 'specimen_2.jpg', caption: 'Fig 1.B — Note the distinct plumage variations visible in direct sunlight.' },
+            { src: 'specimen_3.jpg', caption: 'Fig 1.C — A rare glimpse of the subject in its natural nesting environment.' },
+            { src: 'specimen_4.jpg', caption: 'Fig 1.D — Subject displays remarkable stillness while hunting.' },
+            { src: 'specimen_5.jpg', caption: 'Fig 1.E — Migratory patterns suggest a preference for high-altitude currents.' },
+            { src: 'specimen_6.jpg', caption: 'Fig 1.F — Interaction with local flora captured at close range.' }
+        ];
+
+        let currentIndex = 0;
+        const imgElement = document.getElementById('specimen-img');
+        const captionElement = document.querySelector('.caption');
+
+        // Set initial state
+        imgElement.src = specimenData[0].src;
+        captionElement.textContent = specimenData[0].caption;
+
+        function nextSpecimen() {
+            // 1. Fade out image AND caption
+            imgElement.style.opacity = 0;
+            captionElement.style.opacity = 0;
+
+            setTimeout(() => {
+                // 2. Advance Index
+                currentIndex = (currentIndex + 1) % specimenData.length;
+                const nextItem = specimenData[currentIndex];
+
+                // 3. Swap Data
+                imgElement.src = nextItem.src;
+                captionElement.textContent = nextItem.caption;
+
+                // 4. Fade in after image loads
+                imgElement.onload = () => {
+                    imgElement.style.opacity = 1;
+                    captionElement.style.opacity = 1;
+                };
+            }, 800); // Wait for fade out
+        }
+
+        // Cycle every 8 seconds (8000ms)
+        setInterval(nextSpecimen, 8000);
+    </script>
+    <!-- Navigation Links -->
+    <div style="position: fixed; bottom: 20px; left: 20px; z-index: 100; font-family: 'Crimson Text', serif; font-size: 0.85rem;">
+        <a href="hand_coded/" style="color: #2b241e; text-decoration: none; margin-right: 15px;">Simple Version</a>
+        <a href="https://julianjocque.com/family" style="color: #888; text-decoration: none;">Family Hub</a>
+    </div>
+</body>
+</html>

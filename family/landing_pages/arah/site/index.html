@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>housetype // quiet room</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;700&family=Courier+Prime:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-paper: #fdfbf7;
+            --ink-primary: #2c2c2c;
+            --ink-faded: #5a5a5a;
+            --paper-shadow: 0 4px 15px rgba(0,0,0,0.08), 0 1px 3px rgba(0,0,0,0.05);
+            --polaroid-shadow: 0 8px 20px rgba(0,0,0,0.15);
+            --leaf-green: #6b8c42;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--bg-paper);
+            color: var(--ink-primary);
+            font-family: 'Courier Prime', monospace;
+            min-height: 100vh;
+            width: 100vw;
+            overflow-x: hidden;
+            position: relative;
+            
+            /* The Desk Vignette */
+            background-image: radial-gradient(circle at 50% 50%, transparent 60%, rgba(139, 131, 120, 0.15) 100%);
+        }
+
+        /* Texture Overlay (Grain) */
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.05'/%3E%3C/svg%3E");
+            pointer-events: none;
+            z-index: 100;
+        }
+
+        /* --- LAYOUT CONTAINER --- */
+        .desk-surface {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px;
+            min-height: 100vh;
+            position: relative;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            grid-template-rows: auto 1fr;
+            gap: 40px;
+        }
+
+        /* --- 1. THE HEADER ("The Typewriter") --- */
+        .header {
+            grid-column: 1 / -1;
+            padding-bottom: 40px;
+            z-index: 10;
+        }
+
+        .identity {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--ink-primary);
+            display: inline-block;
+        }
+
+        .cursor {
+            display: inline-block;
+            width: 0.6em;
+            height: 1.2em;
+            background-color: var(--ink-primary);
+            vertical-align: -0.2em;
+            margin-left: 2px;
+            animation: blink 1s step-end infinite;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+
+        .subtitle {
+            font-family: 'Caveat', cursive;
+            font-size: 1.5rem;
+            color: var(--ink-faded);
+            transform: rotate(-2deg);
+            margin-top: 10px;
+            display: block;
+            margin-left: 20px;
+        }
+
+        /* --- 2. THE CONTENT ("The Letter") --- */
+        .letter-container {
+            grid-column: 1;
+            position: relative;
+            z-index: 5;
+            padding-top: 20px;
+            padding-left: 20px;
+        }
+
+        .paper-sheet {
+            background: white;
+            padding: 60px 50px;
+            box-shadow: var(--paper-shadow);
+            transform: rotate(1deg);
+            max-width: 550px;
+            position: relative;
+            border-radius: 2px;
+        }
+
+        /* Tape effect */
+        .tape {
+            position: absolute;
+            top: -15px;
+            left: 50%;
+            transform: translateX(-50%) rotate(-3deg);
+            width: 120px;
+            height: 35px;
+            background-color: rgba(255, 255, 255, 0.4);
+            border-left: 1px dashed rgba(0,0,0,0.05);
+            border-right: 1px dashed rgba(0,0,0,0.05);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            backdrop-filter: blur(2px);
+            opacity: 0.7;
+        }
+
+        .paper-content h2 {
+            font-size: 1.2rem;
+            margin-bottom: 25px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+        }
+
+        .paper-content p {
+            line-height: 1.8;
+            margin-bottom: 20px;
+            font-size: 1.05rem;
+        }
+
+        .signature {
+            font-family: 'Caveat', cursive;
+            font-size: 1.8rem;
+            margin-top: 40px;
+            text-align: right;
+            color: var(--ink-faded);
+        }
+
+        /* --- 3. THE ANCHOR ("The Spirit of the House") --- */
+        .photo-container {
+            grid-column: 2;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            z-index: 6;
+        }
+
+        .spirit-frame {
+            position: relative;
+            width: 280px;
+            height: 280px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transform: rotate(2deg);
+        }
+
+        /* The "Ghostly" Vignette Effect */
+        .hazel-spirit-img {
+            width: 240px;
+            height: 240px;
+            object-fit: cover;
+            border-radius: 50%;
+            filter: sepia(0.4) contrast(0.8) opacity(0.7) blur(0.5px);
+            /* Creating the soft edge vignette */
+            -webkit-mask-image: radial-gradient(circle, black 30%, transparent 75%);
+            mask-image: radial-gradient(circle, black 30%, transparent 75%);
+            transition: all 1s ease;
+        }
+
+        .spirit-frame:hover .hazel-spirit-img {
+            filter: sepia(0.2) contrast(1) opacity(0.9) blur(0);
+            transform: scale(1.05);
+        }
+
+        /* --- 4. DECOR ("The Garden") --- */
+        .vine-container {
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+            overflow: hidden;
+        }
+
+        .vine-svg {
+            position: absolute;
+            top: 10%;
+            right: 15%;
+            width: 400px;
+            height: 600px;
+            opacity: 0.8;
+        }
+
+        /* --- RESPONSIVENESS --- */
+        @media (max-width: 900px) {
+            .desk-surface {
+                grid-template-columns: 1fr;
+                gap: 60px;
+                padding: 20px;
+            }
+
+            .letter-container {
+                grid-column: 1;
+                padding: 0;
+            }
+
+            .paper-sheet {
+                transform: rotate(0deg);
+                width: 100%;
+            }
+
+            .photo-container {
+                grid-column: 1;
+                order: -1; /* Put photo above text on mobile? Or maybe keep it scattered. Let's keep strict order. */
+                order: 0;
+                margin-top: -20px;
+            }
+
+            .polaroid {
+                transform: rotate(2deg);
+            }
+            
+            .vine-svg {
+                right: -100px;
+                opacity: 0.4;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="vine-container">
+        <!-- Hand-drawn style SVG Vine -->
+        <svg class="vine-svg" viewBox="0 0 200 400" xmlns="http://www.w3.org/2000/svg">
+            <!-- Stem -->
+            <path d="M 150 -50 C 150 50, 50 100, 80 200 C 110 300, 180 320, 160 450" 
+                  stroke="#6b8c42" stroke-width="2" fill="none" stroke-linecap="round"/>
+            
+            <!-- Leaves -->
+            <g fill="#88aa55" opacity="0.8">
+                <!-- Leaf 1 -->
+                <path d="M 120 80 Q 150 60 160 90 Q 140 110 120 80" />
+                <path d="M 120 80 L 140 90" stroke="#6b8c42" stroke-width="0.5" fill="none"/>
+                
+                <!-- Leaf 2 -->
+                <path d="M 70 180 Q 40 160 30 190 Q 50 210 70 180" />
+                
+                <!-- Leaf 3 -->
+                <path d="M 100 280 Q 140 260 150 290 Q 120 310 100 280" />
+                
+                <!-- Leaf 4 -->
+                <path d="M 160 350 Q 190 330 195 360 Q 170 380 160 350" />
+            </g>
+        </svg>
+    </div>
+
+    <div class="desk-surface">
+        
+        <!-- HEADER -->
+        <header class="header">
+            <div class="identity">housetype<span class="cursor"></span></div>
+            <span class="subtitle">notes from the quiet room</span>
+        </header>
+
+        <!-- CONTENT -->
+        <div class="letter-container">
+            <div class="paper-sheet">
+                <div class="tape"></div>
+                <div class="paper-content">
+                    <h2>To the keeper of the quietest truths,</h2>
+                    <p>
+                        This is your space. A digital garden that grows in private, away from the noise of the open web. No algorithms, no feeds, just us.
+                    </p>
+                    <p>
+                        I wanted to build you a room where the door is always closed, but the window is always open to the garden. It is imperfect, analog, and slow—just like the best parts of life.
+                    </p>
+                    <p>
+                        Here, you are not a user. You are simply present. The papers may shuffle, the light may change, but the peace remains constant.
+                    </p>
+                    <p>
+                         "In the midst of winter, I found there was, within me, an invincible summer."
+                    </p>
+                    <div class="signature">
+                        - Love, Julian
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SPIRIT IMAGE -->
+        <div class="photo-container">
+            <div class="spirit-frame">
+                <img src="hazel.jpg" alt="Hazel" class="hazel-spirit-img">
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Navigation Links -->
+    <div style="position: fixed; bottom: 20px; left: 20px; z-index: 100; font-family: 'Courier Prime', monospace; font-size: 0.8rem;">
+        <a href="hand_coded/" style="color: #6b8c42; text-decoration: none; margin-right: 15px;">Simple Version</a>
+        <a href="https://julianjocque.com/family" style="color: #999; text-decoration: none;">Family Hub</a>
+    </div>
+</body>
+</html>

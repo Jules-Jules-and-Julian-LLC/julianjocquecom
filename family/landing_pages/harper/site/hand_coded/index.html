@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!--
+        HARPER'S SIMPLE LANDING PAGE
+        ============================
+        This is a beginner-friendly version you can learn from!
+
+        Everything between <!-- and --> is a comment (notes for you, not shown on the page)
+    -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Harper Jocque</title>
+
+    <!-- STYLES: This is where we make things look nice -->
+    <style>
+        /* The body is the whole page */
+        body {
+            background-color: #1a1a2e;      /* Dark purple-black background */
+            color: #39ff14;                  /* Bright green text (ecto-green!) */
+            font-family: 'Courier New', monospace;  /* Typewriter-style font */
+            margin: 0;                       /* No white space around edges */
+            padding: 40px;                   /* Space inside the page */
+            min-height: 100vh;               /* At least full screen height */
+            display: flex;                   /* Flexbox helps center things */
+            flex-direction: column;          /* Stack things vertically */
+            align-items: center;             /* Center horizontally */
+        }
+
+        /* The main card/box in the center */
+        .card {
+            background-color: rgba(0, 0, 0, 0.7);  /* Semi-transparent black */
+            border: 3px solid #39ff14;             /* Green glowing border */
+            border-radius: 15px;                   /* Rounded corners */
+            padding: 40px;                         /* Space inside the card */
+            max-width: 500px;                      /* Don't get too wide */
+            text-align: center;                    /* Center the text */
+            box-shadow: 0 0 30px rgba(57, 255, 20, 0.3);  /* Green glow effect */
+        }
+
+        /* The main heading */
+        h1 {
+            font-size: 2.5rem;              /* Big text */
+            margin-bottom: 10px;            /* Space below */
+            text-shadow: 0 0 10px #39ff14;  /* Glowing text effect */
+        }
+
+        /* The subtitle */
+        .subtitle {
+            font-style: italic;
+            color: #88ff88;                 /* Lighter green */
+            margin-bottom: 30px;
+        }
+
+        /* Regular paragraphs */
+        p {
+            line-height: 1.8;               /* Space between lines */
+            margin-bottom: 20px;
+        }
+
+        /* Links */
+        a {
+            color: #39ff14;
+            text-decoration: none;          /* No underline */
+        }
+
+        a:hover {
+            text-decoration: underline;     /* Underline when mouse hovers */
+        }
+
+        /* Navigation link at the bottom */
+        .nav-link {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #39ff14;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h1>Harper Jocque</h1>
+        <p class="subtitle">Weirdness Level: Maximum</p>
+
+        <p>
+            Welcome to my corner of the internet.
+            It's weird here, and that's exactly how I like it.
+        </p>
+
+        <p>
+            This is the simple version of my site.
+            Check out the <a href="../">fancy version</a> if you want to see some chaos.
+        </p>
+
+        <div class="nav-link">
+            <a href="https://julianjocque.com/family">Back to Family Hub</a>
+        </div>
+    </div>
+</body>
+</html>
