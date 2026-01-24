@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git status:*)",
+      "Bash(git add:*)",
+      "Bash(git commit -m \"$\\(cat <<''EOF''\nAdd hand-coded landing pages and improve family site guides\n\n- Update publishing guide with correct Cloudflare workflow\n- Simplify vibe-coding guide for complete beginners\n- Add hand_coded/ landing pages for Harper, Kent, Arah, and Killian\n- Add navigation links between vibe-coded and hand-coded versions\n- Fix Mom''s domain reference from housetype.com to arahjocque.com\n\nCo-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>\nEOF\n\\)\")",
+      "Bash(git reset:*)"
+    ]
+  }
+}

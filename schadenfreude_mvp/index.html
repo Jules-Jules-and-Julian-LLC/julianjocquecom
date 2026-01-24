@@ -1,0 +1,2265 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Schadenfreude.io MVP (Believability Harness)</title>
+  <style>
+    html, body { margin:0; padding:0; height:100%; overflow:hidden; background:#0b0f14; color:#e8eef7; font-family:system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif; }
+    #root { position:relative; width:100%; height:100%; }
+    #gameCanvas { position:absolute; left:0; top:0; width:100%; height:100%; display:block; }
+    #ui {
+      position:absolute; right:12px; top:12px; width:280px;
+      background:rgba(10,14,20,0.75); border:1px solid rgba(255,255,255,0.08);
+      border-radius:10px; padding:10px 10px 12px 10px; backdrop-filter: blur(6px);
+      box-shadow: 0 10px 25px rgba(0,0,0,0.35);
+      pointer-events:none;
+    }
+    #ui h3 { margin:0 0 8px 0; font-size:14px; letter-spacing:0.3px; opacity:0.95; }
+    .row { display:flex; justify-content:space-between; font-size:12px; margin:3px 0; opacity:0.95; }
+    .bar { height:7px; background:rgba(255,255,255,0.08); border-radius:999px; overflow:hidden; margin-top:4px;}
+    .bar > div { height:100%; background:rgba(255,255,255,0.65); width:50%; }
+    .small { font-size:11px; opacity:0.8; line-height:1.25; }
+    #board { margin-top:10px; border-top:1px solid rgba(255,255,255,0.08); padding-top:8px;}
+    #board table { width:100%; border-collapse:collapse; font-size:12px; }
+    #board td { padding:2px 0; }
+    #board td:nth-child(2) { text-align:right; opacity:0.9; }
+    #hint {
+      position:absolute; left:12px; bottom:12px; width:520px;
+      background:rgba(10,14,20,0.68); border:1px solid rgba(255,255,255,0.08);
+      border-radius:10px; padding:10px 12px;
+      backdrop-filter: blur(6px); box-shadow: 0 10px 25px rgba(0,0,0,0.35);
+      pointer-events:none;
+    }
+    #hint .keys { font-size:12px; opacity:0.9; line-height:1.3; }
+    #overlay {
+      position:absolute; inset:0; display:flex; align-items:center; justify-content:center;
+      background: radial-gradient(ellipse at center, rgba(10,14,20,0.92), rgba(10,14,20,0.98));
+      z-index:10;
+    }
+    #panel {
+      width:min(780px, 92vw); background:rgba(15,20,28,0.85);
+      border:1px solid rgba(255,255,255,0.10); border-radius:14px; padding:18px 18px 16px 18px;
+      box-shadow: 0 18px 55px rgba(0,0,0,0.45);
+    }
+    #panel h1 { margin:0 0 8px 0; font-size:18px; }
+    #panel p { margin:6px 0 10px 0; opacity:0.9; font-size:13px; line-height:1.35;}
+    #panel .grid { display:grid; grid-template-columns: 1fr 1fr; gap:12px; margin-top:10px; }
+    #panel label { display:flex; gap:10px; align-items:center; font-size:13px; opacity:0.95;}
+    #panel input[type="range"] { width:100%; }
+    #panel .actions { display:flex; gap:10px; margin-top:12px; align-items:center; }
+    #panel button {
+      border:1px solid rgba(255,255,255,0.18); background:rgba(255,255,255,0.08); color:#e8eef7;
+      border-radius:10px; padding:10px 12px; font-size:13px; cursor:pointer;
+    }
+    #panel button:hover { background:rgba(255,255,255,0.12); }
+    #panel .note { font-size:12px; opacity:0.75; margin-top:10px; }
+    #panel .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+    .pill {
+      display:inline-block; padding:2px 8px; border:1px solid rgba(255,255,255,0.16);
+      border-radius:999px; font-size:11px; opacity:0.9; margin-right:6px;
+    }
+  </style>
+</head>
+<body>
+<div id="root">
+  <canvas id="gameCanvas"></canvas>
+
+  <div id="ui">
+    <h3>Schadenfreude.io — Salt Run (MVP)</h3>
+    <div class="row"><span>Held Salt</span><span id="held">0</span></div>
+    <div class="row"><span>Banked Salt</span><span id="banked">0</span></div>
+    <div class="row"><span>Composure</span><span id="comp">100</span></div>
+    <div class="bar"><div id="compBar"></div></div>
+    <div class="row" style="margin-top:8px;"><span>Dash</span><span id="cdDash">ready</span></div>
+    <div class="row"><span>Peel (Q)</span><span id="cdPeel">ready</span></div>
+    <div class="row"><span>Decoy (E)</span><span id="cdDecoy">ready</span></div>
+    <div class="row" style="margin-top:8px;"><span>Season</span><span id="season">10:00</span></div>
+    <div class="small" id="status" style="margin-top:6px;"></div>
+
+    <div id="board">
+      <div class="row"><span>Leaderboard</span><span id="pop">—</span></div>
+      <table id="lb"></table>
+      <div class="small" style="margin-top:6px;">
+        <span class="pill">F2</span>Debug overlay
+        <span class="pill">F3</span>Show BOT tags
+        <span class="pill">G</span>Download event log
+      </div>
+    </div>
+  </div>
+
+  <div id="hint">
+    <div class="keys">
+      <div><span class="pill">WASD</span>Move <span class="pill">Space</span>Dash <span class="pill">Q</span>Peel <span class="pill">E</span>Decoy</div>
+      <div style="margin-top:4px;"><span class="pill">Mouse</span>Aim decoy <span class="pill">C</span>Camera cycle (Player → Leader → Free)</div>
+      <div class="small" style="margin-top:6px;">Believability harness: start with 19 bots + hide BOT tags. Try to guess how many opponents are human. In free camera, use <span class="mono">IJKL</span> to pan and <span class="mono">- / =</span> to zoom.</div>
+    </div>
+  </div>
+
+  <div id="overlay">
+    <div id="panel">
+      <h1>Schadenfreude.io MVP — Believability Test Harness</h1>
+      <p>
+        This is a <b>bot-first</b> MVP. The goal is to evaluate whether the opponents feel like humans: they bait, hesitate, get greedy, seek revenge, and make stress-linked mistakes.
+      </p>
+      <div class="grid">
+        <div>
+          <label>Bot count: <span id="botCountLabel" class="mono">19</span></label>
+          <input id="botCount" type="range" min="0" max="24" value="19"/>
+          <div class="note">Target total population defaults to 20. You can overfill for stress tests.</div>
+        </div>
+        <div>
+          <label><input id="spectator" type="checkbox"/> Start in spectator (free camera)</label>
+          <label><input id="hideBot" type="checkbox" checked/> Hide BOT identity markers (recommended)</label>
+          <label><input id="debugStart" type="checkbox"/> Start with debug overlay enabled</label>
+        </div>
+      </div>
+      <div class="actions">
+        <button id="startBtn">Start</button>
+        <button id="resetBtn">Reset</button>
+      </div>
+      <div class="note">
+        <div><span class="pill">Test A</span> Projection test: play 10 minutes, then guess how many humans were present.</div>
+        <div><span class="pill">Test B</span> Spectator realism: 20 bots, watch for bait/chase/revenge loops.</div>
+        <div style="margin-top:8px;">Tip: press <span class="mono">F2</span> to inspect bot goals & beliefs, but keep it off during projection tests.</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+// ============================================================
+// Schadenfreude.io MVP (Believability Harness) — single-file
+// ============================================================
+'use strict';
+
+// ----- DOM -----
+const canvas = document.getElementById('gameCanvas');
+const ctx = canvas.getContext('2d');
+const elHeld = document.getElementById('held');
+const elBanked = document.getElementById('banked');
+const elComp = document.getElementById('comp');
+const elCompBar = document.getElementById('compBar');
+const elCdDash = document.getElementById('cdDash');
+const elCdPeel = document.getElementById('cdPeel');
+const elCdDecoy = document.getElementById('cdDecoy');
+const elSeason = document.getElementById('season');
+const elStatus = document.getElementById('status');
+const elLB = document.getElementById('lb');
+const elPop = document.getElementById('pop');
+
+const overlay = document.getElementById('overlay');
+const botCountSlider = document.getElementById('botCount');
+const botCountLabel = document.getElementById('botCountLabel');
+const spectatorChk = document.getElementById('spectator');
+const hideBotChk = document.getElementById('hideBot');
+const debugStartChk = document.getElementById('debugStart');
+document.getElementById('startBtn').addEventListener('click', () => {
+  startGame({
+    botCount: parseInt(botCountSlider.value, 10),
+    spectator: spectatorChk.checked,
+    hideBotMarkers: hideBotChk.checked,
+    debugOverlay: debugStartChk.checked
+  });
+});
+document.getElementById('resetBtn').addEventListener('click', () => location.reload());
+botCountSlider.addEventListener('input', () => botCountLabel.textContent = botCountSlider.value);
+
+// ----- Utils -----
+const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+const lerp = (a,b,t) => a + (b-a)*t;
+const dist2 = (ax,ay,bx,by) => { const dx=ax-bx, dy=ay-by; return dx*dx+dy*dy; };
+const dist = (ax,ay,bx,by) => Math.hypot(ax-bx, ay-by);
+const norm = (x,y) => {
+  const d = Math.hypot(x,y);
+  if (d < 1e-6) return {x:0,y:0};
+  return {x:x/d,y:y/d};
+};
+const rand = (a,b) => a + Math.random()*(b-a);
+const randInt = (a,b) => Math.floor(rand(a,b+1));
+const choice = (arr) => arr[Math.floor(Math.random()*arr.length)];
+const nowMs = () => performance.now();
+
+// ----- Constants (tuning knobs) -----
+const WORLD_W = 120;
+const WORLD_H = 80;
+
+const PLAYER_R = 0.6;
+const ORB_R = 0.45;
+const PEEL_TRIGGER_R = 1.0;
+
+const BASE_SPEED = 6.2;
+const DASH_DIST = 4.0;
+const DASH_DUR = 0.30;
+const DASH_CD = 2.8;
+
+const PEEL_CD = 5.5;
+const PEEL_LIFE = 14.0;
+const PEEL_MAX_ACTIVE = 2;
+
+const DECOY_CD = 7.0;
+const DECOY_RANGE = 8.0;
+const DECOY_LIFE = 12.0;
+const DECOY_MAX_ACTIVE = 1;
+
+const CAREFUL_AFTER = 2.0; // seconds without dash
+const CAREFUL_SLIP_MULT = 0.4; // 60% reduction
+const CAREFUL_DROP_MULT = 0.5;
+
+const COMPOSURE_MAX = 100;
+const COMPOSURE_REGEN_SAFE = 6.0;
+const COMPOSURE_REGEN_THREAT = 3.0;
+
+const SLIP_DUR = 0.85;
+const SLIP_DUR_CAREFUL = SLIP_DUR * CAREFUL_SLIP_MULT;
+const SLOW_MULT = 0.75;
+const SLOW_DUR = 1.2;
+
+const BANK_X = 60, BANK_Y = 40, BANK_R = 3.2;
+const DEPOSIT_BASE = 0.35;
+const DEPOSIT_PER_SALT = 0.015;
+const DEPOSIT_CAP = 1.25;
+
+const SEASON_LEN = 10 * 60; // 10 minutes
+
+const SPAWN_SAFE = 1.5;
+
+const PAIR_DIMINISH_TTL = 15.0;
+const PAIR_DIMINISH_MULT = 0.65; // each stack multiplies
+const PAIR_STACK_MAX = 3;
+
+const TILT_STUN = 0.60;
+const TILT_COMEBACK_DUR = 2.0;
+
+// Rendering
+let PX_PER_M = 16; // zoom; adjustable in free camera mode
+const UI_RIGHT_PAD = 320; // leave space for UI panel visually
+
+// ----- Map obstacles (axis-aligned rectangles) -----
+function makeRect(x1,y1,x2,y2){ return {x1,y1,x2,y2}; }
+const obstacles = [
+  makeRect(47,45,52,50),
+  makeRect(68,45,73,50),
+  makeRect(47,30,52,35),
+  makeRect(68,30,73,35),
+
+  makeRect(10,62,55,66),
+  makeRect(65,62,110,66),
+
+  makeRect(24,10,28,54),
+  makeRect(92,26,96,70),
+
+  makeRect(10,50,22,54),
+  makeRect(98,50,110,54),
+  makeRect(10,26,22,30),
+  makeRect(98,26,110,30),
+
+  makeRect(10,14,35,18),
+  makeRect(45,14,75,18),
+  makeRect(85,14,110,18),
+];
+
+// Trap-hot nodes (manual list; bots use these to look intentional)
+const trapNodes = [
+  {x:60,y:47,type:'bank',w:1.2},{x:60,y:33,type:'bank',w:1.2},{x:53,y:40,type:'bank',w:1.2},{x:67,y:40,type:'bank',w:1.2},
+
+  {x:40,y:16,type:'choke',w:1.0},{x:80,y:16,type:'choke',w:1.0},
+  {x:35,y:20,type:'corner',w:0.8},{x:45,y:20,type:'corner',w:0.8},
+  {x:75,y:20,type:'corner',w:0.8},{x:85,y:20,type:'corner',w:0.8},
+
+  {x:23,y:50,type:'corner',w:0.9},{x:102,y:50,type:'corner',w:0.9},
+  {x:23,y:30,type:'corner',w:0.9},{x:102,y:30,type:'corner',w:0.9},
+
+  {x:28,y:30,type:'lane',w:0.7},{x:28,y:48,type:'lane',w:0.7},
+  {x:92,y:34,type:'lane',w:0.7},{x:92,y:62,type:'lane',w:0.7},
+
+  {x:40,y:58,type:'lane',w:0.6},{x:80,y:58,type:'lane',w:0.6},
+  {x:40,y:22,type:'lane',w:0.6},{x:80,y:22,type:'lane',w:0.6},
+];
+
+// ----- Spawners -----
+const spawners = [];
+let orbIdCounter = 1;
+function addSpawner(x,y,type,minS,maxS,value){
+  spawners.push({id: spawners.length+1, x,y, type, minS,maxS, value, next: 0, orbId: null});
+}
+// Large spawners
+addSpawner(20,52,'large',20,26,25);
+addSpawner(105,52,'large',20,26,25);
+addSpawner(20,28,'large',20,26,25);
+addSpawner(105,28,'large',20,26,25);
+// Medium
+[
+  [15,70],[40,70],[80,70],[105,70],
+  [15,10],[40,10],[80,10],[105,10],
+  [45,40],[75,40]
+].forEach(p=>addSpawner(p[0],p[1],'med',5,8,5));
+// Small
+[
+  [12,22],[12,34],[12,46],[12,58],
+  [108,22],[108,34],[108,46],[108,58],
+  [35,26],[35,54],[85,26],[85,54],
+  [52,58],[68,58],[52,22],[68,22]
+].forEach(p=>addSpawner(p[0],p[1],'small',2,3,1));
+
+// ----- Names -----
+const NAMES = [
+  'Spork','Waffle','Pickle','Goblin','Moth','Salty','Crumb','Noodle','Hiccup','Zigzag','Karma','Banana',
+  'Panic','Squeak','Boing','Mischief','Snort','Jelly','Gremlin','Bloop','Scoot','Sprout','Zany','Guffaw',
+  'Chuckle','Pogo','Trollope','Doodle','BaitLord','Glitch','Chomp','Yikes','Bonk','Banter','Yeet','Oof',
+  'Sass','Tater','Muffin','Cactus','Widget','Kettle','Rascal','Tricksy','Slink','Fumble','Swerve'
+];
+
+// ----- Global game state -----
+let running = false;
+let gameTime = 0;
+let seasonTime = SEASON_LEN;
+
+let cameraMode = 0; // 0 follow player, 1 follow leader, 2 free
+let camX = 0, camY = 0;
+let freeCamVX = 0, freeCamVY = 0;
+
+let showDebug = false;
+let showBotMarkers = false;
+let hideBotMarkers = true;
+
+let human = null; // player entity
+let spectatorMode = false;
+
+// Entities
+let players = [];
+let orbs = [];
+let peels = [];
+let decoys = [];
+
+// Pair diminishing returns: key = instigatorId|victimId -> {stacks, ttl}
+let pairStacks = new Map();
+
+// Event log
+let events = [];
+function logEvent(type, payload){
+  events.push({t: +(gameTime.toFixed(3)), type, ...payload});
+  // keep log from exploding
+  if (events.length > 50000) events.shift();
+}
+
+// ----- Input -----
+const keysDown = new Map();
+const keysPressed = new Set();
+window.addEventListener('keydown', (e) => {
+  if (!keysDown.get(e.code)) keysPressed.add(e.code);
+  keysDown.set(e.code, true);
+
+  if (e.code === 'F2') { showDebug = !showDebug; e.preventDefault(); }
+  if (e.code === 'F3') { showBotMarkers = !showBotMarkers; e.preventDefault(); }
+  if (e.code === 'KeyC') { cameraMode = (cameraMode + 1) % 3; e.preventDefault(); }
+  if (e.code === 'KeyG') { downloadLog(); e.preventDefault(); }
+});
+window.addEventListener('keyup', (e) => keysDown.set(e.code, false));
+
+let mouseX = 0, mouseY = 0;
+canvas.addEventListener('mousemove', (e) => {
+  const rect = canvas.getBoundingClientRect();
+  mouseX = (e.clientX - rect.left);
+  mouseY = (e.clientY - rect.top);
+});
+
+// ----- Resize -----
+function resize(){
+  const dpr = window.devicePixelRatio || 1;
+  canvas.width = Math.floor(window.innerWidth * dpr);
+  canvas.height = Math.floor(window.innerHeight * dpr);
+  canvas.style.width = window.innerWidth + 'px';
+  canvas.style.height = window.innerHeight + 'px';
+  ctx.setTransform(dpr,0,0,dpr,0,0);
+}
+window.addEventListener('resize', resize);
+resize();
+
+// ----- Geometry helpers -----
+function pointInRect(px,py, r){
+  return (px>=r.x1 && px<=r.x2 && py>=r.y1 && py<=r.y2);
+}
+
+function segIntersectsRect(ax,ay,bx,by, r){
+  // Liang–Barsky line clipping (fast AABB segment intersection)
+  let t0=0, t1=1;
+  const dx = bx-ax, dy = by-ay;
+  const p = [-dx, dx, -dy, dy];
+  const q = [ax-r.x1, r.x2-ax, ay-r.y1, r.y2-ay];
+  for (let i=0;i<4;i++){
+    if (Math.abs(p[i]) < 1e-8){
+      if (q[i] < 0) return false;
+    } else {
+      const t = q[i]/p[i];
+      if (p[i] < 0){
+        if (t > t1) return false;
+        if (t > t0) t0 = t;
+      } else {
+        if (t < t0) return false;
+        if (t < t1) t1 = t;
+      }
+    }
+  }
+  return true;
+}
+
+function hasLineOfSight(ax,ay,bx,by){
+  for (const r of obstacles){
+    if (segIntersectsRect(ax,ay,bx,by,r)) return false;
+  }
+  return true;
+}
+
+function resolveCircleRect(pos, radius, r){
+  // push circle out of rect if overlapping
+  const cx = clamp(pos.x, r.x1, r.x2);
+  const cy = clamp(pos.y, r.y1, r.y2);
+  let dx = pos.x - cx;
+  let dy = pos.y - cy;
+  const d = Math.hypot(dx,dy);
+  if (d < radius - 1e-6){
+    if (d > 1e-6){
+      const push = (radius - d);
+      pos.x += (dx/d)*push;
+      pos.y += (dy/d)*push;
+    } else {
+      // center inside rect; push out along minimal axis
+      const left = Math.abs(pos.x - r.x1);
+      const right = Math.abs(r.x2 - pos.x);
+      const down = Math.abs(pos.y - r.y1);
+      const up = Math.abs(r.y2 - pos.y);
+      const m = Math.min(left,right,down,up);
+      if (m === left) pos.x = r.x1 - radius;
+      else if (m === right) pos.x = r.x2 + radius;
+      else if (m === down) pos.y = r.y1 - radius;
+      else pos.y = r.y2 + radius;
+    }
+  }
+}
+
+// ----- Nav grid + A* for bots -----
+const CELL = 2.0;
+const COLS = Math.floor(WORLD_W / CELL);
+const ROWS = Math.floor(WORLD_H / CELL);
+let navBlocked = new Uint8Array(COLS*ROWS);
+
+function buildNavGrid(){
+  navBlocked.fill(0);
+  const margin = PLAYER_R + 0.2;
+  for (let j=0;j<ROWS;j++){
+    for (let i=0;i<COLS;i++){
+      const x = (i+0.5)*CELL;
+      const y = (j+0.5)*CELL;
+      let blocked = false;
+      // world bounds margin
+      if (x < margin || x > WORLD_W - margin || y < margin || y > WORLD_H - margin) blocked = true;
+      if (!blocked){
+        for (const r of obstacles){
+          // expand rect by margin
+          const ex1 = r.x1 - margin, ex2 = r.x2 + margin;
+          const ey1 = r.y1 - margin, ey2 = r.y2 + margin;
+          if (x>=ex1 && x<=ex2 && y>=ey1 && y<=ey2){ blocked = true; break; }
+        }
+      }
+      navBlocked[j*COLS+i] = blocked ? 1 : 0;
+    }
+  }
+}
+buildNavGrid();
+
+function cellOf(x,y){
+  let i = Math.floor(x / CELL);
+  let j = Math.floor(y / CELL);
+  i = clamp(i,0,COLS-1);
+  j = clamp(j,0,ROWS-1);
+  return {i,j};
+}
+function centerOf(i,j){
+  return {x:(i+0.5)*CELL, y:(j+0.5)*CELL};
+}
+function isWalkable(i,j){
+  if (i<0||j<0||i>=COLS||j>=ROWS) return false;
+  return navBlocked[j*COLS+i]===0;
+}
+function nearestWalkableCell(goalI,goalJ, maxR=5){
+  if (isWalkable(goalI,goalJ)) return {i:goalI,j:goalJ};
+  for (let r=1;r<=maxR;r++){
+    for (let dj=-r; dj<=r; dj++){
+      for (let di=-r; di<=r; di++){
+        const i = goalI+di, j=goalJ+dj;
+        if (isWalkable(i,j)) return {i,j};
+      }
+    }
+  }
+  return {i:goalI,j:goalJ};
+}
+
+class MinHeap {
+  constructor(){ this.a=[]; }
+  push(item){ this.a.push(item); this._up(this.a.length-1); }
+  pop(){
+    const a=this.a;
+    if (a.length===0) return null;
+    const top=a[0];
+    const last=a.pop();
+    if (a.length>0){ a[0]=last; this._down(0); }
+    return top;
+  }
+  _up(i){
+    const a=this.a;
+    while (i>0){
+      const p=(i-1)>>1;
+      if (a[p].f <= a[i].f) break;
+      [a[p],a[i]]=[a[i],a[p]];
+      i=p;
+    }
+  }
+  _down(i){
+    const a=this.a;
+    for(;;){
+      const l=i*2+1, r=l+1;
+      let m=i;
+      if (l<a.length && a[l].f<a[m].f) m=l;
+      if (r<a.length && a[r].f<a[m].f) m=r;
+      if (m===i) break;
+      [a[m],a[i]]=[a[i],a[m]];
+      i=m;
+    }
+  }
+  get size(){ return this.a.length; }
+}
+
+function astarPath(startPos, goalPos, avoidList, paranoia){
+  const s = cellOf(startPos.x, startPos.y);
+  const g0 = cellOf(goalPos.x, goalPos.y);
+  const g = nearestWalkableCell(g0.i,g0.j, 6);
+
+  const startIdx = s.j*COLS+s.i;
+  const goalIdx = g.j*COLS+g.i;
+
+  if (startIdx === goalIdx) return [goalPos];
+
+  const open = new MinHeap();
+  const came = new Int32Array(COLS*ROWS);
+  came.fill(-1);
+  const gScore = new Float32Array(COLS*ROWS);
+  const fScore = new Float32Array(COLS*ROWS);
+  gScore.fill(Infinity);
+  fScore.fill(Infinity);
+  const closed = new Uint8Array(COLS*ROWS);
+
+  const h = (i,j)=> {
+    const dx=(i-g.i), dy=(j-g.j);
+    return Math.hypot(dx,dy);
+  };
+
+  function hazardPenalty(x,y){
+    if (!avoidList || avoidList.length===0) return 0;
+    let pen = 0;
+    for (const a of avoidList){
+      const d = dist(x,y,a.x,a.y);
+      if (d < 1.2 && paranoia > 0.6) return 999; // treat as blocked if very close
+      if (d < 4.0) pen += (4.0 - d) * a.conf * 1.8;
+    }
+    return pen;
+  }
+
+  gScore[startIdx]=0;
+  fScore[startIdx]=h(s.i,s.j);
+  open.push({idx:startIdx, f:fScore[startIdx]});
+
+  const dirs = [
+    {di:1,dj:0,c:1},{di:-1,dj:0,c:1},{di:0,dj:1,c:1},{di:0,dj:-1,c:1},
+    {di:1,dj:1,c:1.414},{di:1,dj:-1,c:1.414},{di:-1,dj:1,c:1.414},{di:-1,dj:-1,c:1.414},
+  ];
+
+  let steps=0;
+  while(open.size>0 && steps<8000){
+    steps++;
+    const cur = open.pop();
+    const idx = cur.idx;
+    if (closed[idx]) continue;
+    closed[idx]=1;
+    if (idx===goalIdx) break;
+    const ci = idx % COLS;
+    const cj = Math.floor(idx / COLS);
+
+    for (const d of dirs){
+      const ni = ci + d.di;
+      const nj = cj + d.dj;
+      if (!isWalkable(ni,nj)) continue;
+      const nidx = nj*COLS+ni;
+      if (closed[nidx]) continue;
+
+      const cpos = centerOf(ni,nj);
+      const pen = hazardPenalty(cpos.x,cpos.y);
+      if (pen>=999) continue;
+
+      const tentative = gScore[idx] + d.c + pen;
+      if (tentative < gScore[nidx]){
+        came[nidx]=idx;
+        gScore[nidx]=tentative;
+        fScore[nidx]=tentative + h(ni,nj);
+        open.push({idx:nidx, f:fScore[nidx]});
+      }
+    }
+  }
+
+  if (came[goalIdx]===-1) return [goalPos];
+
+  // reconstruct path
+  const path = [];
+  let cur = goalIdx;
+  while(cur !== -1 && cur !== startIdx){
+    const ci = cur % COLS;
+    const cj = Math.floor(cur / COLS);
+    path.push(centerOf(ci,cj));
+    cur = came[cur];
+  }
+  path.reverse();
+
+  // add final target
+  path.push({x:goalPos.x,y:goalPos.y});
+
+  // light smoothing: drop near-collinear points
+  const smooth = [];
+  let last = {x:startPos.x,y:startPos.y};
+  for (let k=0;k<path.length;k++){
+    const p = path[k];
+    if (smooth.length===0){ smooth.push(p); last=p; continue; }
+    const prev = smooth[smooth.length-1];
+    if (dist2(prev.x,prev.y,p.x,p.y) < 0.2*0.2) continue;
+    smooth.push(p);
+  }
+  return smooth;
+}
+
+// ----- Spawning -----
+function spawnPoints(){
+  return [
+    {x:6,y:12},{x:6,y:40},{x:6,y:68},
+    {x:114,y:12},{x:114,y:40},{x:114,y:68},
+    {x:30,y:6},{x:60,y:6},{x:90,y:6},
+    {x:30,y:74},{x:60,y:74},{x:90,y:74},
+  ];
+}
+
+let playerIdCounter = 1;
+function makePlayer(isBot){
+  const sp = choice(spawnPoints());
+  const p = {
+    id: playerIdCounter++,
+    name: choice(NAMES) + (Math.random()<0.2 ? ('#'+randInt(10,99)) : ''),
+    isBot,
+    x: sp.x + rand(-1.2,1.2),
+    y: sp.y + rand(-1.2,1.2),
+    vx: 0, vy: 0,
+    r: PLAYER_R,
+    held: 0,
+    banked: 0,
+    composure: COMPOSURE_MAX,
+    dashCd: 0,
+    peelCd: 0,
+    decoyCd: 0,
+    dashT: 0,
+    dashDirX: 0,
+    dashDirY: 0,
+    slipT: 0,
+    slipVX: 0,
+    slipVY: 0,
+    slowT: 0,
+    spawnSafeT: SPAWN_SAFE,
+    carefulT: 0,
+    careful: false,
+    depositT: 0,
+    depositTotal: 0,
+    depositing: false,
+    comebackT: 0,
+
+    emoteT: 0,
+    emoteIcon: '',
+
+    // bot extras
+    bot: null
+  };
+  if (isBot){
+    p.bot = makeBotBrain(p);
+  }
+  return p;
+}
+
+// ----- Bot brain -----
+function makeBotBrain(p){
+  const archetypes = [
+    {name:'Greedy',  w:0.25, ranges:{greed:[0.7,1.0], paranoia:[0.1,0.4], spite:[0.1,0.4], show:[0.0,0.3], focus:[0.4,0.7], skill:[0.3,0.6]}},
+    {name:'Trapster',w:0.25, ranges:{greed:[0.3,0.6], paranoia:[0.3,0.7], spite:[0.2,0.6], show:[0.4,0.8], focus:[0.5,0.8], skill:[0.45,0.75]}},
+    {name:'Avenger', w:0.20, ranges:{greed:[0.3,0.7], paranoia:[0.2,0.6], spite:[0.7,1.0], show:[0.1,0.5], focus:[0.3,0.6], skill:[0.35,0.7]}},
+    {name:'Paranoid',w:0.15, ranges:{greed:[0.2,0.6], paranoia:[0.7,1.0], spite:[0.1,0.4], show:[0.0,0.3], focus:[0.6,0.9], skill:[0.3,0.65]}},
+    {name:'Chaos',  w:0.15, ranges:{greed:[0.5,0.9], paranoia:[0.0,0.4], spite:[0.3,0.7], show:[0.6,1.0], focus:[0.1,0.4], skill:[0.25,0.55]}},
+  ];
+  function pickArchetype(){
+    const total = archetypes.reduce((s,a)=>s+a.w,0);
+    let r = Math.random()*total;
+    for (const a of archetypes){ r -= a.w; if (r<=0) return a; }
+    return archetypes[0];
+  }
+  const a = pickArchetype();
+  const pr = (lo,hi)=>rand(lo,hi);
+  const greed = pr(...a.ranges.greed);
+  const paranoia = pr(...a.ranges.paranoia);
+  const spite = pr(...a.ranges.spite);
+  const showboat = pr(...a.ranges.show);
+  const focus = pr(...a.ranges.focus);
+  const skill = pr(...a.ranges.skill);
+
+  const reactionMs = clamp((rand(0,1)+rand(0,1))*125 + 120, 120, 450); // pseudo-normal-ish
+
+  return {
+    archetype: a.name,
+    greed, paranoia, spite, showboat, focus, skill,
+    reactionMs,
+    nextDecision: 0,
+    goal: 'FARM',
+    goalSince: 0,
+    goalUntil: 0,
+    baitMode: 0,
+    baitUntil: 0,
+    commitUntil: 0,
+    focusTarget: null, // {type:'orb'|'player'|'point', id, x,y}
+    focusLockUntil: 0,
+    path: [],
+    pathRecalcAt: 0,
+    stuckT: 0,
+    lastX: p.x,
+    lastY: p.y,
+
+    angerTargetId: null,
+    anger: 0,
+
+    stress: 0,
+    threat: 0,
+
+    knownPeels: [], // {x,y,conf,exp}
+    suspectedDecoys: [],
+
+    lastEmoteAt: -999,
+
+    // hearing cues
+    heardDecoy: [], // {x,y,conf,exp}
+  };
+}
+
+// ----- Orbs / Peels / Decoys -----
+function spawnOrbAt(x,y,value,isDecoy=false, ownerId=null){
+  const id = orbIdCounter++;
+  const o = {id, x, y, r: ORB_R, value, isDecoy, ownerId, born: gameTime};
+  orbs.push(o);
+  return o;
+}
+function spawnPeel(ownerId, x,y){
+  const id = orbIdCounter++;
+  peels.push({id, ownerId, x, y, born: gameTime, exp: gameTime + PEEL_LIFE});
+  logEvent('peel_place', {actor: ownerId, x:+x.toFixed(2), y:+y.toFixed(2)});
+}
+function spawnDecoy(ownerId, x,y){
+  const id = orbIdCounter++;
+  decoys.push({id, ownerId, x, y, born: gameTime, exp: gameTime + DECOY_LIFE});
+  logEvent('decoy_throw', {actor: ownerId, x:+x.toFixed(2), y:+y.toFixed(2)});
+  // hearing cue: nearby bots suspect
+  for (const pl of players){
+    if (!pl.isBot) continue;
+    const b = pl.bot;
+    if (dist(pl.x,pl.y,x,y) <= 14){
+      b.heardDecoy.push({x,y,conf:0.8, exp: gameTime + 6.0});
+    }
+  }
+}
+
+// ----- Economy / spawners -----
+function updateSpawners(dt){
+  for (const s of spawners){
+    if (s.orbId){
+      // still present?
+      if (!orbs.find(o=>o.id===s.orbId)) s.orbId = null;
+      continue;
+    }
+    if (s.next <= 0){
+      s.next = rand(s.minS, s.maxS);
+    } else {
+      s.next -= dt;
+      if (s.next <= 0){
+        const o = spawnOrbAt(s.x, s.y, s.value, false, null);
+        s.orbId = o.id;
+        logEvent('orb_spawn', {type:s.type, x:s.x, y:s.y, value:s.value});
+      }
+    }
+  }
+}
+
+// ----- Diminishing returns helper -----
+function pairKey(a,b){ return a+'|'+b; }
+function getPairStack(a,b){
+  const k = pairKey(a,b);
+  const v = pairStacks.get(k);
+  if (!v) return {stacks:0, ttl:0};
+  return v;
+}
+function addPairStack(a,b){
+  const k = pairKey(a,b);
+  let v = pairStacks.get(k);
+  if (!v) v = {stacks:0, ttl:0};
+  v.stacks = clamp(v.stacks + 1, 0, PAIR_STACK_MAX);
+  v.ttl = PAIR_DIMINISH_TTL;
+  pairStacks.set(k, v);
+}
+function decayPairStacks(dt){
+  for (const [k,v] of pairStacks.entries()){
+    v.ttl -= dt;
+    if (v.ttl <= 0) pairStacks.delete(k);
+    else pairStacks.set(k,v);
+  }
+}
+function diminishMultiplier(a,b){
+  const v = getPairStack(a,b);
+  let m = 1.0;
+  for (let i=0;i<v.stacks;i++) m *= PAIR_DIMINISH_MULT;
+  return m;
+}
+
+// ----- Abilities (human & bot) -----
+function tryDash(p, dirx, diry){
+  if (p.dashCd > 0 || p.dashT > 0 || p.slipT>0 || p.spawnSafeT>0 && p.isBot===false && spectatorMode) return false;
+  const n = norm(dirx,diry);
+  if (Math.hypot(n.x,n.y) < 0.1) return false;
+  p.dashT = DASH_DUR;
+  p.dashDirX = n.x;
+  p.dashDirY = n.y;
+  p.dashCd = DASH_CD;
+  p.carefulT = 0;
+  p.careful = false;
+  return true;
+}
+function tryPeel(p){
+  if (p.peelCd > 0 || p.spawnSafeT>0) return false;
+  // active peel count per owner
+  const owned = peels.filter(x=>x.ownerId===p.id);
+  if (owned.length >= PEEL_MAX_ACTIVE){
+    // remove oldest
+    owned.sort((a,b)=>a.born-b.born);
+    const oldest = owned[0];
+    peels = peels.filter(x=>x.id!==oldest.id);
+  }
+  spawnPeel(p.id, p.x, p.y);
+  p.peelCd = PEEL_CD;
+  return true;
+}
+function tryDecoy(p, dirx, diry){
+  if (p.decoyCd > 0 || p.spawnSafeT>0) return false;
+  // max active per owner
+  const owned = decoys.filter(x=>x.ownerId===p.id);
+  if (owned.length >= DECOY_MAX_ACTIVE){
+    owned.sort((a,b)=>a.born-b.born);
+    const oldest = owned[0];
+    decoys = decoys.filter(x=>x.id!==oldest.id);
+  }
+  const n = norm(dirx,diry);
+  if (Math.hypot(n.x,n.y) < 0.1) return false;
+  const tx = clamp(p.x + n.x*DECOY_RANGE, PLAYER_R, WORLD_W-PLAYER_R);
+  const ty = clamp(p.y + n.y*DECOY_RANGE, PLAYER_R, WORLD_H-PLAYER_R);
+  spawnDecoy(p.id, tx, ty);
+  p.decoyCd = DECOY_CD;
+  return true;
+}
+
+// ----- Prank effects -----
+function spawnDropOrbs(x,y,total){
+  // spawn 5..12 orbs, sum to total
+  const n = clamp(Math.floor(total/3), 5, 12);
+  let remaining = total;
+  for (let i=0;i<n;i++){
+    let v;
+    if (i === n-1) v = remaining;
+    else {
+      const maxv = Math.max(1, Math.floor(remaining / (n-i)));
+      v = randInt(1, maxv);
+    }
+    remaining -= v;
+    const ang = rand(0,Math.PI*2);
+    const rr = rand(0.2, 2.2);
+    const ox = clamp(x + Math.cos(ang)*rr, PLAYER_R, WORLD_W-PLAYER_R);
+    const oy = clamp(y + Math.sin(ang)*rr, PLAYER_R, WORLD_H-PLAYER_R);
+    spawnOrbAt(ox, oy, v, false, null);
+  }
+}
+
+function applySlip(victim, ownerId){
+  if (victim.spawnSafeT > 0) return;
+  const careful = victim.careful;
+  const dur = careful ? SLIP_DUR_CAREFUL : SLIP_DUR;
+  victim.slipT = dur;
+
+  // slide direction = current velocity or away from peel owner a bit
+  const sp = Math.hypot(victim.vx, victim.vy);
+  let dx = victim.vx, dy = victim.vy;
+  if (sp < 0.2 && ownerId){
+    const owner = players.find(p=>p.id===ownerId);
+    if (owner){
+      dx = victim.x - owner.x;
+      dy = victim.y - owner.y;
+    } else {
+      dx = rand(-1,1); dy = rand(-1,1);
+    }
+  }
+  const n = norm(dx,dy);
+  const slideSpeed = BASE_SPEED * (careful ? 1.05 : 1.25);
+  victim.slipVX = n.x * slideSpeed;
+  victim.slipVY = n.y * slideSpeed;
+
+  const dropBase = clamp(Math.round(victim.held * 0.25), 5, 40);
+  let drop = careful ? Math.round(dropBase*CAREFUL_DROP_MULT) : dropBase;
+
+  // comeback reduction
+  if (victim.comebackT > 0) drop = Math.round(drop*0.5);
+
+  // diminishing returns against same victim by same instigator
+  if (ownerId){
+    const mult = diminishMultiplier(ownerId, victim.id);
+    drop = Math.max(0, Math.round(drop * mult));
+    addPairStack(ownerId, victim.id);
+  }
+
+  drop = clamp(drop, 0, victim.held);
+
+  victim.held -= drop;
+
+  const compLoss = (careful ? 22*0.5 : 22) * (victim.comebackT>0 ? 0.5 : 1.0);
+  victim.composure -= compLoss;
+
+  if (drop>0) spawnDropOrbs(victim.x, victim.y, drop);
+
+  logEvent('peel_trigger', {victim: victim.id, owner: ownerId, drop, careful, x:+victim.x.toFixed(2), y:+victim.y.toFixed(2)});
+
+  // revenge
+  if (victim.isBot && ownerId){
+    const b = victim.bot;
+    b.angerTargetId = ownerId;
+    b.anger = Math.min(1, b.anger + 0.65);
+  }
+
+  // consume careful
+  victim.careful = false;
+  victim.carefulT = 0;
+}
+
+function applyDecoy(victim, ownerId){
+  if (victim.spawnSafeT > 0) return;
+
+  let drop = clamp(Math.round(victim.held * 0.10), 2, 15);
+  if (victim.comebackT > 0) drop = Math.round(drop*0.5);
+  if (ownerId){
+    const mult = diminishMultiplier(ownerId, victim.id);
+    drop = Math.max(0, Math.round(drop * mult));
+    addPairStack(ownerId, victim.id);
+  }
+  drop = clamp(drop, 0, victim.held);
+  victim.held -= drop;
+  if (drop>0) spawnDropOrbs(victim.x, victim.y, drop);
+
+  victim.composure -= 18 * (victim.comebackT>0 ? 0.5 : 1.0);
+  victim.slowT = Math.max(victim.slowT, SLOW_DUR);
+
+  logEvent('decoy_trigger', {victim: victim.id, owner: ownerId, drop, x:+victim.x.toFixed(2), y:+victim.y.toFixed(2)});
+
+  // revenge
+  if (victim.isBot && ownerId){
+    const b = victim.bot;
+    b.angerTargetId = ownerId;
+    b.anger = Math.min(1, b.anger + 0.55);
+  }
+}
+
+function applyTilt(victim, causeOwnerId=null){
+  victim.slipT = 0;
+  victim.slipVX = 0; victim.slipVY = 0;
+  victim.tiltT = TILT_STUN;
+  const bonusDrop = 8 + clamp(Math.round(victim.held * 0.12), 0, 20);
+  let drop = clamp(bonusDrop, 0, victim.held);
+  if (victim.comebackT > 0) drop = Math.round(drop*0.5);
+  if (causeOwnerId){
+    const mult = diminishMultiplier(causeOwnerId, victim.id);
+    drop = Math.max(0, Math.round(drop * mult));
+    addPairStack(causeOwnerId, victim.id);
+  }
+  victim.held -= drop;
+  if (drop>0) spawnDropOrbs(victim.x, victim.y, drop);
+
+  victim.composure = 60;
+  victim.comebackT = TILT_COMEBACK_DUR;
+
+  logEvent('tilt', {victim: victim.id, owner: causeOwnerId, drop, x:+victim.x.toFixed(2), y:+victim.y.toFixed(2)});
+
+  // revenge
+  if (victim.isBot && causeOwnerId){
+    const b = victim.bot;
+    b.angerTargetId = causeOwnerId;
+    b.anger = Math.min(1, b.anger + 0.75);
+  }
+}
+
+// ----- Bot perception + decision -----
+function updateBotBrain(p, dt){
+  const b = p.bot;
+  if (!b) return;
+
+  // compute threat & stress (use same metrics)
+  let nearEnemies = 0;
+  for (const other of players){
+    if (other.id===p.id) continue;
+    if (dist2(p.x,p.y,other.x,other.y) <= 10*10) nearEnemies++;
+  }
+  b.threat = clamp(nearEnemies/3, 0, 1);
+  const stress = clamp(0.6*b.threat + 0.4*(1 - p.composure/COMPOSURE_MAX), 0, 1);
+  b.stress = stress;
+
+  // decay anger
+  b.anger = Math.max(0, b.anger - dt*0.06);
+
+  // decay memories
+  b.knownPeels = b.knownPeels.filter(m => (m.exp > gameTime));
+  b.suspectedDecoys = b.suspectedDecoys.filter(m => (m.exp > gameTime));
+  b.heardDecoy = b.heardDecoy.filter(m => (m.exp > gameTime));
+  for (const m of b.knownPeels) m.conf = Math.max(0, m.conf - dt*0.08);
+  for (const m of b.suspectedDecoys) m.conf = Math.max(0, m.conf - dt*0.10);
+  for (const m of b.heardDecoy) m.conf = Math.max(0, m.conf - dt*0.12);
+  b.knownPeels = b.knownPeels.filter(m => m.conf > 0.2);
+  b.suspectedDecoys = b.suspectedDecoys.filter(m => m.conf > 0.2);
+  b.heardDecoy = b.heardDecoy.filter(m => m.conf > 0.2);
+
+  // stuck detection
+  const moved = dist(p.x,p.y,b.lastX,b.lastY);
+  b.lastX = p.x; b.lastY = p.y;
+  if (moved < 0.05) b.stuckT += dt;
+  else b.stuckT = Math.max(0, b.stuckT - dt*0.5);
+
+  // decision timing
+  if (gameTime < b.nextDecision) return;
+
+  // next decision time with jitter
+  const base = rand(0.25, 0.35);
+  b.nextDecision = gameTime + base + (1-b.focus)*rand(0.0,0.10);
+
+  // perception: visible objects within 20m and LOS
+  const visOrbs = [];
+  const visPlayers = [];
+  const visPeels = [];
+
+  for (const other of players){
+    if (other.id===p.id) continue;
+    const d = dist(p.x,p.y,other.x,other.y);
+    if (d <= 20 && hasLineOfSight(p.x,p.y,other.x,other.y)){
+      visPlayers.push({id:other.id, x:other.x, y:other.y, held:other.held, comp:other.composure});
+    }
+  }
+
+  // Orbs: include real orbs and decoys as candidates
+  for (const o of orbs){
+    const d = dist(p.x,p.y,o.x,o.y);
+    if (d <= 20 && hasLineOfSight(p.x,p.y,o.x,o.y)){
+      visOrbs.push(o);
+    }
+  }
+  for (const dcy of decoys){
+    const d = dist(p.x,p.y,dcy.x,dcy.y);
+    if (d <= 20 && hasLineOfSight(p.x,p.y,dcy.x,dcy.y)){
+      // represent as juicy orb candidate
+      visOrbs.push({id:'D'+dcy.id, x:dcy.x, y:dcy.y, r:ORB_R, value:25, isDecoy:true, ownerId:dcy.ownerId});
+    }
+  }
+
+  for (const pl of peels){
+    const d = dist(p.x,p.y,pl.x,pl.y);
+    if (d <= 16 && hasLineOfSight(p.x,p.y,pl.x,pl.y)){
+      // Notice probability (bounded attention)
+      const attentionLocked = (gameTime < b.focusLockUntil) ? 1 : 0;
+      const pNotice = clamp(
+        0.25 + 0.55*b.skill + 0.30*(1 - d/20) - 0.20*stress - 0.20*attentionLocked,
+        0.05, 0.95
+      );
+      if (Math.random() < pNotice){
+        // remember peel
+        b.knownPeels.push({x:pl.x, y:pl.y, conf:1.0, exp: gameTime + 10.0});
+      }
+      visPeels.push(pl);
+    }
+  }
+
+  // compute bankThreat
+  let bankThreat = 0;
+  for (const op of visPlayers){
+    if (dist(op.x,op.y,BANK_X,BANK_Y) <= 8) bankThreat += 1;
+  }
+  bankThreat = clamp(bankThreat/3, 0, 1);
+
+  // orb value nearby (biased by greed)
+  let bestOrb = null;
+  let bestOrbScore = -Infinity;
+  for (const o of visOrbs){
+    const d = dist(p.x,p.y,o.x,o.y);
+    let suspicion = 0;
+    // suspicion sources
+    for (const s of b.suspectedDecoys){
+      const sd = dist(o.x,o.y,s.x,s.y);
+      if (sd < 6) suspicion += (6-sd)/6 * s.conf;
+    }
+    for (const h of b.heardDecoy){
+      const hd = dist(o.x,o.y,h.x,h.y);
+      if (hd < 8) suspicion += (8-hd)/8 * h.conf;
+    }
+    // tell recognition
+    if (o.isDecoy){
+      const pRec = clamp(0.60*b.skill - 0.25*stress, 0.0, 0.80);
+      if (Math.random() < pRec) suspicion += 0.8;
+    }
+    // greed & pressure reduce suspicion
+    suspicion -= 0.20*b.greed;
+    suspicion -= 0.25*(stress>0.55 ? 1 : 0);
+    suspicion += 0.25*b.paranoia;
+    suspicion = clamp(suspicion, 0, 1.6);
+
+    // decide to collect: score value minus distance, penalize suspicion
+    const val = o.value;
+    const score = (val * (0.8 + 0.8*b.greed)) - d*1.4 - suspicion*18;
+    if (score > bestOrbScore){
+      bestOrbScore = score;
+      bestOrb = {o, suspicion};
+    }
+  }
+
+  // compute best target for hunt
+  let bestTarget = null;
+  let bestTargetScore = -Infinity;
+  for (const op of visPlayers){
+    const d = dist(p.x,p.y,op.x,op.y);
+    const loot = 0.008*op.held + 0.004*(100 - op.comp);
+    // chokepoint proximity
+    let choke = 0;
+    for (const tn of trapNodes){
+      if (dist(op.x,op.y,tn.x,tn.y) < 4.0) { choke = 1; break; }
+    }
+    const posBonus = 0.4*choke + 0.2*(dist(op.x,op.y,BANK_X,BANK_Y) < 6 ? 1:0);
+    const revenge = (op.id === b.angerTargetId) ? (0.6 + 0.8*b.spite) * b.anger : 0;
+    const risk = 0.25*(visPlayers.length-1) + 0.6*bankThreat;
+    const score = loot + posBonus + revenge - risk - 0.03*d;
+    if (score > bestTargetScore){
+      bestTargetScore = score;
+      bestTarget = op;
+    }
+  }
+
+  // trap opportunity: near trap node + peel ready + not too threatened
+  const peelReady = (p.peelCd <= 0);
+  const decoyReady = (p.decoyCd <= 0);
+  const dashReady = (p.dashCd <= 0);
+
+  let nearestTrap = null;
+  let trapOpportunity = 0;
+  for (const tn of trapNodes){
+    const d = dist(p.x,p.y,tn.x,tn.y);
+    if (d < 18){
+      const score = tn.w - 0.03*d;
+      if (!nearestTrap || score > nearestTrap.score) nearestTrap = {tn, score};
+    }
+  }
+  if (nearestTrap) trapOpportunity = clamp(nearestTrap.score, 0, 1.5);
+
+  const hasRecentTrap = (gameTime < b.baitUntil) ? 1 : 0;
+  const targetLikelyToChase = (bestTarget && dist(bestTarget.x,bestTarget.y,p.x,p.y) < 10) ? 1 : 0;
+
+  // utility scores
+  const orbValueNearby = bestOrb ? bestOrb.o.value : 0;
+  let uFarm = 0.9*orbValueNearby - 0.7*b.threat;
+  let uBank = 0.012*p.held + 0.4*b.paranoia - 0.9*bankThreat;
+  let uHunt = bestTargetScore + 0.8*b.anger - 0.8*b.threat;
+  let uTrap = 0.9*(peelReady?1:0) * trapOpportunity * (0.6+0.8*b.showboat) * (0.7+0.6*b.skill);
+  let uBait = 0.8*hasRecentTrap * targetLikelyToChase;
+  let uEscape = 1.1*b.threat + 0.8*(1-p.composure/COMPOSURE_MAX) + 0.004*p.held;
+
+  uFarm *= (0.8 + 0.5*b.focus);
+  uBank *= (0.7 + 0.6*b.paranoia);
+  uHunt *= (0.7 + 0.8*b.spite);
+  uEscape *= (0.7 + 0.6*b.paranoia);
+
+  // softmax pick
+  const goals = ['FARM','BANK','HUNT','SET_TRAP','BAIT','ESCAPE'];
+  const us = [uFarm,uBank,uHunt,uTrap,uBait,uEscape];
+
+  const T = lerp(0.55, 1.10, 1-b.focus);
+  let maxU = Math.max(...us);
+  const ws = us.map(u => Math.exp((u-maxU)/T));
+  let sum = ws.reduce((a,b)=>a+b,0);
+  let rPick = Math.random()*sum;
+  let picked = goals[0];
+  for (let i=0;i<goals.length;i++){
+    rPick -= ws[i];
+    if (rPick <= 0){ picked = goals[i]; break; }
+  }
+
+  // attention lock: keep current goal sometimes to prevent jitter
+  const goalAge = gameTime - b.goalSince;
+  if (goalAge < 0.8 && Math.random() < 0.45*b.focus){
+    picked = b.goal;
+  }
+
+  // if bait active, stick with BAIT unless too threatened
+  if (gameTime < b.baitUntil && b.threat < 0.6){
+    picked = 'BAIT';
+  }
+
+  // update goal
+  if (picked !== b.goal){
+    logEvent('bot_goal', {actor:p.id, from:b.goal, to:picked});
+    b.goal = picked;
+    b.goalSince = gameTime;
+    b.focusTarget = null;
+    b.path = [];
+    b.pathRecalcAt = 0;
+
+    if (picked === 'BAIT'){
+      b.baitMode = randInt(0,2);
+      b.baitUntil = gameTime + rand(2.0,6.0);
+    }
+    if (picked === 'HUNT'){
+      b.commitUntil = gameTime + rand(1.5,3.5) * (0.7 + 0.6*b.spite);
+    }
+  }
+
+  // choose/refresh focus target depending on goal
+  if (b.goal === 'FARM'){
+    if (bestOrb && (!b.focusTarget || b.focusTarget.type!=='orb' || gameTime > b.focusLockUntil)){
+      b.focusTarget = {type:'orb', id: bestOrb.o.id, x: bestOrb.o.x, y: bestOrb.o.y, suspicion: bestOrb.suspicion};
+      b.focusLockUntil = gameTime + rand(0.6, 1.4) * (0.7 + 0.6*b.focus);
+    }
+  } else if (b.goal === 'BANK'){
+    b.focusTarget = {type:'point', x:BANK_X, y:BANK_Y};
+    b.focusLockUntil = gameTime + 0.8;
+  } else if (b.goal === 'SET_TRAP'){
+    if (nearestTrap){
+      b.focusTarget = {type:'trap', x:nearestTrap.tn.x, y:nearestTrap.tn.y, id:null, trapType:nearestTrap.tn.type};
+      b.focusLockUntil = gameTime + rand(0.9,1.8);
+    } else {
+      b.goal = 'FARM';
+    }
+  } else if (b.goal === 'BAIT'){
+    // bait around recent trap if we have one; else use bank entrances
+    if (nearestTrap){
+      b.focusTarget = {type:'trap', x:nearestTrap.tn.x, y:nearestTrap.tn.y, trapType:nearestTrap.tn.type};
+    } else {
+      b.focusTarget = {type:'point', x:BANK_X, y:BANK_Y};
+    }
+    b.focusLockUntil = gameTime + rand(0.6,1.2);
+  } else if (b.goal === 'HUNT'){
+    if (bestTarget){
+      b.focusTarget = {type:'player', id:bestTarget.id, x:bestTarget.x, y:bestTarget.y};
+      b.focusLockUntil = gameTime + rand(0.5,1.0);
+    } else {
+      b.goal = 'FARM';
+    }
+  } else if (b.goal === 'ESCAPE'){
+    // choose cover point away from nearest enemy / toward lane
+    let awayX = p.x, awayY = p.y;
+    if (bestTarget){
+      awayX = p.x + (p.x - bestTarget.x);
+      awayY = p.y + (p.y - bestTarget.y);
+    } else {
+      awayX = p.x + rand(-6,6);
+      awayY = p.y + rand(-6,6);
+    }
+    // bias to nearest lane centers
+    const laneX = (p.x < WORLD_W/2) ? 12 : 108;
+    const laneY = clamp(awayY, 12, 68);
+    b.focusTarget = {type:'point', x: clamp(lerp(awayX, laneX, 0.6), PLAYER_R, WORLD_W-PLAYER_R), y: clamp(laneY, PLAYER_R, WORLD_H-PLAYER_R)};
+    b.focusLockUntil = gameTime + rand(0.6,1.3);
+  }
+
+  // recalc path if needed
+  if (b.focusTarget){
+    const tx = b.focusTarget.x, ty = b.focusTarget.y;
+    const needsPath = (b.path.length===0) || (gameTime > b.pathRecalcAt) || (b.stuckT > 0.9);
+    let dynamicTarget = false;
+    if (b.focusTarget.type === 'player'){
+      const t = players.find(pp=>pp.id===b.focusTarget.id);
+      if (t){ b.focusTarget.x=t.x; b.focusTarget.y=t.y; dynamicTarget=true; }
+    }
+    if (needsPath || dynamicTarget){
+      const avoid = b.knownPeels.filter(m=>m.conf>0.35).map(m=>({x:m.x,y:m.y,conf:m.conf}));
+      b.path = astarPath({x:p.x,y:p.y}, {x:b.focusTarget.x,y:b.focusTarget.y}, avoid, b.paranoia);
+      b.pathRecalcAt = gameTime + (dynamicTarget ? 0.6 : 1.2);
+      if (b.stuckT > 0.9) b.stuckT = 0; // reset after replanning
+    }
+  }
+
+  // tactical ability usage decisions (low frequency; feel human)
+  // - place trap when arriving at trap node
+  if (b.goal === 'SET_TRAP' && b.focusTarget && b.focusTarget.type==='trap'){
+    const d = dist(p.x,p.y,b.focusTarget.x,b.focusTarget.y);
+    if (d < 1.2 && peelReady){
+      tryPeel(p);
+      b.baitUntil = gameTime + rand(2.0,6.0);
+      b.goal = 'BAIT';
+      b.baitMode = randInt(0,2);
+    }
+  }
+
+  // - drop peel behind while escaping if chased
+  if (b.goal === 'ESCAPE' && peelReady){
+    if (bestTarget && dist(bestTarget.x,bestTarget.y,p.x,p.y) < 7 && Math.random() < (0.25 + 0.35*b.skill)){
+      // small chance; also stress-linked
+      if (Math.random() < (0.65 + 0.35*stress)) tryPeel(p);
+    }
+  }
+
+  // - throw decoy in juicy spots or when chased
+  if (decoyReady){
+    let shouldThrow = false;
+    let throwDir = null;
+
+    // chased
+    if (bestTarget && dist(bestTarget.x,bestTarget.y,p.x,p.y) < 7 && b.threat > 0.35 && Math.random() < (0.25 + 0.35*b.showboat)){
+      shouldThrow = true;
+      // throw ahead
+      if (b.path.length>0){
+        const wp = b.path[0];
+        throwDir = norm(wp.x - p.x, wp.y - p.y);
+      } else {
+        throwDir = norm(p.vx, p.vy);
+      }
+    }
+
+    // near bank entrances
+    const nearBankApproach = (dist(p.x,p.y,BANK_X,BANK_Y) < 10) && (visPlayers.length>0) && Math.random() < (0.10 + 0.18*b.showboat);
+    if (!shouldThrow && nearBankApproach){
+      shouldThrow = true;
+      // throw toward bank entrance
+      throwDir = norm(BANK_X - p.x, BANK_Y - p.y);
+    }
+
+    // near large spawner nodes
+    let nearLarge = false;
+    for (const s of spawners){
+      if (s.type==='large' && dist(p.x,p.y,s.x,s.y) < 7){ nearLarge=true; break; }
+    }
+    if (!shouldThrow && nearLarge && visPlayers.length>0 && Math.random() < (0.12 + 0.20*b.showboat)){
+      shouldThrow = true;
+      throwDir = norm(bestTarget ? (bestTarget.x - p.x) : (rand(-1,1)), bestTarget ? (bestTarget.y - p.y) : (rand(-1,1)));
+    }
+
+    if (shouldThrow && throwDir){
+      // paranoia: don't throw if highly cautious and already suspects decoys around
+      const suspectDensity = b.suspectedDecoys.reduce((acc,s)=>acc + (dist(p.x,p.y,s.x,s.y)<8 ? s.conf:0), 0);
+      if (!(b.paranoia>0.75 && suspectDensity>0.9)){
+        tryDecoy(p, throwDir.x, throwDir.y);
+      }
+    }
+  }
+
+  // dash usage
+  if (dashReady && p.slipT<=0 && p.depositing===false){
+    // careful steps: paranoid bots avoid dashing near known peels
+    const danger = b.knownPeels.some(m=>dist(p.x,p.y,m.x,m.y) < 5 && m.conf>0.45);
+    const avoidDash = danger && b.paranoia > 0.6;
+
+    if (!avoidDash){
+      if (b.goal === 'HUNT' && bestTarget && gameTime < b.commitUntil){
+        const d = dist(p.x,p.y,bestTarget.x,bestTarget.y);
+        if (d < 6 && d > 2 && Math.random() < (0.22 + 0.28*b.skill + 0.25*b.spite)){
+          const dx = bestTarget.x - p.x;
+          const dy = bestTarget.y - p.y;
+          tryDash(p, dx, dy);
+        }
+      }
+      if (b.goal === 'ESCAPE' && b.threat > 0.5 && Math.random() < (0.18 + 0.22*b.skill)){
+        // dash toward next waypoint
+        if (b.path.length>0){
+          const wp = b.path[0];
+          tryDash(p, wp.x - p.x, wp.y - p.y);
+        }
+      }
+    }
+  }
+
+  // Fumbles (stress-linked mistakes)
+  const pFumble = clamp(0.01 + 0.04*stress, 0.0, 0.06);
+  if (Math.random() < pFumble){
+    // possible wasted dash or greedy pick
+    if (dashReady && Math.random() < 0.4 && p.slipT<=0){
+      tryDash(p, rand(-1,1), rand(-1,1));
+    } else if (decoyReady && Math.random() < 0.25){
+      tryDecoy(p, rand(-1,1), rand(-1,1));
+    }
+  }
+
+  // showboating after successful prank handled elsewhere on event; see tick
+}
+
+// ----- Bot movement (uses planned path) -----
+function botDesiredMove(p, dt){
+  const b = p.bot;
+  if (!b || !b.focusTarget) return {dx:0,dy:0};
+
+  // If in BAIT, do special hover/retreat behaviors
+  if (b.goal === 'BAIT'){
+    // choose a local point to hover around trap node or bank approach
+    const baseX = b.focusTarget.x;
+    const baseY = b.focusTarget.y;
+
+    // find nearest visible target (to bait)
+    let nearest = null;
+    let nd = 999;
+    for (const op of players){
+      if (op.id===p.id) continue;
+      const d = dist(p.x,p.y,op.x,op.y);
+      if (d < nd && d < 14 && hasLineOfSight(p.x,p.y,op.x,op.y)) { nd=d; nearest=op; }
+    }
+
+    // Lure: hover slightly past trap line
+    if (b.baitMode === 0){
+      const angle = (gameTime*0.9 + p.id*1.7) % (Math.PI*2);
+      let hx = baseX + Math.cos(angle)*2.0;
+      let hy = baseY + Math.sin(angle)*2.0;
+
+      // if chased, drift away across the trap line (move away from chaser through base point)
+      if (nearest && nd < 7){
+        hx = p.x + (p.x - nearest.x);
+        hy = p.y + (p.y - nearest.y);
+        // gently bias toward base point so it "leads" through it
+        hx = lerp(hx, baseX, 0.35);
+        hy = lerp(hy, baseY, 0.35);
+      }
+      return {dx:hx - p.x, dy:hy - p.y};
+    }
+
+    // Chase-bait: approach target, then retreat through base
+    if (b.baitMode === 1){
+      if (nearest && nd < 10){
+        // move toward target but offset toward base
+        const tx = lerp(nearest.x, baseX, 0.55);
+        const ty = lerp(nearest.y, baseY, 0.55);
+        return {dx:tx - p.x, dy:ty - p.y};
+      } else {
+        // idle hover
+        return {dx:baseX - p.x, dy:baseY - p.y};
+      }
+    }
+
+    // Fake retreat: approach then turn away when close
+    if (b.baitMode === 2){
+      if (nearest && nd < 8){
+        const rx = p.x + (p.x - nearest.x);
+        const ry = p.y + (p.y - nearest.y);
+        const tx = lerp(rx, baseX, 0.45);
+        const ty = lerp(ry, baseY, 0.45);
+        return {dx:tx - p.x, dy:ty - p.y};
+      } else if (nearest && nd < 14){
+        // approach lightly
+        const tx = lerp(nearest.x, baseX, 0.35);
+        const ty = lerp(nearest.y, baseY, 0.35);
+        return {dx:tx - p.x, dy:ty - p.y};
+      } else {
+        return {dx:baseX - p.x, dy:baseY - p.y};
+      }
+    }
+  }
+
+  // Default: follow path
+  if (b.path.length>0){
+    // pop reached waypoints
+    while (b.path.length>0 && dist(p.x,p.y,b.path[0].x,b.path[0].y) < 0.8){
+      b.path.shift();
+    }
+  }
+  if (b.path.length>0){
+    const wp = b.path[0];
+    return {dx: wp.x - p.x, dy: wp.y - p.y};
+  }
+  return {dx: b.focusTarget.x - p.x, dy: b.focusTarget.y - p.y};
+}
+
+// ----- Human controls -----
+function humanDesiredMove(){
+  let dx=0, dy=0;
+  const up = keysDown.get('KeyW') || keysDown.get('ArrowUp');
+  const dn = keysDown.get('KeyS') || keysDown.get('ArrowDown');
+  const lf = keysDown.get('KeyA') || keysDown.get('ArrowLeft');
+  const rt = keysDown.get('KeyD') || keysDown.get('ArrowRight');
+  if (up) dy += 1;
+  if (dn) dy -= 1;
+  if (lf) dx -= 1;
+  if (rt) dx += 1;
+  return norm(dx,dy);
+}
+
+function mouseWorld(){
+  const viewW = (canvas.width/(window.devicePixelRatio||1) - UI_RIGHT_PAD) / PX_PER_M;
+  const viewH = (canvas.height/(window.devicePixelRatio||1)) / PX_PER_M;
+  const mx = clamp(mouseX, 0, canvas.width/(window.devicePixelRatio||1) - UI_RIGHT_PAD);
+  const my = mouseY;
+  return {x: camX + mx / PX_PER_M, y: camY + (viewH - my / PX_PER_M)};
+}
+
+// ----- Game start/reset -----
+function startGame(opts){
+  hideBotMarkers = opts.hideBotMarkers;
+  showDebug = opts.debugOverlay;
+  spectatorMode = opts.spectator;
+  cameraMode = spectatorMode ? 2 : 0;
+
+  running = true;
+  gameTime = 0;
+  seasonTime = SEASON_LEN;
+
+  players = [];
+  orbs = [];
+  peels = [];
+  decoys = [];
+  pairStacks = new Map();
+  events = [];
+
+  buildNavGrid();
+  playerIdCounter = 1;
+  orbIdCounter = 1;
+
+  if (!spectatorMode){
+    human = makePlayer(false);
+    human.name = choice(NAMES) + '#YOU';
+    players.push(human);
+  } else {
+    human = null;
+  }
+
+  const botCount = opts.botCount;
+  for (let i=0;i<botCount;i++){
+    players.push(makePlayer(true));
+  }
+
+  // prime spawners
+  for (const s of spawners){
+    s.orbId = null;
+    s.next = rand(0.0, 1.0);
+  }
+
+  overlay.style.display = 'none';
+
+  // camera init
+  camX = clamp(BANK_X - 20, 0, WORLD_W);
+  camY = clamp(BANK_Y - 12, 0, WORLD_H);
+
+  logEvent('session_start', {bots: botCount, spectator: spectatorMode});
+  requestAnimationFrame(loop);
+}
+
+// ----- Core update -----
+function update(dt){
+  gameTime += dt;
+  seasonTime -= dt;
+  if (seasonTime <= 0){
+    // season reset
+    for (const p of players){
+      p.banked = 0;
+    }
+    seasonTime = SEASON_LEN;
+    logEvent('season_reset', {});
+  }
+
+  updateSpawners(dt);
+  decayPairStacks(dt);
+
+  // update cooldowns, timers
+  for (const p of players){
+    p.dashCd = Math.max(0, p.dashCd - dt);
+    p.peelCd = Math.max(0, p.peelCd - dt);
+    p.decoyCd = Math.max(0, p.decoyCd - dt);
+    p.spawnSafeT = Math.max(0, p.spawnSafeT - dt);
+    p.slowT = Math.max(0, p.slowT - dt);
+    p.comebackT = Math.max(0, p.comebackT - dt);
+    p.emoteT = Math.max(0, p.emoteT - dt);
+
+    // careful steps timer
+    p.carefulT += dt;
+    if (p.carefulT >= CAREFUL_AFTER && !p.careful && p.dashT<=0){
+      p.careful = true;
+    }
+
+    // slip
+    if (p.slipT > 0){
+      p.slipT -= dt;
+      // friction decay
+      const f = Math.pow(0.18, dt); // exp-ish
+      p.slipVX *= f;
+      p.slipVY *= f;
+      if (p.slipT <= 0){
+        p.slipVX = 0; p.slipVY = 0;
+      }
+    }
+
+    // dash
+    if (p.dashT > 0){
+      p.dashT -= dt;
+      if (p.dashT <= 0){
+        p.dashDirX = 0; p.dashDirY = 0;
+      }
+    }
+
+    // deposit
+    if (p.depositing){
+      // cancel if slipped or tilted
+      if (p.slipT>0 || p.tiltT>0){
+        p.depositing = false;
+      } else {
+        if (dist(p.x,p.y,BANK_X,BANK_Y) <= BANK_R){
+          p.depositT -= dt;
+          if (p.depositT <= 0){
+            p.banked += p.held;
+            logEvent('bank_complete', {actor:p.id, amount:p.held});
+            p.held = 0;
+            p.depositing = false;
+          }
+        } else {
+          p.depositing = false;
+          logEvent('bank_cancel', {actor:p.id});
+        }
+      }
+    }
+
+    // tilt timer
+    if (p.tiltT && p.tiltT>0){
+      p.tiltT -= dt;
+      if (p.tiltT < 0) p.tiltT = 0;
+    }
+
+    // composure regen (lower under threat)
+    let nearEnemies = 0;
+    for (const other of players){
+      if (other.id===p.id) continue;
+      if (dist2(p.x,p.y,other.x,other.y) <= 10*10) nearEnemies++;
+    }
+    const threat = clamp(nearEnemies/3, 0, 1);
+    const regen = (threat > 0.2) ? COMPOSURE_REGEN_THREAT : COMPOSURE_REGEN_SAFE;
+    if (p.slipT<=0 && (!p.tiltT || p.tiltT<=0)){
+      p.composure = clamp(p.composure + regen*dt, 0, COMPOSURE_MAX);
+    }
+
+    // prevent tilt during comeback
+    if (p.comebackT>0){
+      p.composure = Math.max(p.composure, 20);
+    }
+
+    // tilt trigger
+    if (p.composure <= 0 && p.comebackT<=0 && (!p.tiltT || p.tiltT<=0)){
+      applyTilt(p, null);
+    }
+  }
+
+  // expire peels & decoys
+  peels = peels.filter(pl => pl.exp > gameTime);
+  decoys = decoys.filter(d => d.exp > gameTime);
+
+  // bot decisions
+  for (const p of players){
+    if (p.isBot){
+      updateBotBrain(p, dt);
+    }
+  }
+
+  // movement update
+  for (const p of players){
+    // determine desired movement dir
+    let mdx=0, mdy=0;
+
+    // if spectator mode: skip movement for humans
+    if (!p.isBot && spectatorMode){
+      mdx = 0; mdy = 0;
+    } else if (!p.isBot){
+      const m = humanDesiredMove();
+      mdx = m.x; mdy = m.y;
+    } else {
+      const m = botDesiredMove(p, dt);
+      const n = norm(m.dx, m.dy);
+      mdx = n.x; mdy = n.y;
+    }
+
+    // disable movement while tilted
+    if (p.tiltT && p.tiltT>0){
+      mdx = 0; mdy = 0;
+    }
+
+    // compute speed multipliers
+    let speed = BASE_SPEED;
+
+    // carried salt slows a bit
+    speed *= (1 - Math.min(0.08, p.held/1500));
+
+    if (p.slowT>0) speed *= SLOW_MULT;
+    if (p.depositing) speed *= 0.7;
+    if (p.comebackT>0) speed *= 1.15;
+
+    // slipping overrides control
+    if (p.slipT > 0){
+      p.vx = p.slipVX;
+      p.vy = p.slipVY;
+    } else if (p.dashT > 0){
+      // dash velocity
+      const dashSpeed = DASH_DIST / DASH_DUR;
+      p.vx = p.dashDirX * dashSpeed;
+      p.vy = p.dashDirY * dashSpeed;
+    } else {
+      // normal steering with inertia and turn limits (bots feel hand-driven)
+      const desiredVX = mdx * speed;
+      const desiredVY = mdy * speed;
+
+      const turn = p.isBot ? (dt * (3.5 + 2.0*p.bot.skill)) : (dt * 10.0);
+      const noise = p.isBot ? (0.12 * p.bot.stress * (1 - p.bot.focus)) : 0;
+      p.vx = lerp(p.vx, desiredVX, clamp(turn,0,1)) + rand(-noise,noise);
+      p.vy = lerp(p.vy, desiredVY, clamp(turn,0,1)) + rand(-noise,noise);
+    }
+
+    // integrate
+    p.x += p.vx * dt;
+    p.y += p.vy * dt;
+
+    // world bounds
+    p.x = clamp(p.x, PLAYER_R, WORLD_W-PLAYER_R);
+    p.y = clamp(p.y, PLAYER_R, WORLD_H-PLAYER_R);
+
+    // obstacle collisions
+    for (const r of obstacles){
+      resolveCircleRect(p, p.r, r);
+    }
+  }
+
+  // collisions: pickup orbs
+  // We process decoys first (so they prank)
+  for (let i=decoys.length-1;i>=0;i--){
+    const dcy = decoys[i];
+    for (const p of players){
+      if (dist2(p.x,p.y,dcy.x,dcy.y) <= (p.r + ORB_R)*(p.r + ORB_R)){
+        // trigger decoy
+        if (p.id !== dcy.ownerId){ // allow self-prank too, but lower chance? keep for comedy
+          applyDecoy(p, dcy.ownerId);
+        } else {
+          // self-prank: reduced effect
+          applyDecoy(p, dcy.ownerId);
+        }
+
+        // showboat by owner bot sometimes
+        const owner = players.find(pp=>pp.id===dcy.ownerId);
+        if (owner && owner.isBot){
+          maybeShowboat(owner);
+        }
+
+        decoys.splice(i,1);
+        break;
+      }
+    }
+  }
+
+  for (let i=orbs.length-1;i>=0;i--){
+    const o = orbs[i];
+    let picked = false;
+    for (const p of players){
+      if (dist2(p.x,p.y,o.x,o.y) <= (p.r + o.r)*(p.r + o.r)){
+        // collect
+        p.held += o.value;
+        logEvent('orb_pickup', {actor:p.id, value:o.value, x:+o.x.toFixed(2), y:+o.y.toFixed(2)});
+        orbs.splice(i,1);
+        picked = true;
+        break;
+      }
+    }
+    if (picked) continue;
+  }
+
+  // collisions: peels trigger
+  for (let i=peels.length-1;i>=0;i--){
+    const pl = peels[i];
+    for (const p of players){
+      if (p.id === pl.ownerId) continue; // no self slip from own peel in MVP
+      if (dist2(p.x,p.y,pl.x,pl.y) <= (PEEL_TRIGGER_R + p.r)*(PEEL_TRIGGER_R + p.r)){
+        applySlip(p, pl.ownerId);
+
+        // showboat by owner bot sometimes
+        const owner = players.find(pp=>pp.id===pl.ownerId);
+        if (owner && owner.isBot){
+          maybeShowboat(owner);
+        }
+
+        peels.splice(i,1);
+        break;
+      }
+    }
+  }
+
+  // bank interaction
+  for (const p of players){
+    if (p.held <= 0) continue;
+    if (p.slipT>0 || (p.tiltT && p.tiltT>0)) continue;
+
+    const inBank = dist(p.x,p.y,BANK_X,BANK_Y) <= BANK_R;
+    if (inBank && !p.depositing){
+      // bots/humans decide: auto-start for humans; bots sometimes hesitate if threat
+      let canStart = true;
+      if (p.isBot){
+        // estimate threat near bank
+        let threats = 0;
+        for (const other of players){
+          if (other.id===p.id) continue;
+          if (dist(other.x,other.y,BANK_X,BANK_Y) < 8) threats++;
+        }
+        const bankThreat = clamp(threats/3, 0, 1);
+        if (bankThreat > (0.35 + 0.40*p.bot.paranoia)){
+          canStart = false;
+        }
+      }
+      if (canStart){
+        p.depositing = true;
+        p.depositTotal = clamp(DEPOSIT_BASE + DEPOSIT_PER_SALT * p.held, DEPOSIT_BASE, DEPOSIT_CAP);
+        p.depositT = p.depositTotal;
+        logEvent('bank_start', {actor:p.id, held:p.held, t:p.depositTotal});
+      }
+    }
+  }
+
+  // update bot beliefs about peels/decoys from global lists (bounded; already in perception)
+}
+
+// ----- Showboat emotes -----
+const EMOTES = ['😂','🤡','😈','😏','💀','🙃','🫠'];
+function maybeShowboat(botPlayer){
+  const b = botPlayer.bot;
+  if (!b) return;
+  if (gameTime - b.lastEmoteAt < 6.0) return;
+  const p = 0.35 * b.showboat;
+  if (Math.random() < p){
+    b.lastEmoteAt = gameTime;
+    botPlayer.emoteT = 0.65;
+    botPlayer.emoteIcon = choice(EMOTES);
+    // tiny pause by zeroing velocity a bit (micro-hesitate)
+    botPlayer.vx *= 0.3;
+    botPlayer.vy *= 0.3;
+  }
+}
+
+// ----- Camera + UI -----
+function updateCamera(dt){
+  const viewWpx = (canvas.width/(window.devicePixelRatio||1) - UI_RIGHT_PAD);
+  const viewHpx = (canvas.height/(window.devicePixelRatio||1));
+  const viewW = viewWpx / PX_PER_M;
+  const viewH = viewHpx / PX_PER_M;
+
+  if (cameraMode === 0){
+    // follow player
+    if (human){
+      camX = clamp(human.x - viewW*0.5, 0, WORLD_W - viewW);
+      camY = clamp(human.y - viewH*0.5, 0, WORLD_H - viewH);
+    }
+  } else if (cameraMode === 1){
+    // follow leader
+    let leader = null;
+    for (const p of players){
+      if (!leader || p.banked > leader.banked) leader = p;
+    }
+    if (leader){
+      camX = clamp(leader.x - viewW*0.5, 0, WORLD_W - viewW);
+      camY = clamp(leader.y - viewH*0.5, 0, WORLD_H - viewH);
+    }
+  } else {
+    // free camera controls: IJKL pan, -/= zoom
+    const up = keysDown.get('KeyI');
+    const dn = keysDown.get('KeyK');
+    const lf = keysDown.get('KeyJ');
+    const rt = keysDown.get('KeyL');
+    const sp = 16 / PX_PER_M * 12; // speed in m/s scaled
+    let vx = 0, vy = 0;
+    if (up) vy += 1;
+    if (dn) vy -= 1;
+    if (lf) vx -= 1;
+    if (rt) vx += 1;
+    const nn = norm(vx,vy);
+    camX = clamp(camX + nn.x*sp*dt, 0, WORLD_W - viewW);
+    camY = clamp(camY + nn.y*sp*dt, 0, WORLD_H - viewH);
+
+    if (keysPressed.has('Minus') || keysPressed.has('NumpadSubtract')){
+      PX_PER_M = clamp(PX_PER_M - 1, 10, 26);
+    }
+    if (keysPressed.has('Equal') || keysPressed.has('NumpadAdd')){
+      PX_PER_M = clamp(PX_PER_M + 1, 10, 26);
+    }
+  }
+}
+
+function fmtTime(sec){
+  sec = Math.max(0, Math.floor(sec));
+  const m = Math.floor(sec/60);
+  const s = sec%60;
+  return String(m).padStart(2,'0') + ':' + String(s).padStart(2,'0');
+}
+
+function updateUI(){
+  elSeason.textContent = fmtTime(seasonTime);
+
+  const popText = `${players.length} entities`;
+  elPop.textContent = popText;
+
+  if (human){
+    elHeld.textContent = human.held;
+    elBanked.textContent = human.banked;
+    elComp.textContent = Math.round(human.composure);
+    elCompBar.style.width = clamp(human.composure/COMPOSURE_MAX*100,0,100) + '%';
+
+    elCdDash.textContent = human.dashCd>0 ? human.dashCd.toFixed(1)+'s' : 'ready';
+    elCdPeel.textContent = human.peelCd>0 ? human.peelCd.toFixed(1)+'s' : 'ready';
+    elCdDecoy.textContent = human.decoyCd>0 ? human.decoyCd.toFixed(1)+'s' : 'ready';
+
+    const flags = [];
+    if (human.careful) flags.push('Careful Steps');
+    if (human.depositing) flags.push('Depositing…');
+    if (human.slipT>0) flags.push('Slipping!');
+    if (human.comebackT>0) flags.push('Comeback');
+    elStatus.textContent = flags.length ? flags.join(' · ') : '';
+  } else {
+    elHeld.textContent = '—';
+    elBanked.textContent = '—';
+    elComp.textContent = '—';
+    elCompBar.style.width = '0%';
+    elCdDash.textContent = '—';
+    elCdPeel.textContent = '—';
+    elCdDecoy.textContent = '—';
+    elStatus.textContent = 'Spectator mode';
+  }
+
+  // leaderboard
+  const sorted = [...players].sort((a,b)=>b.banked-a.banked).slice(0,10);
+  let html = '';
+  for (let i=0;i<sorted.length;i++){
+    const p = sorted[i];
+    const you = (human && p.id===human.id);
+    html += `<tr style="${you?'opacity:1; font-weight:700;':''}"><td>${i+1}. ${escapeHtml(p.name)}</td><td>${p.banked}</td></tr>`;
+  }
+  elLB.innerHTML = html;
+}
+function escapeHtml(s){
+  return s.replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+}
+
+// ----- Rendering -----
+function w2s(x,y){
+  const viewH = (canvas.height/(window.devicePixelRatio||1)) / PX_PER_M;
+  const sx = (x - camX)*PX_PER_M;
+  const sy = (viewH - (y - camY))*PX_PER_M;
+  return {sx, sy};
+}
+
+function draw(){
+  const wpx = canvas.width/(window.devicePixelRatio||1);
+  const hpx = canvas.height/(window.devicePixelRatio||1);
+  ctx.clearRect(0,0,wpx,hpx);
+
+  // compute visible bounds in world
+  const viewW = (wpx - UI_RIGHT_PAD) / PX_PER_M;
+  const viewH = hpx / PX_PER_M;
+
+  // background grid
+  ctx.save();
+  ctx.translate(0,0);
+  ctx.globalAlpha = 0.22;
+  ctx.strokeStyle = '#223044';
+  ctx.lineWidth = 1;
+  const grid = 5;
+  for (let gx = 0; gx <= WORLD_W; gx += grid){
+    const a = w2s(gx,0);
+    const b = w2s(gx,WORLD_H);
+    ctx.beginPath();
+    ctx.moveTo(a.sx, b.sy);
+    ctx.lineTo(a.sx, a.sy);
+    ctx.stroke();
+  }
+  for (let gy = 0; gy <= WORLD_H; gy += grid){
+    const a = w2s(0,gy);
+    const b = w2s(WORLD_W,gy);
+    ctx.beginPath();
+    ctx.moveTo(a.sx, a.sy);
+    ctx.lineTo(b.sx, a.sy);
+    ctx.stroke();
+  }
+  ctx.restore();
+
+  // draw bank
+  const bank = w2s(BANK_X, BANK_Y);
+  ctx.save();
+  ctx.globalAlpha = 0.35;
+  ctx.fillStyle = '#e8eef7';
+  ctx.beginPath();
+  ctx.arc(bank.sx, bank.sy, BANK_R*PX_PER_M, 0, Math.PI*2);
+  ctx.fill();
+  ctx.globalAlpha = 0.85;
+  ctx.strokeStyle = '#e8eef7';
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.arc(bank.sx, bank.sy, BANK_R*PX_PER_M, 0, Math.PI*2);
+  ctx.stroke();
+  ctx.globalAlpha = 0.9;
+  ctx.fillStyle = '#0b0f14';
+  ctx.font = '12px system-ui';
+  ctx.textAlign = 'center';
+  ctx.fillText('BANK', bank.sx, bank.sy+4);
+  ctx.restore();
+
+  // obstacles
+  ctx.save();
+  ctx.fillStyle = '#141c26';
+  ctx.strokeStyle = 'rgba(255,255,255,0.08)';
+  for (const r of obstacles){
+    const a = w2s(r.x1, r.y1);
+    const b = w2s(r.x2, r.y2);
+    const x = a.sx;
+    const y = b.sy;
+    const ww = (r.x2-r.x1)*PX_PER_M;
+    const hh = (r.y2-r.y1)*PX_PER_M;
+    ctx.fillRect(x, y, ww, hh);
+    ctx.strokeRect(x, y, ww, hh);
+  }
+  ctx.restore();
+
+  // peels
+  ctx.save();
+  for (const pl of peels){
+    const s = w2s(pl.x, pl.y);
+    ctx.globalAlpha = 0.9;
+    ctx.fillStyle = '#f2d36b';
+    ctx.beginPath();
+    ctx.arc(s.sx, s.sy, 0.55*PX_PER_M, 0, Math.PI*2);
+    ctx.fill();
+    ctx.globalAlpha = 0.25;
+    ctx.beginPath();
+    ctx.arc(s.sx, s.sy, PEEL_TRIGGER_R*PX_PER_M, 0, Math.PI*2);
+    ctx.fill();
+  }
+  ctx.restore();
+
+  // decoys (draw as big juicy orb)
+  ctx.save();
+  for (const dcy of decoys){
+    const s = w2s(dcy.x, dcy.y);
+    ctx.globalAlpha = 0.95;
+    ctx.fillStyle = '#7de0ff';
+    ctx.beginPath();
+    ctx.arc(s.sx, s.sy, 0.62*PX_PER_M, 0, Math.PI*2);
+    ctx.fill();
+    // subtle tell: small spark
+    if (Math.floor((gameTime*3 + dcy.id)%6)===0){
+      ctx.globalAlpha = 0.85;
+      ctx.fillStyle = '#e8eef7';
+      ctx.beginPath();
+      ctx.arc(s.sx+rand(-2,2), s.sy+rand(-2,2), 2.2, 0, Math.PI*2);
+      ctx.fill();
+    }
+  }
+  ctx.restore();
+
+  // orbs
+  ctx.save();
+  for (const o of orbs){
+    const s = w2s(o.x, o.y);
+    let rad = 0.38;
+    let alpha = 0.9;
+    if (o.value >= 25){ rad=0.58; alpha=0.95; ctx.fillStyle='#7de0ff'; }
+    else if (o.value >= 5){ rad=0.48; alpha=0.92; ctx.fillStyle='#a7ff9a'; }
+    else { rad=0.38; alpha=0.85; ctx.fillStyle='#e8eef7'; }
+    ctx.globalAlpha = alpha;
+    ctx.beginPath();
+    ctx.arc(s.sx, s.sy, rad*PX_PER_M, 0, Math.PI*2);
+    ctx.fill();
+  }
+  ctx.restore();
+
+  // players
+  ctx.save();
+  for (const p of players){
+    const s = w2s(p.x,p.y);
+    // base color: humans & bots same palette
+    let fill = '#e8eef7';
+    if (p.comebackT>0) fill = '#ffd37a';
+    if (p.slipT>0) fill = '#ff9aa7';
+    if (p.depositing) fill = '#b7a6ff';
+
+    ctx.globalAlpha = 0.95;
+    ctx.fillStyle = fill;
+    ctx.beginPath();
+    ctx.arc(s.sx, s.sy, p.r*PX_PER_M, 0, Math.PI*2);
+    ctx.fill();
+
+    // outline indicates held salt (subtle)
+    const heldGlow = clamp(p.held/120, 0, 1);
+    if (heldGlow>0){
+      ctx.globalAlpha = 0.25 + 0.35*heldGlow;
+      ctx.strokeStyle = '#7de0ff';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.arc(s.sx, s.sy, (p.r+0.08+0.12*heldGlow)*PX_PER_M, 0, Math.PI*2);
+      ctx.stroke();
+    }
+
+    // spawn safe ring
+    if (p.spawnSafeT>0){
+      ctx.globalAlpha = 0.22;
+      ctx.strokeStyle = '#e8eef7';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.arc(s.sx, s.sy, (p.r+0.65)*PX_PER_M, 0, Math.PI*2);
+      ctx.stroke();
+    }
+
+    // name
+    ctx.globalAlpha = 0.92;
+    ctx.fillStyle = '#e8eef7';
+    ctx.font = '12px system-ui';
+    ctx.textAlign = 'center';
+    ctx.fillText(p.name, s.sx, s.sy - p.r*PX_PER_M - 10);
+
+    // emote
+    if (p.emoteT>0){
+      ctx.font = '16px system-ui';
+      ctx.fillText(p.emoteIcon, s.sx, s.sy - p.r*PX_PER_M - 28);
+    }
+
+    // bot marker (optional)
+    if (p.isBot && showBotMarkers && !hideBotMarkers){
+      ctx.globalAlpha = 0.85;
+      ctx.fillStyle = '#ff9aa7';
+      ctx.font = '10px ui-monospace, SFMono-Regular, Menlo, Consolas, monospace';
+      ctx.fillText('BOT', s.sx, s.sy + p.r*PX_PER_M + 12);
+    }
+  }
+  ctx.restore();
+
+  // debug overlay
+  if (showDebug){
+    ctx.save();
+    ctx.globalAlpha = 0.95;
+    ctx.font = '11px ui-monospace, SFMono-Regular, Menlo, Consolas, monospace';
+    ctx.fillStyle = '#e8eef7';
+    for (const p of players){
+      if (!p.isBot) continue;
+      const b = p.bot;
+      const s = w2s(p.x,p.y);
+      const lines = [
+        `${b.archetype}  goal=${b.goal}`,
+        `stress=${b.stress.toFixed(2)} anger=${b.anger.toFixed(2)}`,
+        `greed=${b.greed.toFixed(2)} par=${b.paranoia.toFixed(2)}`
+      ];
+      let yy = s.sy + p.r*PX_PER_M + 24;
+      for (const ln of lines){
+        ctx.fillText(ln, s.sx + 30, yy);
+        yy += 12;
+      }
+
+      // draw path
+      if (b.path && b.path.length>0){
+        ctx.globalAlpha = 0.35;
+        ctx.strokeStyle = '#a7ff9a';
+        ctx.lineWidth = 1.5;
+        ctx.beginPath();
+        ctx.moveTo(s.sx, s.sy);
+        for (const wp of b.path){
+          const wps = w2s(wp.x, wp.y);
+          ctx.lineTo(wps.sx, wps.sy);
+        }
+        ctx.stroke();
+        ctx.globalAlpha = 0.95;
+      }
+
+      // known peels
+      ctx.globalAlpha = 0.35;
+      ctx.strokeStyle = '#f2d36b';
+      for (const m of b.knownPeels){
+        const ms = w2s(m.x,m.y);
+        ctx.beginPath();
+        ctx.arc(ms.sx, ms.sy, 1.0*PX_PER_M, 0, Math.PI*2);
+        ctx.stroke();
+      }
+
+      // suspected decoys
+      ctx.strokeStyle = '#7de0ff';
+      for (const m of b.suspectedDecoys){
+        const ms = w2s(m.x,m.y);
+        ctx.beginPath();
+        ctx.arc(ms.sx, ms.sy, 1.2*PX_PER_M, 0, Math.PI*2);
+        ctx.stroke();
+      }
+    }
+    ctx.restore();
+  }
+
+  // right UI safe area shade (so world doesn't distract under UI)
+  ctx.save();
+  ctx.globalAlpha = 0.85;
+  ctx.fillStyle = 'rgba(10,14,20,0.82)';
+  ctx.fillRect(wpx-UI_RIGHT_PAD, 0, UI_RIGHT_PAD, hpx);
+  ctx.restore();
+}
+
+// ----- Main loop -----
+let lastT = 0;
+function loop(ts){
+  if (!running) return;
+  const t = ts/1000;
+  let dt = lastT ? (t - lastT) : 1/60;
+  lastT = t;
+  dt = clamp(dt, 0.0, 0.05);
+
+  // handle human ability key presses (edge triggered)
+  if (!spectatorMode && human){
+    const w = mouseWorld();
+    const aim = norm(w.x - human.x, w.y - human.y);
+    const move = humanDesiredMove();
+
+    if (keysPressed.has('Space')){
+      // dash: prefer movement dir else aim
+      const d = (Math.hypot(move.x,move.y)>0.1) ? move : aim;
+      tryDash(human, d.x, d.y);
+    }
+    if (keysPressed.has('KeyQ')){
+      tryPeel(human);
+    }
+    if (keysPressed.has('KeyE')){
+      tryDecoy(human, aim.x, aim.y);
+    }
+  }
+
+  // free camera zoom keys processed in updateCamera using keysPressed
+
+  update(dt);
+  updateCamera(dt);
+  updateUI();
+  draw();
+
+  keysPressed.clear();
+  requestAnimationFrame(loop);
+}
+
+// ----- Download event log -----
+function downloadLog(){
+  const blob = new Blob([JSON.stringify({meta:{world:[WORLD_W,WORLD_H], seasonLen:SEASON_LEN}, events}, null, 2)], {type:'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `schadenfreude_mvp_log_${Date.now()}.json`;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  setTimeout(()=>URL.revokeObjectURL(url), 1000);
+}
+</script>
+</body>
+</html>

@@ -5,17 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="e78bf4a9-838f-42d3-92b5-6643cc3bcc46" name="Changes" comment="dump">
-      <change afterPath="$PROJECT_DIR$/assets/OFL.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/assets/SpaceMono-Bold.ttf" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/assets/SpaceMono-BoldItalic.ttf" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/assets/SpaceMono-Italic.ttf" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/assets/SpaceMono-Regular.ttf" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/assets/jackiechan.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/drive_poetry/Collected_Poems_Snap.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/drive_poetry/Collected_Poems_Snap_2.html" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/poetry.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/art.html" beforeDir="false" afterPath="$PROJECT_DIR$/art.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/about.html" beforeDir="false" afterPath="$PROJECT_DIR$/about.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -43,34 +34,39 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "DefaultHtmlFileTemplate": "HTML File",
-    "JavaScript Debug.Collected_Poems_Snap.html.executor": "Run",
-    "JavaScript Debug.poetry.html.executor": "Run",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "last_opened_file_path": "C:/Users/Julian/WebstormProjects/julianjocquecom",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "settings.editor.selected.configurable": "preferences.pluginManager",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;DefaultHtmlFileTemplate&quot;: &quot;HTML File&quot;,
+    &quot;JavaScript Debug.Collected_Poems_Snap.html.executor&quot;: &quot;Run&quot;,
+    &quot;JavaScript Debug.index.html (1).executor&quot;: &quot;Run&quot;,
+    &quot;JavaScript Debug.poetry.html.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/Julian/WebstormProjects/julianjocquecom&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;reference.settings.ide.settings.web.browsers&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\Julian\WebstormProjects\julianjocquecom" />
       <recent name="C:\Users\Julian\WebstormProjects\julianjocquecom\drive_poetry" />
       <recent name="C:\Users\Julian\WebstormProjects\julianjocquecom\assets" />
       <recent name="C:\Users\Julian\WebstormProjects\julianjocquecom\games" />
     </key>
   </component>
-  <component name="RunManager" selected="JavaScript Debug.Collected_Poems_Snap_2.html">
+  <component name="RunManager" selected="JavaScript Debug.index.html (1)">
     <configuration name="Collected_Poems_Snap_2.html" type="JavascriptDebugType" temporary="true" nameIsGenerated="true" uri="http://localhost:63342/julianjocquecom/drive_poetry/Collected_Poems_Snap_2.html" useBuiltInWebServerPort="true">
       <method v="2" />
     </configuration>
     <configuration name="Collected_Poems_Snap.html" type="JavascriptDebugType" temporary="true" nameIsGenerated="true" uri="http://localhost:63342/julianjocquecom/drive_poetry/Collected_Poems_Snap.html" useBuiltInWebServerPort="true">
+      <method v="2" />
+    </configuration>
+    <configuration name="index.html (1)" type="JavascriptDebugType" temporary="true" nameIsGenerated="true" uri="http://localhost:63342/julianjocquecom/bill/index.html" useBuiltInWebServerPort="true">
       <method v="2" />
     </configuration>
     <configuration name="index.html" type="JavascriptDebugType" temporary="true" nameIsGenerated="true" uri="http://localhost:63342/julianjocquecom/index.html" useBuiltInWebServerPort="true">
@@ -81,6 +77,7 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="JavaScript Debug.index.html (1)" />
         <item itemvalue="JavaScript Debug.Collected_Poems_Snap_2.html" />
         <item itemvalue="JavaScript Debug.Collected_Poems_Snap.html" />
         <item itemvalue="JavaScript Debug.poetry.html" />
@@ -116,6 +113,7 @@
       <workItem from="1768497013205" duration="1327000" />
       <workItem from="1768500940766" duration="35000" />
       <workItem from="1769140940260" duration="4014000" />
+      <workItem from="1769287371891" duration="461000" />
     </task>
     <task id="LOCAL-00001" summary="Update I guess to prod why not">
       <option name="closed" value="true" />
@@ -146,6 +144,17 @@
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Update I guess to prod why not" />
