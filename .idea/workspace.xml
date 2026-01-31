@@ -4,10 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="e78bf4a9-838f-42d3-92b5-6643cc3bcc46" name="Changes" comment="dump">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/about.html" beforeDir="false" afterPath="$PROJECT_DIR$/about.html" afterDir="false" />
-    </list>
+    <list default="true" id="e78bf4a9-838f-42d3-92b5-6643cc3bcc46" name="Changes" comment="initial bill" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -113,7 +110,7 @@
       <workItem from="1768497013205" duration="1327000" />
       <workItem from="1768500940766" duration="35000" />
       <workItem from="1769140940260" duration="4014000" />
-      <workItem from="1769287371891" duration="461000" />
+      <workItem from="1769287371891" duration="1203000" />
     </task>
     <task id="LOCAL-00001" summary="Update I guess to prod why not">
       <option name="closed" value="true" />

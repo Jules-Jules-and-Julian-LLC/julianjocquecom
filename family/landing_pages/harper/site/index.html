@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Harper - Ghost Zone Database</title>
+    <title>Harper Jocque</title>
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600&family=Playfair+Display:ital@0;1&display=swap" rel="stylesheet">
     <style>
         * {
             box-sizing: border-box;
@@ -12,71 +13,80 @@
         }
 
         body {
-            height: 100vh;
-            width: 100vw;
-            overflow: hidden;
+            min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            /* Ghost Zone Vortex Background */
-            background: radial-gradient(circle at center, #1a1a1a 0%, #000000 40%, #0f0014 100%);
-            font-family: 'Courier New', 'Courier', monospace; /* FanFic / Terminal Font */
-            color: #39ff14; /* Ecto Green Text */
+            padding: 20px;
+            /* Ghost Zone Portal Gradient - purple/magenta swirl */
+            background:
+                radial-gradient(ellipse at 20% 80%, rgba(138, 43, 226, 0.4) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 20%, rgba(255, 105, 180, 0.3) 0%, transparent 50%),
+                radial-gradient(ellipse at 50% 50%, rgba(75, 0, 130, 0.5) 0%, transparent 70%),
+                linear-gradient(135deg, #1a0a2e 0%, #16213e 50%, #0f0f23 100%);
+            font-family: 'Quicksand', -apple-system, sans-serif;
+            color: #f0e6ff;
+            overflow-x: hidden;
         }
 
-        /* Animated Ghost Zone Fog */
-        .fog {
+        /* Floating Orbs */
+        .orb {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 200%;
-            height: 200%;
-            background: repeating-linear-gradient(
-                45deg,
-                transparent,
-                transparent 20px,
-                rgba(57, 255, 20, 0.05) 20px,
-                rgba(57, 255, 20, 0.05) 40px
-            );
-            animation: drift 20s linear infinite;
+            border-radius: 50%;
+            filter: blur(60px);
+            opacity: 0.5;
             pointer-events: none;
-            z-index: -1;
+            animation: float 20s ease-in-out infinite;
+        }
+        .orb-1 {
+            width: 400px; height: 400px;
+            background: rgba(138, 43, 226, 0.4);
+            top: -100px; left: -100px;
+            animation-delay: 0s;
+        }
+        .orb-2 {
+            width: 300px; height: 300px;
+            background: rgba(255, 105, 180, 0.3);
+            bottom: -50px; right: -50px;
+            animation-delay: -7s;
+        }
+        .orb-3 {
+            width: 200px; height: 200px;
+            background: rgba(57, 255, 20, 0.2);
+            top: 50%; left: 50%;
+            animation-delay: -14s;
+        }
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            25% { transform: translate(30px, -30px) scale(1.05); }
+            50% { transform: translate(-20px, 20px) scale(0.95); }
+            75% { transform: translate(20px, 10px) scale(1.02); }
         }
 
-        @keyframes drift {
-            0% { transform: translate(-10%, -10%) rotate(0deg); }
-            100% { transform: translate(-20%, -20%) rotate(10deg); }
-        }
-
-        /* Fenton Works / Sims Pad Style Card */
+        /* Main Card */
         .card {
-            background: rgba(0, 0, 0, 0.85);
-            border-radius: 15px;
-            /* Glowing Ecto-Border */
-            border: 3px solid #39ff14;
-            box-shadow: 
-                0 0 20px #39ff14, 
-                inset 0 0 20px rgba(57, 255, 20, 0.3);
-            padding: 30px;
-            width: 90%;
-            max-width: 600px;
-            text-align: center;
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            padding: 40px;
+            width: 100%;
+            max-width: 550px;
             position: relative;
-            max-height: 95vh;
-            overflow-y: auto;
-            scrollbar-width: none;
+            box-shadow:
+                0 25px 50px rgba(0, 0, 0, 0.4),
+                inset 0 0 60px rgba(138, 43, 226, 0.1);
         }
-        .card::-webkit-scrollbar { display: none; }
 
         /* Avatar Container */
         .avatar-container {
             display: flex;
             justify-content: center;
-            align-items: flex-end; /* Align bottom so heads align */
-            margin-bottom: 20px;
-            gap: 30px;
-            position: relative;
-            padding-top: 60px; /* Space for Plumbob */
+            align-items: flex-end;
+            margin-bottom: 30px;
+            gap: 25px;
+            padding-top: 50px;
         }
 
         .avatar-wrapper {
@@ -86,17 +96,16 @@
             align-items: center;
         }
 
-        /* Fixed Plumbob (Sims Crystal) */
+        /* Plumbob (Sims Crystal) */
         .plumbob {
-            width: 40px;
-            height: 70px;
+            width: 35px;
+            height: 60px;
             position: absolute;
-            top: -90px;
+            top: -80px;
             left: 50%;
             transform: translateX(-50%);
-            animation: bob 2s ease-in-out infinite alternate, spinPlumbob 4s linear infinite;
-            z-index: 20; /* Ensure it's above everything */
-            transform-style: preserve-3d;
+            animation: bob 2.5s ease-in-out infinite;
+            z-index: 20;
         }
 
         .plumbob-top, .plumbob-bottom {
@@ -104,79 +113,67 @@
             height: 0;
             position: absolute;
             left: 0;
-            border-left: 20px solid transparent;
-            border-right: 20px solid transparent;
-            filter: drop-shadow(0 0 5px #39ff14);
+            border-left: 17.5px solid transparent;
+            border-right: 17.5px solid transparent;
         }
 
         .plumbob-top {
             top: 0;
-            border-bottom: 35px solid rgba(57, 255, 20, 0.8);
+            border-bottom: 30px solid rgba(57, 255, 20, 0.9);
+            filter: drop-shadow(0 0 10px rgba(57, 255, 20, 0.8));
         }
-        
-        /* Add facets to top */
         .plumbob-top::after {
             content: '';
             position: absolute;
-            left: -20px;
-            top: 0;
-            width: 0;
-            height: 0;
-            border-left: 20px solid transparent;
-            border-right: 20px solid transparent;
-            border-bottom: 35px solid rgba(255, 255, 255, 0.3); /* Shine */
+            left: -17.5px; top: 0;
+            border-left: 17.5px solid transparent;
+            border-right: 17.5px solid transparent;
+            border-bottom: 30px solid rgba(255, 255, 255, 0.3);
             transform: scaleX(0.5);
         }
 
         .plumbob-bottom {
             bottom: 0;
-            border-top: 35px solid rgba(0, 200, 0, 0.8);
+            border-top: 30px solid rgba(34, 197, 94, 0.9);
+            filter: drop-shadow(0 0 10px rgba(57, 255, 20, 0.6));
         }
-        
-         /* Add facets to bottom */
-         .plumbob-bottom::after {
+        .plumbob-bottom::after {
             content: '';
             position: absolute;
-            left: -20px;
-            bottom: 35px; /* Adjust relative to border-top */
-            width: 0;
-            height: 0;
-            border-left: 20px solid transparent;
-            border-right: 20px solid transparent;
-            border-top: 35px solid rgba(0, 100, 0, 0.3); /* Shadow */
+            left: -17.5px; bottom: 30px;
+            border-left: 17.5px solid transparent;
+            border-right: 17.5px solid transparent;
+            border-top: 30px solid rgba(0, 100, 0, 0.4);
             transform: scaleX(0.5);
         }
 
         @keyframes bob {
-            0% { transform: translateX(-50%) translateY(0); }
-            100% { transform: translateX(-50%) translateY(-15px); }
-        }
-        @keyframes spinPlumbob {
-            0% { transform: translateX(-50%) rotateY(0deg); }
-            100% { transform: translateX(-50%) rotateY(360deg); }
+            0%, 100% { transform: translateX(-50%) translateY(0); }
+            50% { transform: translateX(-50%) translateY(-12px); }
         }
 
         /* CSS Cartoon Faces */
         .avatar {
-            width: 100px;
+            width: 90px;
             height: 100px;
             position: relative;
             cursor: pointer;
-            transition: transform 0.2s;
+            transition: transform 0.3s ease;
         }
-
-        .avatar:hover { transform: scale(1.05); }
+        .avatar:hover { transform: scale(1.08); }
 
         .head {
-            width: 70px;
-            height: 85px;
-            background-color: #ffe0bd; /* Pale Skin */
-            border-radius: 25px; /* Oval-ish */
+            width: 65px;
+            height: 80px;
+            background: linear-gradient(145deg, #ffe8d6, #f5d5c8);
+            border-radius: 22px;
             position: absolute;
             bottom: 0;
-            left: 15px;
+            left: 12.5px;
             z-index: 5;
-            box-shadow: 2px 2px 5px rgba(0,0,0,0.5);
+            box-shadow:
+                0 4px 15px rgba(0, 0, 0, 0.3),
+                inset 0 -5px 15px rgba(0, 0, 0, 0.1);
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -185,296 +182,250 @@
 
         .eyes {
             display: flex;
-            gap: 12px;
-            margin-top: 10px;
-            z-index: 6;
+            gap: 10px;
+            margin-top: 8px;
         }
-
         .eye {
-            width: 14px;
-            height: 8px;
+            width: 12px;
+            height: 7px;
             background: white;
             border-radius: 50%;
             position: relative;
             overflow: hidden;
-            border: 1px solid rgba(0,0,0,0.1);
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);
         }
-
         .pupil {
-            width: 6px;
-            height: 6px;
+            width: 5px;
+            height: 5px;
             border-radius: 50%;
             position: absolute;
             top: 1px;
-            left: 4px;
+            left: 3.5px;
         }
-
         .mouth {
-            width: 20px;
-            height: 8px;
-            border-bottom: 2px solid #dba784;
+            width: 16px;
+            height: 6px;
+            border-bottom: 2px solid #d4a59a;
             border-radius: 50%;
-            margin-top: 15px;
+            margin-top: 12px;
         }
 
-        /* --- ME (Left) --- */
-        /* Features: Pale Skin, Light Blonde Hair, Green Eyes */
-        
-        .me .head { background-color: #fff0e0; } /* Very Pale */
-
+        /* Me (Julian) - Blonde, Green Eyes */
+        .me .head { background: linear-gradient(145deg, #fff5eb, #ffe8d6); }
         .me .hair-top {
             position: absolute;
-            top: -10px;
-            left: -5px;
-            width: 80px;
-            height: 35px;
-            background-color: #faf0be; /* Light Blonde */
-            border-radius: 20px 20px 5px 5px;
+            top: -8px; left: -3px;
+            width: 75px; height: 32px;
+            background: linear-gradient(145deg, #f5e6a3, #e8d68a);
+            border-radius: 18px 18px 5px 5px;
             z-index: 10;
         }
-        
-        /* Little hair tuft */
         .me .hair-top::before {
             content: '';
             position: absolute;
-            top: -5px;
-            left: 20px;
-            width: 30px;
-            height: 20px;
-            background-color: #faf0be;
+            top: -4px; left: 18px;
+            width: 28px; height: 18px;
+            background: linear-gradient(145deg, #f5e6a3, #e8d68a);
             border-radius: 50% 50% 0 0;
-            transform: rotate(-10deg);
+            transform: rotate(-8deg);
+        }
+        .me .pupil {
+            background: linear-gradient(145deg, #4ade80, #22c55e);
+            box-shadow: 0 0 4px rgba(74, 222, 128, 0.5);
         }
 
-        .me .pupil { background-color: #4caf50; border: 1px solid #2e7d32; } /* Green Eyes */
-
-        /* --- HARPER (Right) --- */
-        /* Features: Brunette (Dark Brown), Shoulder Length, Dark Brown Eyes */
-
-        .harper .head { background-color: #f5d0a9; } /* Slightly warmer/fair */
-
+        /* Harper - Brunette, Dark Eyes */
+        .harper .head { background: linear-gradient(145deg, #f5dcc8, #e8c9b8); }
         .harper .hair-back {
             position: absolute;
-            top: 10px;
-            left: 5px;
-            width: 90px;
-            height: 90px;
-            background-color: #4a3b2a; /* Dark Brunette */
-            border-radius: 20px;
-            z-index: 1; /* Behind head */
+            top: 8px; left: 3px;
+            width: 85px; height: 85px;
+            background: linear-gradient(145deg, #5c4033, #3d2817);
+            border-radius: 18px;
+            z-index: 1;
         }
-
         .harper .hair-top {
             position: absolute;
-            top: -5px;
-            left: 5px;
-            width: 76px; /* Slightly wider than head width adjustment */
-            height: 30px;
-            background-color: #4a3b2a;
-            border-radius: 30px 30px 0 0;
+            top: -3px; left: 3px;
+            width: 72px; height: 28px;
+            background: linear-gradient(145deg, #5c4033, #3d2817);
+            border-radius: 28px 28px 0 0;
             z-index: 10;
         }
-        
-        /* Side bangs/hair framing */
         .harper .hair-top::before, .harper .hair-top::after {
             content: '';
             position: absolute;
-            top: 25px;
-            width: 15px;
-            height: 40px;
-            background-color: #4a3b2a;
+            top: 23px;
+            width: 13px; height: 38px;
+            background: linear-gradient(145deg, #5c4033, #3d2817);
         }
-        .harper .hair-top::before { left: -5px; border-radius: 0 0 0 10px; }
-        .harper .hair-top::after { right: -5px; border-radius: 0 0 10px 0; }
+        .harper .hair-top::before { left: -4px; border-radius: 0 0 0 10px; }
+        .harper .hair-top::after { right: -4px; border-radius: 0 0 10px 0; }
+        .harper .pupil {
+            background: linear-gradient(145deg, #3d2817, #1a0f0a);
+        }
 
-        .harper .pupil { background-color: #3b240b; border: 1px solid #1a1005; } /* Dark Brown Eyes */
-
-
-        /* Rotating Emoji */
+        /* Connector Emoji */
         .connector-icon {
-            font-size: 2.5rem;
-            animation: spin 6s linear infinite;
-            filter: drop-shadow(0 0 5px #39ff14);
+            font-size: 2rem;
+            filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.3));
             cursor: pointer;
             user-select: none;
-            transition: transform 0.2s;
-            color: #fff;
+            transition: transform 0.3s ease;
             align-self: center;
+            animation: pulse 3s ease-in-out infinite;
         }
-        
-        .connector-icon:hover { animation-duration: 1s; }
-        .connector-icon:active { transform: scale(0.8); }
-
-        @keyframes spin {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
+        .connector-icon:hover { transform: scale(1.2); }
+        @keyframes pulse {
+            0%, 100% { opacity: 0.8; }
+            50% { opacity: 1; }
         }
 
         /* Stats Section */
         .stats-container {
             margin-bottom: 25px;
-            text-align: left;
             display: flex;
             flex-direction: column;
-            gap: 15px;
-            /* Tech Panel Background */
-            background: rgba(0, 20, 0, 0.5);
+            gap: 14px;
+            background: rgba(0, 0, 0, 0.2);
             padding: 20px;
-            border-radius: 10px;
-            border: 1px solid #39ff14;
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         .stat-row {
             cursor: pointer;
-            position: relative;
+            transition: transform 0.2s ease;
         }
+        .stat-row:hover { transform: translateX(5px); }
 
         .stat-label {
             display: flex;
             justify-content: space-between;
-            margin-bottom: 5px;
-            font-size: 0.8rem;
+            margin-bottom: 6px;
+            font-size: 0.75rem;
             text-transform: uppercase;
-            font-weight: bold;
-            letter-spacing: 1px;
-            text-shadow: 0 0 5px #39ff14;
-            color: #ccffcc;
+            font-weight: 600;
+            letter-spacing: 1.5px;
+            color: rgba(255, 255, 255, 0.7);
         }
-        
-        .stat-row:hover .stat-label { color: #fff; text-shadow: 0 0 8px #fff; }
+        .stat-row:hover .stat-label { color: #fff; }
 
         .progress-bar-bg {
             width: 100%;
-            height: 18px;
-            background: #001a00;
-            border-radius: 4px;
-            border: 1px solid #39ff14;
+            height: 10px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 5px;
             overflow: hidden;
             position: relative;
         }
 
-        /* Ectoplasm Bar Fill */
         .progress-bar-fill {
             height: 100%;
-            border-radius: 2px;
-            background: linear-gradient(90deg, #39ff14 0%, #00ff00 50%, #ccffcc 100%);
-            box-shadow: 0 0 10px #39ff14;
-            width: 0%; 
-            animation: fillUp 1.5s ease-out forwards, breathe 3s ease-in-out infinite;
+            border-radius: 5px;
+            width: 0%;
+            animation: fillUp 1.2s ease-out forwards;
             position: relative;
+            overflow: hidden;
         }
-
-        /* Bubbling Ectoplasm Effect */
         .progress-bar-fill::after {
             content: '';
             position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: repeating-linear-gradient(
-                90deg,
-                transparent,
-                transparent 10px,
-                rgba(255,255,255,0.4) 10px,
-                rgba(255,255,255,0.4) 12px
-            );
-            animation: flow 1s linear infinite;
+            top: 0; left: -100%;
+            width: 100%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+            animation: shimmer 2s ease-in-out infinite;
         }
-
-        @keyframes flow {
-            from { background-position: 0 0; }
-            to { background-position: 20px 0; }
-        }
-
         @keyframes fillUp { to { width: var(--target-width); } }
-        @keyframes breathe {
-            0% { width: calc(var(--target-width) - 2%); opacity: 0.9; }
-            50% { width: var(--target-width); opacity: 1; }
-            100% { width: calc(var(--target-width) - 2%); opacity: 0.9; }
+        @keyframes shimmer { to { left: 100%; } }
+
+        /* Different stat colors */
+        .stat-weirdness .progress-bar-fill {
+            background: linear-gradient(90deg, #a855f7, #ec4899);
+        }
+        .stat-independence .progress-bar-fill {
+            background: linear-gradient(90deg, #f97316, #eab308);
+        }
+        .stat-animal .progress-bar-fill {
+            background: linear-gradient(90deg, #22c55e, #10b981);
+        }
+        .stat-biology .progress-bar-fill {
+            background: linear-gradient(90deg, #06b6d4, #3b82f6);
+        }
+        .stat-tolerance .progress-bar-fill {
+            background: linear-gradient(90deg, #f472b6, #fb7185);
         }
 
-        /* FanFic Text Style */
+        /* Message Box */
         .message {
-            font-size: 0.95rem;
-            line-height: 1.6;
+            font-family: 'Playfair Display', Georgia, serif;
+            font-size: 1rem;
+            line-height: 1.8;
             text-align: left;
-            background: rgba(0, 0, 0, 0.6);
-            padding: 20px;
-            border-radius: 5px;
-            border-left: 3px solid #39ff14;
-            color: #ccffcc;
-            font-family: 'Consolas', 'Monaco', monospace;
-            text-shadow: 0 0 2px #39ff14;
-            position: relative;
+            background: rgba(0, 0, 0, 0.2);
+            padding: 25px;
+            border-radius: 16px;
+            border-left: 4px solid rgba(168, 85, 247, 0.6);
+            color: rgba(255, 255, 255, 0.9);
+            font-style: italic;
         }
-        
-        /* Blinking cursor effect at end of text */
-        .message::after {
-            content: '_';
-            animation: blink 1s step-end infinite;
-        }
-        
-        @keyframes blink { 50% { opacity: 0; } }
+        .message p { margin-bottom: 1em; }
+        .message p:last-child { margin-bottom: 0; }
 
-        /* Easter Egg */
+        /* Ghost Easter Egg */
         .ghost {
             position: fixed;
-            bottom: 20px;
-            right: 20px;
-            font-size: 3rem;
-            animation: fadeGhost 3s ease-in-out infinite alternate;
-            opacity: 0.6;
+            bottom: 25px;
+            right: 25px;
+            font-size: 2.5rem;
+            opacity: 0.4;
             cursor: pointer;
             z-index: 100;
-            transition: all 0.5s ease;
-            filter: drop-shadow(0 0 10px #39ff14);
+            transition: all 0.4s ease;
+            filter: drop-shadow(0 0 15px rgba(57, 255, 20, 0.5));
         }
-        
         .ghost:hover {
             opacity: 1;
-            filter: drop-shadow(0 0 20px #fff);
-            transform: scale(1.2);
-        }
-
-        @keyframes fadeGhost {
-            0% { opacity: 0.2; transform: translateY(0); }
-            100% { opacity: 0.8; transform: translateY(-15px); }
+            transform: scale(1.3);
+            filter: drop-shadow(0 0 25px rgba(57, 255, 20, 0.8));
         }
 
         /* Particle System */
         .particle {
-            position: absolute;
-            font-size: 1.5rem;
+            position: fixed;
+            font-size: 1.2rem;
             pointer-events: none;
             animation: floatUp 1.5s ease-out forwards;
-            z-index: 20;
-            color: #39ff14;
-            text-shadow: 0 0 5px #39ff14;
+            z-index: 50;
         }
-
         @keyframes floatUp {
             0% { opacity: 1; transform: translateY(0) scale(0.5); }
-            100% { opacity: 0; transform: translateY(-50px) scale(1.5); }
+            100% { opacity: 0; transform: translateY(-60px) scale(1.2); }
         }
 
-        /* Scanline Overlay */
-        .scanlines {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: linear-gradient(to bottom, rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%);
-            background-size: 100% 4px;
-            pointer-events: none;
-            z-index: 10;
+        /* Mobile adjustments */
+        @media (max-width: 500px) {
+            .card { padding: 25px; }
+            .avatar-container { gap: 15px; padding-top: 40px; }
+            .avatar { width: 75px; height: 85px; }
+            .head { width: 55px; height: 70px; left: 10px; }
+            .plumbob { width: 28px; height: 50px; top: -65px; }
+            .plumbob-top { border-left-width: 14px; border-right-width: 14px; border-bottom-width: 25px; }
+            .plumbob-bottom { border-left-width: 14px; border-right-width: 14px; border-top-width: 25px; }
+            .message { font-size: 0.9rem; padding: 20px; }
         }
     </style>
 </head>
 <body>
 
-    <div class="fog"></div>
-    <div class="scanlines"></div>
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
 
-    <div class="card" id="card">
+    <div class="card">
         <div class="avatar-container">
-            <!-- ME: Pale, Blonde, Green Eyes -->
-            <div class="avatar me" title="Me" onclick="pulse(this)">
+            <!-- Julian: Pale, Blonde, Green Eyes -->
+            <div class="avatar me" onclick="pulse(this)">
                 <div class="head">
                     <div class="hair-top"></div>
                     <div class="eyes">
@@ -485,16 +436,16 @@
                 </div>
             </div>
 
-            <div class="connector-icon" id="connector" onclick="cycleEmoji()">👻</div>
-            
-            <!-- HARPER: Brunette, Shoulder length, Dark eyes + Plumbob -->
+            <div class="connector-icon" id="connector" onclick="cycleEmoji()">💜</div>
+
+            <!-- Harper: Brunette, Dark Eyes + Plumbob -->
             <div class="avatar-wrapper">
                 <div class="plumbob">
                     <div class="plumbob-top"></div>
                     <div class="plumbob-bottom"></div>
                 </div>
-                
-                <div class="avatar harper" title="Harper" onclick="pulse(this)">
+
+                <div class="avatar harper" onclick="pulse(this)">
                     <div class="hair-back"></div>
                     <div class="head">
                         <div class="hair-top"></div>
@@ -509,138 +460,106 @@
         </div>
 
         <div class="stats-container">
-            <!-- Weirdness -->
-            <div class="stat-row" onclick="spawnParticles(event, '🌀')">
+            <div class="stat-row stat-weirdness" onclick="spawnParticles(event, '🌀')">
                 <span class="stat-label"><span>Weirdness</span><span>110%</span></span>
                 <div class="progress-bar-bg">
                     <div class="progress-bar-fill" style="--target-width: 100%; animation-delay: 0.1s;"></div>
                 </div>
             </div>
-            
-            <!-- Independence -->
-            <div class="stat-row" onclick="spawnParticles(event, '🔥')">
+
+            <div class="stat-row stat-independence" onclick="spawnParticles(event, '🔥')">
                 <span class="stat-label"><span>Independence</span><span>High</span></span>
                 <div class="progress-bar-bg">
-                    <div class="progress-bar-fill" style="--target-width: 95%; animation-delay: 0.3s;"></div>
+                    <div class="progress-bar-fill" style="--target-width: 95%; animation-delay: 0.2s;"></div>
                 </div>
             </div>
 
-            <!-- Animal Instinct -->
-            <div class="stat-row" onclick="spawnParticles(event, '🐾')">
+            <div class="stat-row stat-animal" onclick="spawnParticles(event, '🐾')">
                 <span class="stat-label"><span>Animal Instinct</span><span>Max</span></span>
                 <div class="progress-bar-bg">
-                    <div class="progress-bar-fill" style="--target-width: 100%; animation-delay: 0.5s;"></div>
+                    <div class="progress-bar-fill" style="--target-width: 100%; animation-delay: 0.3s;"></div>
                 </div>
             </div>
 
-            <!-- Biological Clarity -->
-            <div class="stat-row" onclick="spawnParticles(event, '🧬')">
+            <div class="stat-row stat-biology" onclick="spawnParticles(event, '🧬')">
                 <span class="stat-label"><span>Biological Clarity</span><span>Crystal</span></span>
                 <div class="progress-bar-bg">
-                    <div class="progress-bar-fill" style="--target-width: 98%; animation-delay: 0.7s;"></div>
+                    <div class="progress-bar-fill" style="--target-width: 98%; animation-delay: 0.4s;"></div>
                 </div>
             </div>
 
-             <!-- Social Butterfly Tolerance -->
-             <div class="stat-row" onclick="spawnParticles(event, '✨')">
+            <div class="stat-row stat-tolerance" onclick="spawnParticles(event, '✨')">
                 <span class="stat-label"><span>Tolerance of 'Social Butterfly' (Me)</span><span>Saintly</span></span>
                 <div class="progress-bar-bg">
-                    <div class="progress-bar-fill" style="--target-width: 88%; animation-delay: 0.9s;"></div>
+                    <div class="progress-bar-fill" style="--target-width: 88%; animation-delay: 0.5s;"></div>
                 </div>
             </div>
         </div>
 
         <div class="message">
-            I proudly claim you are weirder than me. People are consistently charmed, replying, "Wow, I would love to meet her." 
-            <br><br>
-            You are fiercely independent, with an intelligence that is astoundingly broad and strange. Our mother noted it was 
-            "quite striking how she only did imaginary play in the context of animals, not people." 
-            <br><br>
-            You have this amazingly clear view of biology.
+            <p>I proudly claim you are weirder than me. People are consistently charmed, replying, "Wow, I would love to meet her."</p>
+            <p>You are fiercely independent, with an intelligence that is astoundingly broad and strange. Our mother noted it was "quite striking how she only did imaginary play in the context of animals, not people."</p>
+            <p>You have this amazingly clear view of biology.</p>
         </div>
     </div>
 
     <div class="ghost" id="ghost" onclick="moveGhost()">👻</div>
 
-    <!-- Navigation Links -->
-    <div style="position: fixed; bottom: 20px; left: 20px; z-index: 100; font-family: 'Courier New', monospace; font-size: 0.8rem;">
-        <a href="hand_coded/" style="color: #39ff14; text-decoration: none; margin-right: 15px;">Simple Version</a>
-        <a href="https://julianjocque.com/family" style="color: #666; text-decoration: none;">Family Hub</a>
-    </div>
-
     <script>
-        // 1. Cycle Emoji
         const connector = document.getElementById('connector');
-        const emojis = ['👻', '💚', '💍', '👽', '🔥', '🧬', '🐾'];
+        const emojis = ['💜', '💚', '👻', '✨', '🔮', '🦋', '🌙'];
         let emojiIndex = 0;
 
         function cycleEmoji() {
             emojiIndex = (emojiIndex + 1) % emojis.length;
             connector.innerText = emojis[emojiIndex];
-            const speeds = ['1s', '2s', '4s', '0.5s'];
-            connector.style.animationDuration = speeds[Math.floor(Math.random() * speeds.length)];
         }
 
-        // 2. Pulse Avatar (Flash White)
         function pulse(element) {
-            // Target the 'head' inside to avoid hiding the hair-back or plumbob
             const head = element.querySelector('.head');
-            if(head) {
-                 const originalBg = window.getComputedStyle(head).backgroundColor;
-                 head.style.backgroundColor = '#fff';
-                 setTimeout(() => {
-                    head.style.backgroundColor = originalBg;
-                 }, 100);
+            if (head) {
+                head.style.filter = 'brightness(1.3)';
+                setTimeout(() => { head.style.filter = ''; }, 150);
             }
         }
 
-        // 3. Particle System
         function spawnParticles(event, char) {
-            for (let i = 0; i < 5; i++) {
+            for (let i = 0; i < 4; i++) {
                 const particle = document.createElement('div');
                 particle.classList.add('particle');
                 particle.innerText = char;
-                
-                const x = event.clientX + (Math.random() * 40 - 20);
-                const y = event.clientY + (Math.random() * 40 - 20);
-                
-                particle.style.left = `${x}px`;
-                particle.style.top = `${y}px`;
-                
+                particle.style.left = (event.clientX + (Math.random() * 50 - 25)) + 'px';
+                particle.style.top = (event.clientY + (Math.random() * 30 - 15)) + 'px';
                 document.body.appendChild(particle);
-
-                setTimeout(() => {
-                    particle.remove();
-                }, 1500);
+                setTimeout(() => particle.remove(), 1500);
             }
         }
 
-        // 4. Ghost Interaction
         const ghost = document.getElementById('ghost');
         function moveGhost() {
-            const x = Math.random() * (window.innerWidth - 100);
-            const y = Math.random() * (window.innerHeight - 100);
-            
-            ghost.style.left = `${x}px`;
-            ghost.style.top = `${y}px`;
+            const x = Math.random() * (window.innerWidth - 80);
+            const y = Math.random() * (window.innerHeight - 80);
+            ghost.style.left = x + 'px';
+            ghost.style.top = y + 'px';
             ghost.style.bottom = 'auto';
             ghost.style.right = 'auto';
-            
-            const say = document.createElement('div');
-            say.innerText = "Goin' Ghost!";
-            say.style.position = 'fixed';
-            say.style.left = `${x}px`;
-            say.style.top = `${y - 40}px`;
-            say.style.color = '#39ff14';
-            say.style.fontFamily = 'Courier New';
-            say.style.fontWeight = 'bold';
-            say.style.fontSize = '1.2rem';
-            say.style.textShadow = '0 0 5px #000';
-            say.style.pointerEvents = 'none';
-            say.style.animation = 'floatUp 1s forwards';
-            document.body.appendChild(say);
-            
-            setTimeout(() => say.remove(), 1000);
+
+            const msg = document.createElement('div');
+            msg.innerText = "Goin' Ghost!";
+            msg.style.cssText = `
+                position: fixed;
+                left: ${x}px;
+                top: ${y - 30}px;
+                color: #39ff14;
+                font-family: 'Quicksand', sans-serif;
+                font-weight: 600;
+                font-size: 0.9rem;
+                text-shadow: 0 0 10px rgba(57, 255, 20, 0.8);
+                pointer-events: none;
+                animation: floatUp 1s forwards;
+            `;
+            document.body.appendChild(msg);
+            setTimeout(() => msg.remove(), 1000);
         }
     </script>
 </body>

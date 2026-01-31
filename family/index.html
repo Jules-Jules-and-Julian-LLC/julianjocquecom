@@ -4,247 +4,793 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Jocque Family Christmas</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600&family=Cormorant+Garamond:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-color: #0f0404;
-            --highlight-gold: #ffcf40;
-            --text-white: #f0f0f0;
+            --deep-night: #0a1628;
+            --midnight: #152238;
+            --gold: #d4af37;
+            --gold-light: #f4d58d;
+            --cream: #fef9ef;
+            --ember: #ff6b35;
+            --crimson: #8b1538;
+            --frost: rgba(255, 255, 255, 0.08);
         }
 
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
         body {
-            margin: 0;
-            padding: 0;
-            background-color: var(--bg-color);
-            color: var(--text-white);
-            font-family: 'Georgia', serif;
             min-height: 100vh;
+            background: linear-gradient(180deg, var(--deep-night) 0%, var(--midnight) 50%, #1a1a2e 100%);
+            color: var(--cream);
+            font-family: 'Cormorant Garamond', Georgia, serif;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Starfield Background */
+        .stars {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* Warm glow from fire */
+        .fire-glow {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -30%);
+            width: 800px;
+            height: 600px;
+            background: radial-gradient(ellipse, rgba(255, 107, 53, 0.15) 0%, rgba(255, 107, 53, 0.05) 40%, transparent 70%);
+            pointer-events: none;
+            z-index: 1;
+            animation: glowPulse 4s ease-in-out infinite;
+        }
+
+        @keyframes glowPulse {
+            0%, 100% { opacity: 0.8; transform: translate(-50%, -30%) scale(1); }
+            50% { opacity: 1; transform: translate(-50%, -30%) scale(1.05); }
+        }
+
+        /* Main Container */
+        .page-wrapper {
+            position: relative;
+            z-index: 10;
             display: flex;
             flex-direction: column;
             align-items: center;
-            overflow-x: hidden;
+            padding: 40px 20px 80px;
+            min-height: 100vh;
         }
 
-        /* --- HEARTH CONTAINER --- */
-        .hearth-frame {
-            width: 100%;
-            max-width: 800px;
-            height: 350px;
-            margin-top: 40px;
-            border-bottom: 8px solid #3d0505;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.8);
+        /* Decorative Frame */
+        .card-frame {
             position: relative;
-            background: #1a0a0a;
-            border-radius: 8px 8px 0 0;
-            overflow: hidden;
+            max-width: 900px;
+            width: 100%;
+            padding: 60px 40px;
+            background: linear-gradient(135deg, rgba(21, 34, 56, 0.9), rgba(10, 22, 40, 0.95));
+            border-radius: 4px;
+            box-shadow:
+                0 50px 100px rgba(0, 0, 0, 0.5),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
         }
 
-        /* The Wood Log Graphic */
-        .log-graphic {
+        /* Gold corner ornaments */
+        .card-frame::before, .card-frame::after,
+        .corner-bl, .corner-br {
+            content: '';
             position: absolute;
-            bottom: -20px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 80%;
-            height: 120px;
-            background: linear-gradient(to bottom, #4e342e, #281815);
-            border-radius: 20px 20px 0 0;
-            z-index: 1;
-            box-shadow: inset 0 0 20px #000;
+            width: 80px;
+            height: 80px;
+            border: 2px solid var(--gold);
+            opacity: 0.6;
         }
+        .card-frame::before { top: 15px; left: 15px; border-right: none; border-bottom: none; }
+        .card-frame::after { top: 15px; right: 15px; border-left: none; border-bottom: none; }
+        .corner-bl { bottom: 15px; left: 15px; border-right: none; border-top: none; }
+        .corner-br { bottom: 15px; right: 15px; border-left: none; border-top: none; }
 
-        .log-texture {
-            width: 100%; height: 100%;
-            opacity: 0.3;
-            background-image: repeating-linear-gradient(90deg, transparent, transparent 10px, #000 10px, #000 12px);
-        }
-
-        /* Fire Canvas sits ON TOP of the log */
-        canvas#fire-canvas {
+        /* Inner gold border */
+        .inner-border {
             position: absolute;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            display: block;
-            z-index: 2;
-            mix-blend-mode: screen; /* Makes black transparent so we see the log */
-        }
-
-        .hearth-overlay {
-            position: absolute;
-            bottom: 0; left: 0;
-            width: 100%; height: 100%;
-            background: radial-gradient(circle at center bottom, transparent 30%, var(--bg-color) 90%);
-            z-index: 3;
+            top: 25px; left: 25px; right: 25px; bottom: 25px;
+            border: 1px solid rgba(212, 175, 55, 0.2);
+            border-radius: 2px;
             pointer-events: none;
         }
 
-        /* --- CONTENT --- */
-        .container {
-            max-width: 800px;
-            width: 90%;
-            text-align: center;
-            z-index: 10;
-            padding-bottom: 80px;
+        /* Fireplace Section */
+        .hearth {
+            width: 100%;
+            max-width: 500px;
+            height: 280px;
+            margin: 0 auto 40px;
+            position: relative;
         }
 
+        /* Stone hearth base */
+        .hearth-base {
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 90%;
+            height: 60px;
+            background: linear-gradient(180deg, #3a3a4a 0%, #2a2a3a 50%, #1a1a2a 100%);
+            border-radius: 8px 8px 0 0;
+            box-shadow:
+                inset 0 2px 10px rgba(0,0,0,0.5),
+                0 -5px 20px rgba(255, 107, 53, 0.3);
+        }
+
+        .hearth-base::before {
+            content: '';
+            position: absolute;
+            top: 8px; left: 10%; right: 10%; height: 3px;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+        }
+
+        /* Logs */
+        .logs {
+            position: absolute;
+            bottom: 50px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 200px;
+            height: 50px;
+            z-index: 2;
+        }
+
+        .log {
+            position: absolute;
+            height: 28px;
+            background: linear-gradient(180deg, #4a3728 0%, #2d1f15 50%, #1a120a 100%);
+            border-radius: 14px;
+            box-shadow: inset 0 -3px 6px rgba(0,0,0,0.5), inset 0 3px 6px rgba(255,200,150,0.1);
+        }
+        .log::after {
+            content: '';
+            position: absolute;
+            top: 50%; left: 5px; right: 5px;
+            height: 1px;
+            background: rgba(0,0,0,0.3);
+        }
+        .log-1 { width: 160px; bottom: 0; left: 20px; transform: rotate(-5deg); }
+        .log-2 { width: 140px; bottom: 5px; left: 40px; transform: rotate(8deg); }
+        .log-3 { width: 120px; bottom: 20px; left: 50px; transform: rotate(-3deg); z-index: 3; }
+
+        /* Fire Canvas */
+        #fire-canvas {
+            position: absolute;
+            bottom: 60px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 300px;
+            height: 200px;
+            z-index: 4;
+        }
+
+        /* Ember particles container */
+        .embers {
+            position: absolute;
+            bottom: 80px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 200px;
+            height: 200px;
+            pointer-events: none;
+            z-index: 5;
+        }
+
+        /* Title */
         h1 {
-            font-size: 3.5rem;
-            color: var(--highlight-gold);
-            text-shadow: 0 0 20px rgba(255, 207, 64, 0.3);
-            margin: 20px 0 10px 0;
-            letter-spacing: 2px;
-            font-weight: normal;
+            font-family: 'Cinzel', serif;
+            font-size: clamp(2.5rem, 8vw, 4rem);
+            font-weight: 400;
+            color: var(--gold-light);
+            text-align: center;
+            margin-bottom: 10px;
+            letter-spacing: 0.15em;
+            text-shadow:
+                0 0 40px rgba(244, 213, 141, 0.4),
+                0 2px 4px rgba(0, 0, 0, 0.3);
+            animation: titleGlow 3s ease-in-out infinite;
+        }
+
+        @keyframes titleGlow {
+            0%, 100% { text-shadow: 0 0 40px rgba(244, 213, 141, 0.4), 0 2px 4px rgba(0, 0, 0, 0.3); }
+            50% { text-shadow: 0 0 60px rgba(244, 213, 141, 0.6), 0 2px 4px rgba(0, 0, 0, 0.3); }
         }
 
         .intro {
+            text-align: center;
             font-size: 1.3rem;
-            line-height: 1.6;
+            font-style: italic;
+            line-height: 1.8;
+            color: rgba(254, 249, 239, 0.8);
             margin-bottom: 50px;
-            color: #d1baba;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
         }
 
-        .stockings-grid {
+        /* Gift Cards Grid */
+        .gifts-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-            gap: 20px;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 25px;
             margin-bottom: 60px;
         }
 
-        .stocking-link {
-            background: linear-gradient(145deg, #6e0e0e, #4a0606);
-            color: var(--text-white);
-            text-decoration: none;
-            padding: 30px 20px;
-            border-radius: 4px;
-            border: 1px solid #8a1c1c;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-            transition: all 0.3s ease;
-        }
-
-        .stocking-link:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 25px rgba(255, 64, 64, 0.2);
-            border-color: var(--highlight-gold);
-        }
-
-        .stocking-link h2 { margin: 0; font-size: 1.2rem; font-weight: normal; }
-        .stocking-link span { display: block; margin-top: 10px; font-size: 0.8rem; color: var(--highlight-gold); font-family: 'Courier New', monospace; opacity: 0.8; }
-
-        .admin-panel {
-            background: rgba(255, 255, 255, 0.05);
+        .gift-card {
+            position: relative;
+            background: linear-gradient(145deg,
+                rgba(139, 21, 56, 0.4),
+                rgba(139, 21, 56, 0.2));
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
             border-radius: 12px;
-            padding: 40px;
+            padding: 35px 25px;
+            text-align: center;
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            overflow: hidden;
+        }
+
+        .gift-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, var(--gold), transparent);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .gift-card:hover {
+            transform: translateY(-8px) scale(1.02);
+            border-color: var(--gold);
+            box-shadow:
+                0 20px 40px rgba(0, 0, 0, 0.3),
+                0 0 30px rgba(212, 175, 55, 0.2);
+        }
+
+        .gift-card:hover::before { opacity: 1; }
+
+        /* Ribbon decoration */
+        .ribbon {
+            position: absolute;
+            top: -5px;
+            right: 20px;
+            width: 30px;
+            height: 50px;
+            background: linear-gradient(180deg, var(--crimson) 0%, #6b0f2a 100%);
+            clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 80%, 0 100%);
+            box-shadow: 2px 2px 5px rgba(0,0,0,0.3);
+        }
+
+        .gift-card h2 {
+            font-family: 'Cinzel', serif;
+            font-size: 1.2rem;
+            font-weight: 400;
+            color: var(--cream);
+            margin-bottom: 8px;
+            letter-spacing: 0.05em;
+        }
+
+        .gift-card .main-link {
+            color: inherit;
+            text-decoration: none;
+            display: block;
+        }
+
+        .gift-card .domain {
+            display: block;
+            font-family: 'Courier New', monospace;
+            font-size: 0.8rem;
+            color: var(--gold);
+            opacity: 0.8;
+            margin-top: 8px;
+        }
+
+        .gift-card .simple-link {
+            display: inline-block;
+            margin-top: 15px;
+            padding: 8px 16px;
+            font-size: 0.75rem;
+            color: rgba(254, 249, 239, 0.6);
+            text-decoration: none;
+            border: 1px solid rgba(254, 249, 239, 0.2);
+            border-radius: 20px;
+            transition: all 0.3s ease;
+            letter-spacing: 0.05em;
+        }
+
+        .gift-card .simple-link:hover {
+            color: var(--gold-light);
+            border-color: var(--gold);
+            background: rgba(212, 175, 55, 0.1);
+        }
+
+        /* Admin Panel */
+        .admin-panel {
+            background: var(--frost);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border-radius: 16px;
+            padding: 35px;
             border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
-        .action-buttons { display: flex; gap: 20px; justify-content: center; flex-wrap: wrap; }
-
-        .btn-large {
-            padding: 18px 30px;
-            border-radius: 6px;
-            text-decoration: none;
-            font-weight: bold;
-            font-family: sans-serif;
-            transition: all 0.2s;
-            flex: 1; min-width: 250px;
-            display: flex; align-items: center; justify-content: center; gap: 10px;
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
         }
 
-        .btn-upload { background-color: var(--highlight-gold); color: #3d2200; font-size: 1.1rem; }
-        .btn-upload:hover { background-color: #ffdb4d; transform: scale(1.02); }
-        .btn-vibe { background-color: transparent; color: #aaa; border: 1px solid #444; }
-        .btn-vibe:hover { color: white; border-color: white; background-color: rgba(255,255,255,0.05); }
+        .btn-large {
+            padding: 16px 28px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1rem;
+            font-weight: 500;
+            letter-spacing: 0.03em;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            flex: 1;
+            min-width: 220px;
+        }
 
-        .snowflake { position: fixed; top: -20px; color: white; opacity: 0.8; pointer-events: none; animation: fall linear forwards; z-index: 5; }
-        @keyframes fall { to { transform: translateY(110vh); } }
+        .btn-upload {
+            background: linear-gradient(135deg, var(--gold) 0%, #c9a227 100%);
+            color: #1a1a2e;
+            box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
+        }
+        .btn-upload:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(212, 175, 55, 0.4);
+        }
+
+        .btn-html {
+            background: linear-gradient(135deg, #2d5a27 0%, #1e3d1a 100%);
+            color: var(--cream);
+            box-shadow: 0 4px 15px rgba(45, 90, 39, 0.3);
+        }
+        .btn-html:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(45, 90, 39, 0.4);
+        }
+
+        .btn-vibe {
+            background: transparent;
+            color: rgba(254, 249, 239, 0.7);
+            border: 1px solid rgba(254, 249, 239, 0.3);
+        }
+        .btn-vibe:hover {
+            color: var(--cream);
+            border-color: var(--cream);
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        /* Snow */
+        .snowflake {
+            position: fixed;
+            top: -20px;
+            color: white;
+            pointer-events: none;
+            z-index: 100;
+            text-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
+            animation: snowfall linear forwards;
+        }
+
+        @keyframes snowfall {
+            to {
+                transform: translateY(110vh) rotate(360deg);
+            }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .card-frame { padding: 40px 20px; }
+            .card-frame::before, .card-frame::after, .corner-bl, .corner-br { width: 40px; height: 40px; }
+            .inner-border { top: 15px; left: 15px; right: 15px; bottom: 15px; }
+            .hearth { height: 220px; }
+            #fire-canvas { width: 200px; height: 150px; }
+            .logs { width: 140px; }
+            .log-1 { width: 120px; left: 10px; }
+            .log-2 { width: 100px; left: 25px; }
+            .log-3 { width: 80px; left: 35px; }
+            .btn-large { min-width: 180px; padding: 14px 20px; }
+        }
+
+        @media (max-width: 500px) {
+            .gifts-grid { grid-template-columns: 1fr; }
+        }
     </style>
 </head>
 <body>
 
-<div class="hearth-frame">
-    <div class="log-graphic"><div class="log-texture"></div></div>
-    <canvas id="fire-canvas"></canvas>
-    <div class="hearth-overlay"></div>
-</div>
+<canvas class="stars" id="stars-canvas"></canvas>
+<div class="fire-glow"></div>
 
-<div class="container">
-    <h1>Merry Christmas</h1>
-    <div class="intro">
-        <p>Welcome to the Jocque Family Digital Estate.<br>
-            Instead of a card, I bought you each a permanent plot of land on the internet.</p>
-    </div>
+<div class="page-wrapper">
+    <div class="card-frame">
+        <div class="inner-border"></div>
+        <div class="corner-bl"></div>
+        <div class="corner-br"></div>
 
-    <div class="stockings-grid">
-        <a href="https://harperjocque.com" target="_blank" class="stocking-link"><h2>For Harper</h2><span>harperjocque.com</span></a>
-        <a href="https://arahjocque.com" target="_blank" class="stocking-link"><h2>For Mom</h2><span>arahjocque.com</span></a>
-        <a href="https://kentjocque.com" target="_blank" class="stocking-link"><h2>For Dad</h2><span>kentjocque.com</span></a>
-        <a href="https://aviankillian.com" target="_blank" class="stocking-link"><h2>For Killian</h2><span>aviankillian.com</span></a>
-    </div>
+        <div class="hearth">
+            <canvas id="fire-canvas"></canvas>
+            <div class="embers" id="embers"></div>
+            <div class="logs">
+                <div class="log log-1"></div>
+                <div class="log log-2"></div>
+                <div class="log log-3"></div>
+            </div>
+            <div class="hearth-base"></div>
+        </div>
 
-    <div class="admin-panel">
-        <div class="action-buttons">
-            <a href="/publishing" class="btn-large btn-upload"><span>☁️</span> How to Upload Changes</a>
-            <a href="/vibe-coding" class="btn-large btn-vibe"><span>✨</span> How to Vibe Code</a>
+        <h1>Merry Christmas</h1>
+        <p class="intro">
+            Welcome to the Jocque Family Digital Estate.<br>
+            Instead of a card, I bought you each a permanent plot of land on the internet.
+        </p>
+
+        <div class="gifts-grid">
+            <div class="gift-card">
+                <div class="ribbon"></div>
+                <a href="https://harperjocque.com" target="_blank" class="main-link">
+                    <h2>For Harper</h2>
+                    <span class="domain">harperjocque.com</span>
+                </a>
+                <a href="https://harperjocque.com/hand_coded/" target="_blank" class="simple-link">simple version</a>
+            </div>
+            <div class="gift-card">
+                <div class="ribbon"></div>
+                <a href="https://arahjocque.com" target="_blank" class="main-link">
+                    <h2>For Mom</h2>
+                    <span class="domain">arahjocque.com</span>
+                </a>
+                <a href="https://arahjocque.com/hand_coded/" target="_blank" class="simple-link">simple version</a>
+            </div>
+            <div class="gift-card">
+                <div class="ribbon"></div>
+                <a href="https://kentjocque.com" target="_blank" class="main-link">
+                    <h2>For Dad</h2>
+                    <span class="domain">kentjocque.com</span>
+                </a>
+                <a href="https://kentjocque.com/hand_coded/" target="_blank" class="simple-link">simple version</a>
+            </div>
+            <div class="gift-card">
+                <div class="ribbon"></div>
+                <a href="https://aviankillian.com" target="_blank" class="main-link">
+                    <h2>For Killian</h2>
+                    <span class="domain">aviankillian.com</span>
+                </a>
+                <a href="https://aviankillian.com/hand_coded/" target="_blank" class="simple-link">simple version</a>
+            </div>
+        </div>
+
+        <div class="admin-panel">
+            <div class="action-buttons">
+                <a href="/publishing" class="btn-large btn-upload">☁️ How to Upload Changes</a>
+                <a href="/html-basics" class="btn-large btn-html">📝 How to Code HTML</a>
+                <a href="/vibe-coding" class="btn-large btn-vibe">✨ How to Vibe Code</a>
+            </div>
         </div>
     </div>
 </div>
 
 <script>
+// ============================================
+// STARFIELD - Twinkling stars in the background
+// ============================================
+(function() {
+    const canvas = document.getElementById('stars-canvas');
+    const ctx = canvas.getContext('2d');
+    let stars = [];
+
+    function resize() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        initStars();
+    }
+
+    function initStars() {
+        stars = [];
+        const count = Math.floor((canvas.width * canvas.height) / 8000);
+        for (let i = 0; i < count; i++) {
+            stars.push({
+                x: Math.random() * canvas.width,
+                y: Math.random() * canvas.height,
+                size: Math.random() * 1.5 + 0.5,
+                twinkleSpeed: Math.random() * 0.02 + 0.005,
+                twinklePhase: Math.random() * Math.PI * 2,
+                brightness: Math.random() * 0.5 + 0.5
+            });
+        }
+    }
+
+    function drawStars(time) {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        stars.forEach(star => {
+            const twinkle = Math.sin(time * star.twinkleSpeed + star.twinklePhase) * 0.3 + 0.7;
+            const alpha = star.brightness * twinkle;
+            ctx.beginPath();
+            ctx.arc(star.x, star.y, star.size, 0, Math.PI * 2);
+            ctx.fillStyle = `rgba(255, 255, 255, ${alpha})`;
+            ctx.fill();
+        });
+        requestAnimationFrame(drawStars);
+    }
+
+    window.addEventListener('resize', resize);
+    resize();
+    requestAnimationFrame(drawStars);
+})();
+
+// ============================================
+// FIRE SHADER - Realistic procedural fire
+// ============================================
+(function() {
     const canvas = document.getElementById('fire-canvas');
     const gl = canvas.getContext('webgl');
-    const vsSource = `attribute vec4 position; void main() { gl_Position = position; }`;
+    if (!gl) return;
+
+    const vsSource = `
+        attribute vec4 position;
+        void main() { gl_Position = position; }
+    `;
+
     const fsSource = `
-            precision mediump float; uniform vec2 resolution; uniform float time;
-            float noise(vec2 st) { return fract(sin(dot(st.xy, vec2(12.9898,78.233))) * 43758.5453123); }
-            float smoothNoise(vec2 st) {
-                vec2 i = floor(st); vec2 f = fract(st); vec2 u = f*f*(3.0-2.0*f);
-                return mix(mix(noise(i + vec2(0.0, 0.0)), noise(i + vec2(1.0, 0.0)), u.x), mix(noise(i + vec2(0.0, 1.0)), noise(i + vec2(1.0, 1.0)), u.x), u.y);
+        precision highp float;
+        uniform vec2 resolution;
+        uniform float time;
+
+        // Simplex-like noise
+        vec3 mod289(vec3 x) { return x - floor(x * (1.0 / 289.0)) * 289.0; }
+        vec2 mod289(vec2 x) { return x - floor(x * (1.0 / 289.0)) * 289.0; }
+        vec3 permute(vec3 x) { return mod289(((x*34.0)+1.0)*x); }
+
+        float snoise(vec2 v) {
+            const vec4 C = vec4(0.211324865405187, 0.366025403784439, -0.577350269189626, 0.024390243902439);
+            vec2 i  = floor(v + dot(v, C.yy));
+            vec2 x0 = v - i + dot(i, C.xx);
+            vec2 i1 = (x0.x > x0.y) ? vec2(1.0, 0.0) : vec2(0.0, 1.0);
+            vec4 x12 = x0.xyxy + C.xxzz;
+            x12.xy -= i1;
+            i = mod289(i);
+            vec3 p = permute(permute(i.y + vec3(0.0, i1.y, 1.0)) + i.x + vec3(0.0, i1.x, 1.0));
+            vec3 m = max(0.5 - vec3(dot(x0,x0), dot(x12.xy,x12.xy), dot(x12.zw,x12.zw)), 0.0);
+            m = m*m; m = m*m;
+            vec3 x = 2.0 * fract(p * C.www) - 1.0;
+            vec3 h = abs(x) - 0.5;
+            vec3 ox = floor(x + 0.5);
+            vec3 a0 = x - ox;
+            m *= 1.79284291400159 - 0.85373472095314 * (a0*a0 + h*h);
+            vec3 g;
+            g.x = a0.x * x0.x + h.x * x0.y;
+            g.yz = a0.yz * x12.xz + h.yz * x12.yw;
+            return 130.0 * dot(m, g);
+        }
+
+        float fbm(vec2 p) {
+            float f = 0.0;
+            float w = 0.5;
+            for (int i = 0; i < 5; i++) {
+                f += w * snoise(p);
+                p *= 2.0;
+                w *= 0.5;
             }
-            float fbm(vec2 st) {
-                float value = 0.0; float amplitude = 0.5;
-                for (int i = 0; i < 5; i++) { value += amplitude * smoothNoise(st); st *= 2.0; amplitude *= 0.5; }
-                return value;
-            }
-            void main() {
-                vec2 uv = gl_FragCoord.xy / resolution.xy;
-                vec2 q = uv; q.x *= 1.0; q.y *= 2.0;
-                float strength = 1.4; float T = time * 1.5;
-                q.x -= 0.5; q.y -= 0.1;
-                float n = fbm(strength * q - vec2(0, T));
-                float c = 1.0 - 16.0 * pow( max( 0.0, length(q*vec2(1.8+q.y*1.5,.75) ) - n * max( 0.0, q.y+0.25 ) ), 1.2 );
-                vec3 color = vec3(1.5*c, 1.2*c*c*c, c*c*c*c*c*c);
-                color = mix(color, vec3(0.0), uv.y * 0.8);
-                gl_FragColor = vec4(color, 1.0); // No background, handled by mix-blend-mode
-            }
-        `;
-    function createShader(gl, type, source) {
-        const shader = gl.createShader(type); gl.shaderSource(shader, source); gl.compileShader(shader); return shader;
+            return f;
+        }
+
+        void main() {
+            vec2 uv = gl_FragCoord.xy / resolution.xy;
+            vec2 p = uv;
+
+            // Center and scale for fire shape
+            p.x = (p.x - 0.5) * 2.0;
+            p.y = p.y * 1.5;
+
+            // Animated turbulence
+            float t = time * 0.8;
+            float n1 = fbm(vec2(p.x * 3.0, p.y * 2.0 - t * 2.0));
+            float n2 = fbm(vec2(p.x * 5.0 + 100.0, p.y * 3.0 - t * 3.0));
+            float n3 = fbm(vec2(p.x * 8.0 + 200.0, p.y * 4.0 - t * 4.0));
+
+            // Fire shape - wider at bottom, narrower at top
+            float shape = 1.0 - p.y;
+            float width = 0.5 - p.y * 0.35;
+            shape *= smoothstep(width, width * 0.3, abs(p.x + n1 * 0.3));
+
+            // Add noise to edges
+            shape += n2 * 0.3 * shape;
+            shape = max(0.0, shape);
+
+            // Inner core (hotter)
+            float core = shape * smoothstep(0.3, 0.0, abs(p.x + n3 * 0.1));
+            core = pow(core, 1.5);
+
+            // Color gradient: white core -> yellow -> orange -> red -> transparent
+            vec3 col = vec3(0.0);
+
+            // Red/orange outer flames
+            col += vec3(1.0, 0.3, 0.05) * shape * 1.5;
+            // Yellow middle
+            col += vec3(1.0, 0.7, 0.1) * pow(shape, 2.0) * 2.0;
+            // White/yellow core
+            col += vec3(1.0, 0.95, 0.8) * core * 2.0;
+
+            // Add flickering
+            float flicker = snoise(vec2(time * 8.0, 0.0)) * 0.1 + 0.9;
+            col *= flicker;
+
+            // Alpha based on shape
+            float alpha = smoothstep(0.0, 0.1, shape);
+
+            gl_FragColor = vec4(col, alpha);
+        }
+    `;
+
+    function createShader(type, source) {
+        const shader = gl.createShader(type);
+        gl.shaderSource(shader, source);
+        gl.compileShader(shader);
+        return shader;
     }
+
     const program = gl.createProgram();
-    gl.attachShader(program, createShader(gl, gl.VERTEX_SHADER, vsSource));
-    gl.attachShader(program, createShader(gl, gl.FRAGMENT_SHADER, fsSource));
-    gl.linkProgram(program); gl.useProgram(program);
+    gl.attachShader(program, createShader(gl.VERTEX_SHADER, vsSource));
+    gl.attachShader(program, createShader(gl.FRAGMENT_SHADER, fsSource));
+    gl.linkProgram(program);
+    gl.useProgram(program);
+
     const positionBuffer = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
-    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 1, -1, -1, 1, -1, 1, 1, -1, 1, 1]), gl.STATIC_DRAW);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1,-1, 1,-1, -1,1, -1,1, 1,-1, 1,1]), gl.STATIC_DRAW);
+
     const positionLocation = gl.getAttribLocation(program, 'position');
     gl.enableVertexAttribArray(positionLocation);
     gl.vertexAttribPointer(positionLocation, 2, gl.FLOAT, false, 0, 0);
+
     const resolutionLocation = gl.getUniformLocation(program, 'resolution');
     const timeLocation = gl.getUniformLocation(program, 'time');
+
+    // Enable blending for transparency
+    gl.enable(gl.BLEND);
+    gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+
     function resize() {
-        canvas.width = canvas.clientWidth; canvas.height = canvas.clientHeight;
-        gl.viewport(0, 0, canvas.width, canvas.height); gl.uniform2f(resolutionLocation, canvas.width, canvas.height);
+        canvas.width = canvas.clientWidth * window.devicePixelRatio;
+        canvas.height = canvas.clientHeight * window.devicePixelRatio;
+        gl.viewport(0, 0, canvas.width, canvas.height);
+        gl.uniform2f(resolutionLocation, canvas.width, canvas.height);
     }
-    window.addEventListener('resize', resize); resize();
-    function render(time) { gl.uniform1f(timeLocation, time * 0.001); gl.drawArrays(gl.TRIANGLES, 0, 6); requestAnimationFrame(render); }
+
+    function render(time) {
+        gl.clearColor(0, 0, 0, 0);
+        gl.clear(gl.COLOR_BUFFER_BIT);
+        gl.uniform1f(timeLocation, time * 0.001);
+        gl.drawArrays(gl.TRIANGLES, 0, 6);
+        requestAnimationFrame(render);
+    }
+
+    window.addEventListener('resize', resize);
+    resize();
     requestAnimationFrame(render);
-    function createSnow() {
-        const snow = document.createElement('div'); snow.classList.add('snowflake'); snow.innerHTML = '❄';
-        snow.style.left = Math.random() * 100 + 'vw'; snow.style.animationDuration = Math.random() * 5 + 3 + 's';
-        snow.style.fontSize = Math.random() * 10 + 10 + 'px';
-        document.body.appendChild(snow); setTimeout(() => snow.remove(), 8000);
+})();
+
+// ============================================
+// EMBER PARTICLES - Rising sparks from the fire
+// ============================================
+(function() {
+    const container = document.getElementById('embers');
+    const embers = [];
+
+    function createEmber() {
+        if (embers.length > 30) return;
+
+        const ember = document.createElement('div');
+        const size = Math.random() * 4 + 2;
+        const startX = Math.random() * 100 - 50;
+        const drift = (Math.random() - 0.5) * 100;
+        const duration = Math.random() * 2000 + 1500;
+        const delay = Math.random() * 500;
+
+        ember.style.cssText = `
+            position: absolute;
+            bottom: 0;
+            left: calc(50% + ${startX}px);
+            width: ${size}px;
+            height: ${size}px;
+            background: radial-gradient(circle, #ffdd77 0%, #ff6b35 50%, transparent 70%);
+            border-radius: 50%;
+            pointer-events: none;
+            opacity: 0;
+            animation: emberRise ${duration}ms ease-out ${delay}ms forwards;
+            --drift: ${drift}px;
+        `;
+
+        container.appendChild(ember);
+        embers.push(ember);
+
+        setTimeout(() => {
+            ember.remove();
+            embers.splice(embers.indexOf(ember), 1);
+        }, duration + delay);
     }
-    setInterval(createSnow, 150);
+
+    // Add keyframes dynamically
+    const style = document.createElement('style');
+    style.textContent = `
+        @keyframes emberRise {
+            0% { transform: translateY(0) translateX(0) scale(1); opacity: 0; }
+            10% { opacity: 1; }
+            100% { transform: translateY(-180px) translateX(var(--drift)) scale(0.3); opacity: 0; }
+        }
+    `;
+    document.head.appendChild(style);
+
+    setInterval(createEmber, 150);
+})();
+
+// ============================================
+// SNOWFALL - Gentle falling snow with depth
+// ============================================
+(function() {
+    function createSnowflake() {
+        const flake = document.createElement('div');
+        flake.className = 'snowflake';
+
+        // Vary size for depth perception
+        const size = Math.random() * 12 + 6;
+        const opacity = Math.random() * 0.5 + 0.3;
+        const duration = Math.random() * 8 + 6; // 6-14 seconds
+        const startX = Math.random() * 100;
+        const wobble = Math.random() * 50 - 25;
+
+        flake.innerHTML = Math.random() > 0.7 ? '❄' : '•';
+        flake.style.cssText = `
+            left: ${startX}vw;
+            font-size: ${size}px;
+            opacity: ${opacity};
+            animation-duration: ${duration}s;
+            --wobble: ${wobble}px;
+        `;
+
+        document.body.appendChild(flake);
+
+        setTimeout(() => flake.remove(), duration * 1000);
+    }
+
+    // Create snow at varying intervals
+    setInterval(createSnowflake, 200);
+
+    // Add wobble to snow animation
+    const style = document.createElement('style');
+    style.textContent = `
+        @keyframes snowfall {
+            0% { transform: translateY(0) translateX(0) rotate(0deg); }
+            25% { transform: translateY(27.5vh) translateX(var(--wobble)) rotate(90deg); }
+            50% { transform: translateY(55vh) translateX(0) rotate(180deg); }
+            75% { transform: translateY(82.5vh) translateX(calc(var(--wobble) * -1)) rotate(270deg); }
+            100% { transform: translateY(110vh) translateX(0) rotate(360deg); }
+        }
+    `;
+    document.head.appendChild(style);
+})();
 </script>
+
 </body>
 </html>

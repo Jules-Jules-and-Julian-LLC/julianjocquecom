@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How to Code HTML</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+            background-color: #f0fdf4;
+            color: #1f2937;
+            padding: 40px 20px;
+            line-height: 1.7;
+        }
+        .container {
+            max-width: 750px;
+            margin: 0 auto;
+            background: white;
+            padding: 50px;
+            border-radius: 16px;
+            box-shadow: 0 10px 40px rgba(34, 197, 94, 0.1);
+        }
+        .back-nav { margin-bottom: 30px; }
+        .back-nav a { color: #6b7280; text-decoration: none; font-size: 0.9rem; }
+        .back-nav a:hover { color: #111; }
+        h1 {
+            font-size: 2.2rem;
+            margin-bottom: 10px;
+            color: #166534;
+        }
+        .tagline {
+            font-size: 1.2rem;
+            color: #6b7280;
+            margin-bottom: 40px;
+            border-bottom: 2px solid #dcfce7;
+            padding-bottom: 30px;
+        }
+        h2 {
+            color: #166534;
+            font-size: 1.4rem;
+            margin-top: 40px;
+            margin-bottom: 15px;
+            border-bottom: 2px solid #dcfce7;
+            padding-bottom: 10px;
+        }
+        h3 {
+            color: #374151;
+            font-size: 1.1rem;
+            margin-top: 25px;
+            margin-bottom: 10px;
+        }
+        p { color: #4b5563; margin-bottom: 15px; }
+
+        .code-box {
+            background: #f8fafc;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 20px;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 0.9rem;
+            white-space: pre-wrap;
+            line-height: 1.6;
+            margin: 15px 0;
+            overflow-x: auto;
+        }
+        .code-box .tag { color: #0891b2; }
+        .code-box .attr { color: #7c3aed; }
+        .code-box .value { color: #059669; }
+        .code-box .comment { color: #9ca3af; }
+
+        .result-box {
+            background: linear-gradient(135deg, #f0fdf4, #ecfdf5);
+            border: 2px solid #86efac;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 15px 0;
+        }
+        .result-label {
+            font-size: 0.75rem;
+            color: #166534;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+
+        .tip {
+            background: #fefce8;
+            border-left: 4px solid #facc15;
+            padding: 15px 20px;
+            border-radius: 0 8px 8px 0;
+            margin: 20px 0;
+        }
+        .tip strong { color: #854d0e; }
+
+        .warning {
+            background: #fef2f2;
+            border-left: 4px solid #f87171;
+            padding: 15px 20px;
+            border-radius: 0 8px 8px 0;
+            margin: 20px 0;
+        }
+        .warning strong { color: #991b1b; }
+
+        .cheat-sheet {
+            background: #f8fafc;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 25px;
+            margin: 30px 0;
+        }
+        .cheat-sheet h3 {
+            margin-top: 0;
+            color: #166534;
+        }
+        .cheat-sheet table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .cheat-sheet td {
+            padding: 8px 12px;
+            border-bottom: 1px solid #e2e8f0;
+            vertical-align: top;
+        }
+        .cheat-sheet td:first-child {
+            font-family: monospace;
+            color: #0891b2;
+            white-space: nowrap;
+            width: 40%;
+        }
+        .cheat-sheet tr:last-child td { border-bottom: none; }
+
+        .action-links {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-top: 40px;
+            padding-top: 30px;
+            border-top: 2px solid #dcfce7;
+        }
+        .action-links a {
+            display: inline-block;
+            padding: 14px 24px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        .btn-primary {
+            background: #166534;
+            color: white;
+        }
+        .btn-primary:hover { background: #14532d; }
+        .btn-secondary {
+            border: 2px solid #86efac;
+            color: #166534;
+        }
+        .btn-secondary:hover { background: #f0fdf4; }
+
+        ul, ol {
+            color: #4b5563;
+            margin-bottom: 15px;
+            padding-left: 25px;
+        }
+        li { margin-bottom: 8px; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="back-nav"><a href="/family">&larr; Back to Family Hub</a></div>
+
+    <h1>How to Code HTML</h1>
+    <p class="tagline">
+        The basics of building web pages by hand. <br>
+        No AI required - just you and a text editor.
+    </p>
+
+    <h2>What is HTML?</h2>
+    <p>
+        HTML stands for <strong>HyperText Markup Language</strong>. It's how you tell a web browser
+        what to show on a page. You wrap text in "tags" to give it meaning and structure.
+    </p>
+    <p>
+        Tags look like this: <code>&lt;tagname&gt;</code> to open, and <code>&lt;/tagname&gt;</code> to close.
+    </p>
+
+    <h2>The Simplest Web Page</h2>
+    <p>Here's the bare minimum HTML you need for a working web page:</p>
+
+    <div class="code-box"><span class="tag">&lt;!DOCTYPE html&gt;</span>
+<span class="tag">&lt;html&gt;</span>
+<span class="tag">&lt;head&gt;</span>
+    <span class="tag">&lt;title&gt;</span>My Page<span class="tag">&lt;/title&gt;</span>
+<span class="tag">&lt;/head&gt;</span>
+<span class="tag">&lt;body&gt;</span>
+    <span class="tag">&lt;h1&gt;</span>Hello World<span class="tag">&lt;/h1&gt;</span>
+    <span class="tag">&lt;p&gt;</span>This is my first web page!<span class="tag">&lt;/p&gt;</span>
+<span class="tag">&lt;/body&gt;</span>
+<span class="tag">&lt;/html&gt;</span></div>
+
+    <div class="tip">
+        <strong>Try it:</strong> Copy this into a file called <code>index.html</code>, save it, and double-click to open in your browser.
+    </div>
+
+    <h2>Basic Tags You'll Use</h2>
+
+    <div class="cheat-sheet">
+        <h3>Text & Headings</h3>
+        <table>
+            <tr>
+                <td>&lt;h1&gt;...&lt;/h1&gt;</td>
+                <td>Biggest heading (page title)</td>
+            </tr>
+            <tr>
+                <td>&lt;h2&gt;...&lt;/h2&gt;</td>
+                <td>Second-level heading</td>
+            </tr>
+            <tr>
+                <td>&lt;h3&gt;...&lt;/h3&gt;</td>
+                <td>Third-level heading (and so on to h6)</td>
+            </tr>
+            <tr>
+                <td>&lt;p&gt;...&lt;/p&gt;</td>
+                <td>Paragraph of text</td>
+            </tr>
+            <tr>
+                <td>&lt;br&gt;</td>
+                <td>Line break (no closing tag needed)</td>
+            </tr>
+            <tr>
+                <td>&lt;strong&gt;...&lt;/strong&gt;</td>
+                <td>Bold text</td>
+            </tr>
+            <tr>
+                <td>&lt;em&gt;...&lt;/em&gt;</td>
+                <td>Italic text</td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="cheat-sheet">
+        <h3>Links & Images</h3>
+        <table>
+            <tr>
+                <td>&lt;a href="url"&gt;...&lt;/a&gt;</td>
+                <td>A clickable link</td>
+            </tr>
+            <tr>
+                <td>&lt;img src="photo.jpg"&gt;</td>
+                <td>An image (no closing tag)</td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="cheat-sheet">
+        <h3>Containers</h3>
+        <table>
+            <tr>
+                <td>&lt;div&gt;...&lt;/div&gt;</td>
+                <td>A box/section (for grouping things)</td>
+            </tr>
+            <tr>
+                <td>&lt;span&gt;...&lt;/span&gt;</td>
+                <td>Inline container (for styling bits of text)</td>
+            </tr>
+        </table>
+    </div>
+
+    <h3>Example: A Link</h3>
+    <div class="code-box"><span class="tag">&lt;a</span> <span class="attr">href</span>=<span class="value">"https://google.com"</span><span class="tag">&gt;</span>Click here to visit Google<span class="tag">&lt;/a&gt;</span></div>
+    <div class="result-box">
+        <div class="result-label">Result</div>
+        <a href="https://google.com" style="color: #0891b2;">Click here to visit Google</a>
+    </div>
+
+    <h3>Example: An Image</h3>
+    <div class="code-box"><span class="tag">&lt;img</span> <span class="attr">src</span>=<span class="value">"photo.jpg"</span> <span class="attr">alt</span>=<span class="value">"A description of the image"</span><span class="tag">&gt;</span></div>
+    <div class="tip">
+        <strong>Note:</strong> The <code>alt</code> attribute describes the image for screen readers and shows if the image fails to load.
+    </div>
+
+    <h2>Adding Style with CSS</h2>
+    <p>
+        CSS (Cascading Style Sheets) controls how your HTML looks - colors, fonts, sizes, spacing.
+        You add it inside a <code>&lt;style&gt;</code> tag in the <code>&lt;head&gt;</code>.
+    </p>
+
+    <div class="code-box"><span class="tag">&lt;!DOCTYPE html&gt;</span>
+<span class="tag">&lt;html&gt;</span>
+<span class="tag">&lt;head&gt;</span>
+    <span class="tag">&lt;title&gt;</span>Styled Page<span class="tag">&lt;/title&gt;</span>
+    <span class="tag">&lt;style&gt;</span>
+        <span class="comment">/* This makes the whole page have a light background */</span>
+        body {
+            background-color: #f5f5f5;
+            font-family: Arial, sans-serif;
+        }
+
+        <span class="comment">/* This makes h1 headings blue */</span>
+        h1 {
+            color: navy;
+            text-align: center;
+        }
+
+        <span class="comment">/* This adds padding around paragraphs */</span>
+        p {
+            padding: 20px;
+            line-height: 1.6;
+        }
+    <span class="tag">&lt;/style&gt;</span>
+<span class="tag">&lt;/head&gt;</span>
+<span class="tag">&lt;body&gt;</span>
+    <span class="tag">&lt;h1&gt;</span>Welcome!<span class="tag">&lt;/h1&gt;</span>
+    <span class="tag">&lt;p&gt;</span>Now my page has some style.<span class="tag">&lt;/p&gt;</span>
+<span class="tag">&lt;/body&gt;</span>
+<span class="tag">&lt;/html&gt;</span></div>
+
+    <h2>Common CSS Properties</h2>
+
+    <div class="cheat-sheet">
+        <h3>Colors & Backgrounds</h3>
+        <table>
+            <tr>
+                <td>color: blue;</td>
+                <td>Text color (use names or hex codes like #ff0000)</td>
+            </tr>
+            <tr>
+                <td>background-color: #fff;</td>
+                <td>Background color</td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="cheat-sheet">
+        <h3>Text & Fonts</h3>
+        <table>
+            <tr>
+                <td>font-size: 20px;</td>
+                <td>How big the text is</td>
+            </tr>
+            <tr>
+                <td>font-family: Arial;</td>
+                <td>What font to use</td>
+            </tr>
+            <tr>
+                <td>font-weight: bold;</td>
+                <td>Make text bold</td>
+            </tr>
+            <tr>
+                <td>text-align: center;</td>
+                <td>Center, left, or right align</td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="cheat-sheet">
+        <h3>Spacing</h3>
+        <table>
+            <tr>
+                <td>padding: 20px;</td>
+                <td>Space INSIDE the element</td>
+            </tr>
+            <tr>
+                <td>margin: 20px;</td>
+                <td>Space OUTSIDE the element</td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="cheat-sheet">
+        <h3>Borders & Boxes</h3>
+        <table>
+            <tr>
+                <td>border: 1px solid black;</td>
+                <td>A line around the element</td>
+            </tr>
+            <tr>
+                <td>border-radius: 10px;</td>
+                <td>Rounded corners</td>
+            </tr>
+            <tr>
+                <td>width: 300px;</td>
+                <td>How wide something is</td>
+            </tr>
+            <tr>
+                <td>max-width: 600px;</td>
+                <td>Maximum width (won't grow past this)</td>
+            </tr>
+        </table>
+    </div>
+
+    <h2>Styling Specific Things</h2>
+    <p>
+        To style only certain elements, give them a <code>class</code> and target that class in CSS with a dot:
+    </p>
+
+    <div class="code-box"><span class="tag">&lt;style&gt;</span>
+    .highlight {
+        background-color: yellow;
+        padding: 5px;
+    }
+
+    .big-text {
+        font-size: 24px;
+    }
+<span class="tag">&lt;/style&gt;</span>
+
+<span class="tag">&lt;p</span> <span class="attr">class</span>=<span class="value">"highlight"</span><span class="tag">&gt;</span>This paragraph has a yellow background.<span class="tag">&lt;/p&gt;</span>
+<span class="tag">&lt;p</span> <span class="attr">class</span>=<span class="value">"big-text"</span><span class="tag">&gt;</span>This paragraph is bigger.<span class="tag">&lt;/p&gt;</span>
+<span class="tag">&lt;p</span> <span class="attr">class</span>=<span class="value">"highlight big-text"</span><span class="tag">&gt;</span>This has both!<span class="tag">&lt;/p&gt;</span></div>
+
+    <h2>Your Workflow</h2>
+    <ol>
+        <li>Open your <code>site/hand_coded/index.html</code> in a text editor (Notepad, TextEdit, or VS Code)</li>
+        <li>Make changes to the HTML or CSS</li>
+        <li>Save the file (Ctrl+S on Windows, Cmd+S on Mac)</li>
+        <li>Refresh your browser to see the changes</li>
+        <li>Repeat until it looks how you want</li>
+    </ol>
+
+    <div class="warning">
+        <strong>Common Mistakes:</strong>
+        <ul style="margin-bottom: 0;">
+            <li>Forgetting to close tags (<code>&lt;/p&gt;</code>, <code>&lt;/div&gt;</code>, etc.)</li>
+            <li>Missing semicolons in CSS (<code>color: blue;</code> not <code>color: blue</code>)</li>
+            <li>Typos in property names (it's <code>background-color</code>, not <code>backgroud-color</code>)</li>
+        </ul>
+    </div>
+
+    <h2>What's Next?</h2>
+    <p>
+        Once you're comfortable editing HTML, you have choices:
+    </p>
+    <ul>
+        <li><strong>Keep hand-coding</strong> - look things up online when you want to do something new</li>
+        <li><strong>Use AI for help</strong> - describe what you want and learn from what it gives you</li>
+        <li><strong>Mix both</strong> - use AI to generate a starting point, then hand-edit to perfect it</li>
+    </ul>
+
+    <div class="action-links">
+        <a href="/vibe-coding" class="btn-primary">Learn Vibe Coding &rarr;</a>
+        <a href="/publishing" class="btn-secondary">How to Publish</a>
+    </div>
+</div>
+
+</body>
+</html>
