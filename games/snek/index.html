@@ -1,5 +1,9 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
   <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>snek</title>
     <script src="p5.js"></script>
     <script src="utils.js"></script>
     <script src="point.js"></script>
@@ -7,7 +11,66 @@
     <script src="snek.js"></script>
     <script src="sketch.js"></script>
     <script src="gameController.js"></script>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        overflow: hidden;
+        touch-action: none;
+      }
+      canvas {
+        display: block;
+      }
+      /* Mobile D-pad controls */
+      .dpad {
+        position: fixed;
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        display: none;
+        grid-template-columns: repeat(3, 60px);
+        grid-template-rows: repeat(3, 60px);
+        gap: 5px;
+        z-index: 1000;
+        opacity: 0.7;
+      }
+      @media (pointer: coarse) {
+        .dpad {
+          display: grid;
+        }
+      }
+      .dpad-btn {
+        background: rgba(0, 0, 0, 0.5);
+        border: 2px solid rgba(255, 255, 255, 0.5);
+        border-radius: 10px;
+        color: white;
+        font-size: 24px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        -webkit-tap-highlight-color: transparent;
+      }
+      .dpad-btn:active {
+        background: rgba(255, 255, 255, 0.3);
+      }
+      .dpad-btn.up { grid-column: 2; grid-row: 1; }
+      .dpad-btn.left { grid-column: 1; grid-row: 2; }
+      .dpad-btn.right { grid-column: 3; grid-row: 2; }
+      .dpad-btn.down { grid-column: 2; grid-row: 3; }
+      .dpad-spacer { grid-column: 2; grid-row: 2; }
+    </style>
   </head>
   <body>
+    <div class="dpad">
+      <button class="dpad-btn up" data-dir="UP">&#9650;</button>
+      <button class="dpad-btn left" data-dir="LEFT">&#9664;</button>
+      <div class="dpad-spacer"></div>
+      <button class="dpad-btn right" data-dir="RIGHT">&#9654;</button>
+      <button class="dpad-btn down" data-dir="DOWN">&#9660;</button>
+    </div>
   </body>
 </html>

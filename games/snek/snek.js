@@ -1,11 +1,14 @@
 function Snake() {
-	var snekFatness = 40;
+	// Scale snake size based on screen size for mobile
+	var baseSize = Math.min(width, height);
+	var snekFatness = Math.max(20, Math.min(40, Math.floor(baseSize / 20)));
+	var initialSpeed = Math.max(20, Math.min(41, Math.floor(baseSize / 25)));
 	return {
 		fatness: snekFatness,
 		mySnek: [Point(width/2, height/2, snekFatness, snekFatness, null, false)],
 		longness: 10,
 
-		moveSpeed: 41,
+		moveSpeed: initialSpeed,
 		moving: "UP",
 
 		

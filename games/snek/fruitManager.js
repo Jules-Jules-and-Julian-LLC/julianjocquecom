@@ -1,6 +1,9 @@
 function FruitManager() {
+	// Scale fruit size based on screen size for mobile
+	var baseSize = Math.min(width, height);
+	var scaledFruitSize = Math.max(15, Math.min(25, Math.floor(baseSize / 25)));
 	return {
-		fruitSize: 25,
+		fruitSize: scaledFruitSize,
 		myDeliciousFruits: [],
 
 		//Updates the fruit manager by checking if the snake's head has eaten any of its delicious fruit
@@ -34,8 +37,10 @@ function FruitManager() {
 		},
 
 		addFruit: function() {
-			var randX = getRandomInt(50, width - 50),
-				randY = getRandomInt(50, height - 50),
+			// Use smaller margins on smaller screens
+			var margin = Math.max(20, Math.min(50, Math.floor(Math.min(width, height) / 10)));
+			var randX = getRandomInt(margin, width - margin),
+				randY = getRandomInt(margin, height - margin),
 				fruitColor = color(0, 100, 100, 1);
 			this.myDeliciousFruits.push(Point(randX, randY, this.fruitSize, this.fruitSize, fruitColor, true));
 		}
