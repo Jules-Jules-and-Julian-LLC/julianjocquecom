@@ -41,3 +41,142 @@ a:hover {
     color: #222;
     border-color: #666;
 }
+
+/* Other creations footer */
+.other-creations {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    display: flex;
+    gap: 15px;
+    align-items: center;
+    z-index: 1000;
+}
+
+/* WriteShite link */
+.writeshite-logo-link {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    border: none;
+    font-size: 1.2em;
+    transition: transform 0.2s ease;
+}
+
+.writeshite-logo-link:hover {
+    transform: scale(1.1);
+    border: none;
+}
+
+.writeshite-text {
+    font-family: Georgia, serif;
+    font-weight: bold;
+    color: #333;
+}
+
+.writeshite-poop {
+    font-size: 1.1em;
+    margin-left: 2px;
+}
+
+/* PTATOTP mini glitch logo */
+.ptatotp-link {
+    text-decoration: none;
+    border: none;
+}
+
+.ptatotp-link:hover {
+    border: none;
+}
+
+.ptatotp-mini {
+    --ptatotp-bg: #f8f8f8;
+    --ptatotp-text: #333;
+    --ptatotp-glitch-1: #ff00ff;
+    --ptatotp-glitch-2: #00ffff;
+    --ptatotp-accent: #ff6600;
+
+    font-family: 'Courier New', monospace;
+    font-weight: bold;
+    font-size: 0.9em;
+    color: var(--ptatotp-text);
+    position: relative;
+    display: inline-block;
+    animation: ptatotp-shake 3s infinite linear alternate-reverse;
+    letter-spacing: 0.02em;
+    cursor: pointer;
+}
+
+.ptatotp-mini::before,
+.ptatotp-mini::after {
+    content: "PTATOTP";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: var(--ptatotp-bg);
+    overflow: hidden;
+    color: var(--ptatotp-text);
+}
+
+.ptatotp-mini::before {
+    left: -1px;
+    text-shadow: -1px 0 var(--ptatotp-glitch-1);
+    animation: ptatotp-anim-1 2s infinite linear alternate-reverse;
+}
+
+.ptatotp-mini::after {
+    left: 1px;
+    text-shadow: -1px 0 var(--ptatotp-glitch-2);
+    animation: ptatotp-anim-2 3s infinite linear alternate-reverse;
+}
+
+.ptatotp-mini span {
+    display: inline-block;
+    position: relative;
+    z-index: 2;
+    transition: transform 0.1s ease-out, color 0.1s ease-out;
+}
+
+.ptatotp-mini:hover span {
+    animation: ptatotp-letter-glitch 0.15s linear infinite;
+}
+
+.ptatotp-mini:hover {
+    text-shadow: 2px 2px 0 var(--ptatotp-glitch-2), -2px -2px 0 var(--ptatotp-glitch-1);
+}
+
+@keyframes ptatotp-shake {
+    0% { transform: translate(0, 0); }
+    25% { transform: translate(0.5px, -0.5px); }
+    50% { transform: translate(-0.5px, 0.5px); }
+    75% { transform: translate(0.5px, 0.5px); }
+    100% { transform: translate(-0.5px, -0.5px); }
+}
+
+@keyframes ptatotp-anim-1 {
+    0% { clip-path: inset(40% 0 61% 0); }
+    20% { clip-path: inset(10% 0 86% 0); }
+    40% { clip-path: inset(65% 0 21% 0); }
+    60% { clip-path: inset(90% 0 6% 0); }
+    80% { clip-path: inset(30% 0 51% 0); }
+    100% { clip-path: inset(50% 0 41% 0); }
+}
+
+@keyframes ptatotp-anim-2 {
+    0% { clip-path: inset(70% 0 11% 0); }
+    15% { clip-path: inset(20% 0 76% 0); }
+    35% { clip-path: inset(50% 0 31% 0); }
+    55% { clip-path: inset(85% 0 11% 0); }
+    75% { clip-path: inset(10% 0 91% 0); }
+    100% { clip-path: inset(60% 0 21% 0); }
+}
+
+@keyframes ptatotp-letter-glitch {
+    0% { transform: translate(0,0); color: var(--ptatotp-text); }
+    25% { transform: translate(1px, -1px); color: var(--ptatotp-accent); }
+    50% { transform: translate(-1px, 1px); color: var(--ptatotp-text); }
+    75% { transform: translate(0.5px, 0.5px) skewX(-3deg); color: var(--ptatotp-accent); }
+    100% { transform: translate(0,0); color: var(--ptatotp-text); }
+}
