@@ -1,1 +1,0 @@
-gsutil -m cp -r ./* gs://julianjocque-com
