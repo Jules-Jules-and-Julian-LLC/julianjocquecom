@@ -4,7 +4,15 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="e78bf4a9-838f-42d3-92b5-6643cc3bcc46" name="Changes" comment="initial bill" />
+    <list default="true" id="e78bf4a9-838f-42d3-92b5-6643cc3bcc46" name="Changes" comment="initial bill">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bill/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/bill/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bill/textChallenge.html" beforeDir="false" afterPath="$PROJECT_DIR$/bill/textChallenge.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/blog.html" beforeDir="false" afterPath="$PROJECT_DIR$/blog.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/drive_poetry/Collected_Poems_Snap.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/drive_poetry/Collected_Poems_Snap_2.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/family/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/family/index.html" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -37,6 +45,7 @@
     &quot;JavaScript Debug.Collected_Poems_Snap.html.executor&quot;: &quot;Run&quot;,
     &quot;JavaScript Debug.index.html (1).executor&quot;: &quot;Run&quot;,
     &quot;JavaScript Debug.poetry.html.executor&quot;: &quot;Run&quot;,
+    &quot;JavaScript Debug.textChallenge.html.executor&quot;: &quot;Run&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
     &quot;last_opened_file_path&quot;: &quot;C:/Users/Julian/WebstormProjects/julianjocquecom&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
@@ -56,7 +65,7 @@
       <recent name="C:\Users\Julian\WebstormProjects\julianjocquecom\games" />
     </key>
   </component>
-  <component name="RunManager" selected="JavaScript Debug.index.html (1)">
+  <component name="RunManager" selected="JavaScript Debug.textChallenge.html">
     <configuration name="Collected_Poems_Snap_2.html" type="JavascriptDebugType" temporary="true" nameIsGenerated="true" uri="http://localhost:63342/julianjocquecom/drive_poetry/Collected_Poems_Snap_2.html" useBuiltInWebServerPort="true">
       <method v="2" />
     </configuration>
@@ -66,19 +75,19 @@
     <configuration name="index.html (1)" type="JavascriptDebugType" temporary="true" nameIsGenerated="true" uri="http://localhost:63342/julianjocquecom/bill/index.html" useBuiltInWebServerPort="true">
       <method v="2" />
     </configuration>
-    <configuration name="index.html" type="JavascriptDebugType" temporary="true" nameIsGenerated="true" uri="http://localhost:63342/julianjocquecom/index.html" useBuiltInWebServerPort="true">
+    <configuration name="poetry.html" type="JavascriptDebugType" temporary="true" nameIsGenerated="true" uri="http://localhost:63342/julianjocquecom/poetry.html" useBuiltInWebServerPort="true">
       <method v="2" />
     </configuration>
-    <configuration name="poetry.html" type="JavascriptDebugType" temporary="true" nameIsGenerated="true" uri="http://localhost:63342/julianjocquecom/poetry.html" useBuiltInWebServerPort="true">
+    <configuration name="textChallenge.html" type="JavascriptDebugType" temporary="true" nameIsGenerated="true" uri="http://localhost:63342/julianjocquecom/bill/textChallenge.html" useBuiltInWebServerPort="true">
       <method v="2" />
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="JavaScript Debug.textChallenge.html" />
         <item itemvalue="JavaScript Debug.index.html (1)" />
         <item itemvalue="JavaScript Debug.Collected_Poems_Snap_2.html" />
         <item itemvalue="JavaScript Debug.Collected_Poems_Snap.html" />
         <item itemvalue="JavaScript Debug.poetry.html" />
-        <item itemvalue="JavaScript Debug.index.html" />
       </list>
     </recent_temporary>
   </component>
@@ -111,6 +120,8 @@
       <workItem from="1768500940766" duration="35000" />
       <workItem from="1769140940260" duration="4014000" />
       <workItem from="1769287371891" duration="1203000" />
+      <workItem from="1770429513943" duration="2478000" />
+      <workItem from="1770579736949" duration="5317000" />
     </task>
     <task id="LOCAL-00001" summary="Update I guess to prod why not">
       <option name="closed" value="true" />
