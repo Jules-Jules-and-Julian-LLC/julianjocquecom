@@ -4,7 +4,20 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="e78bf4a9-838f-42d3-92b5-6643cc3bcc46" name="Changes" comment="spotify + some bill" />
+    <list default="true" id="e78bf4a9-838f-42d3-92b5-6643cc3bcc46" name="Changes" comment="ublock">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/about.html" beforeDir="false" afterPath="$PROJECT_DIR$/about.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/art.html" beforeDir="false" afterPath="$PROJECT_DIR$/art.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/blog.html" beforeDir="false" afterPath="$PROJECT_DIR$/blog.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/blogs.html" beforeDir="false" afterPath="$PROJECT_DIR$/blogs.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ceramics.html" beforeDir="false" afterPath="$PROJECT_DIR$/ceramics.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/contact.html" beforeDir="false" afterPath="$PROJECT_DIR$/contact.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/games.html" beforeDir="false" afterPath="$PROJECT_DIR$/games.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/poetry.html" beforeDir="false" afterPath="$PROJECT_DIR$/poetry.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/programming.html" beforeDir="false" afterPath="$PROJECT_DIR$/programming.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/style.css" beforeDir="false" afterPath="$PROJECT_DIR$/style.css" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -19,6 +32,9 @@
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GithubDefaultAccount">
+    <option name="defaultAccountId" value="7f0c4dca-30ba-49ca-9b94-5f95372f1cdd" />
   </component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 8
@@ -113,7 +129,8 @@
       <workItem from="1769140940260" duration="4014000" />
       <workItem from="1769287371891" duration="1203000" />
       <workItem from="1770429513943" duration="2478000" />
-      <workItem from="1770579736949" duration="6036000" />
+      <workItem from="1770579736949" duration="6612000" />
+      <workItem from="1770698463410" duration="1412000" />
     </task>
     <task id="LOCAL-00001" summary="Update I guess to prod why not">
       <option name="closed" value="true" />
@@ -147,7 +164,15 @@
       <option name="project" value="LOCAL" />
       <updated>1770588533697</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="ublock">
+      <option name="closed" value="true" />
+      <created>1770589539194</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1770589539194</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -169,6 +194,7 @@
     <MESSAGE value="just a *bit* of censorship" />
     <MESSAGE value="dump" />
     <MESSAGE value="spotify + some bill" />
-    <option name="LAST_COMMIT_MESSAGE" value="spotify + some bill" />
+    <MESSAGE value="ublock" />
+    <option name="LAST_COMMIT_MESSAGE" value="ublock" />
   </component>
 </project>

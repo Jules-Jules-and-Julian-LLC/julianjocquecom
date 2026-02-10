@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap');
+
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     background-color: #f8f8f8;
@@ -69,7 +71,7 @@ a:hover {
 }
 
 .writeshite-text {
-    font-family: Georgia, serif;
+    font-family: 'Dancing Script', Georgia, serif;
     font-weight: bold;
     color: #333;
 }
@@ -77,6 +79,16 @@ a:hover {
 .writeshite-poop {
     font-size: 1.1em;
     margin-left: 2px;
+    display: inline-block;
+}
+
+.writeshite-poop:hover {
+    animation: poop-spin .65s ease infinite;
+}
+
+@keyframes poop-spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(1turn); }
 }
 
 /* PTATOTP mini glitch logo */
