@@ -4,19 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="e78bf4a9-838f-42d3-92b5-6643cc3bcc46" name="Changes" comment="ublock">
+    <list default="true" id="e78bf4a9-838f-42d3-92b5-6643cc3bcc46" name="Changes" comment="implement footers, add SHREK!">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/about.html" beforeDir="false" afterPath="$PROJECT_DIR$/about.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/art.html" beforeDir="false" afterPath="$PROJECT_DIR$/art.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/blog.html" beforeDir="false" afterPath="$PROJECT_DIR$/blog.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/blogs.html" beforeDir="false" afterPath="$PROJECT_DIR$/blogs.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ceramics.html" beforeDir="false" afterPath="$PROJECT_DIR$/ceramics.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/contact.html" beforeDir="false" afterPath="$PROJECT_DIR$/contact.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/games.html" beforeDir="false" afterPath="$PROJECT_DIR$/games.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/index.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/poetry.html" beforeDir="false" afterPath="$PROJECT_DIR$/poetry.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/programming.html" beforeDir="false" afterPath="$PROJECT_DIR$/programming.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/style.css" beforeDir="false" afterPath="$PROJECT_DIR$/style.css" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -73,17 +62,17 @@
       <recent name="C:\Users\Julian\WebstormProjects\julianjocquecom\games" />
     </key>
   </component>
-  <component name="RunManager" selected="JavaScript Debug.textChallenge.html">
+  <component name="RunManager" selected="JavaScript Debug.blog.html">
     <configuration name="Collected_Poems_Snap_2.html" type="JavascriptDebugType" temporary="true" nameIsGenerated="true" uri="http://localhost:63342/julianjocquecom/drive_poetry/Collected_Poems_Snap_2.html" useBuiltInWebServerPort="true">
       <method v="2" />
     </configuration>
     <configuration name="Collected_Poems_Snap.html" type="JavascriptDebugType" temporary="true" nameIsGenerated="true" uri="http://localhost:63342/julianjocquecom/drive_poetry/Collected_Poems_Snap.html" useBuiltInWebServerPort="true">
       <method v="2" />
     </configuration>
-    <configuration name="index.html (1)" type="JavascriptDebugType" temporary="true" nameIsGenerated="true" uri="http://localhost:63342/julianjocquecom/bill/index.html" useBuiltInWebServerPort="true">
+    <configuration name="blog.html" type="JavascriptDebugType" temporary="true" nameIsGenerated="true" uri="http://localhost:63342/julianjocquecom/blog.html" useBuiltInWebServerPort="true">
       <method v="2" />
     </configuration>
-    <configuration name="poetry.html" type="JavascriptDebugType" temporary="true" nameIsGenerated="true" uri="http://localhost:63342/julianjocquecom/poetry.html" useBuiltInWebServerPort="true">
+    <configuration name="index.html (1)" type="JavascriptDebugType" temporary="true" nameIsGenerated="true" uri="http://localhost:63342/julianjocquecom/bill/index.html" useBuiltInWebServerPort="true">
       <method v="2" />
     </configuration>
     <configuration name="textChallenge.html" type="JavascriptDebugType" temporary="true" nameIsGenerated="true" uri="http://localhost:63342/julianjocquecom/bill/textChallenge.html" useBuiltInWebServerPort="true">
@@ -91,11 +80,11 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="JavaScript Debug.blog.html" />
         <item itemvalue="JavaScript Debug.textChallenge.html" />
         <item itemvalue="JavaScript Debug.index.html (1)" />
         <item itemvalue="JavaScript Debug.Collected_Poems_Snap_2.html" />
         <item itemvalue="JavaScript Debug.Collected_Poems_Snap.html" />
-        <item itemvalue="JavaScript Debug.poetry.html" />
       </list>
     </recent_temporary>
   </component>
@@ -130,7 +119,7 @@
       <workItem from="1769287371891" duration="1203000" />
       <workItem from="1770429513943" duration="2478000" />
       <workItem from="1770579736949" duration="6612000" />
-      <workItem from="1770698463410" duration="1412000" />
+      <workItem from="1770698463410" duration="1754000" />
     </task>
     <task id="LOCAL-00001" summary="Update I guess to prod why not">
       <option name="closed" value="true" />
@@ -172,7 +161,15 @@
       <option name="project" value="LOCAL" />
       <updated>1770589539194</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="implement footers, add SHREK!">
+      <option name="closed" value="true" />
+      <created>1770700219933</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1770700219933</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -195,6 +192,7 @@
     <MESSAGE value="dump" />
     <MESSAGE value="spotify + some bill" />
     <MESSAGE value="ublock" />
-    <option name="LAST_COMMIT_MESSAGE" value="ublock" />
+    <MESSAGE value="implement footers, add SHREK!" />
+    <option name="LAST_COMMIT_MESSAGE" value="implement footers, add SHREK!" />
   </component>
 </project>
