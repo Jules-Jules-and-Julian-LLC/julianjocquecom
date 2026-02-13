@@ -4,30 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="e78bf4a9-838f-42d3-92b5-6643cc3bcc46" name="Changes" comment="cleanup">
-      <change afterPath="$PROJECT_DIR$/assets/cats/20180409_140807.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/assets/cats/20180411_161104.mp4" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/assets/cats/20180412_201529.mp4" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/assets/cats/20181110_111159.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/assets/cats/20200315_161530_HDR.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/assets/cats/20210721_213654.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/assets/cats/20231002_202216.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/assets/cats/IMG_20210406_182607379.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/assets/cats/PXL_20240127_011037186.MP.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/assets/cats/PXL_20240504_172600802.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/assets/cats/PXL_20241030_221542945.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/assets/cats/PXL_20241102_160027638.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/assets/cats/PXL_20251208_143720572.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/assets/cats/PXL_20251217_222941472.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/assets/cats/PXL_20251217_233027367.MP.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/assets/cats/PXL_20251217_233442450.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/assets/cats/PXL_20251219_200651626.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/assets/cats/PXL_20251226_141621549.MP.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/assets/cats/PXL_20251226_143450520.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/assets/cats/PXL_20260118_011906690.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/assets/cats/image000000.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/assets/cats/image000000_4.jpg" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/assets/cats/phone backup 225.jpg" afterDir="false" />
+    <list default="true" id="e78bf4a9-838f-42d3-92b5-6643cc3bcc46" name="Changes" comment="cats">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -59,27 +36,27 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "ASKED_ADD_EXTERNAL_FILES": "true",
-    "DefaultHtmlFileTemplate": "HTML File",
-    "JavaScript Debug.Collected_Poems_Snap.html.executor": "Run",
-    "JavaScript Debug.blog.html.executor": "Run",
-    "JavaScript Debug.cats.html.executor": "Run",
-    "JavaScript Debug.index.html (1).executor": "Run",
-    "JavaScript Debug.poetry.html.executor": "Run",
-    "JavaScript Debug.textChallenge.html.executor": "Run",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "last_opened_file_path": "C:/Users/Julian/WebstormProjects/julianjocquecom",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "settings.editor.selected.configurable": "reference.settings.ide.settings.web.browsers",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;ASKED_ADD_EXTERNAL_FILES&quot;: &quot;true&quot;,
+    &quot;DefaultHtmlFileTemplate&quot;: &quot;HTML File&quot;,
+    &quot;JavaScript Debug.Collected_Poems_Snap.html.executor&quot;: &quot;Run&quot;,
+    &quot;JavaScript Debug.blog.html.executor&quot;: &quot;Run&quot;,
+    &quot;JavaScript Debug.cats.html.executor&quot;: &quot;Run&quot;,
+    &quot;JavaScript Debug.index.html (1).executor&quot;: &quot;Run&quot;,
+    &quot;JavaScript Debug.poetry.html.executor&quot;: &quot;Run&quot;,
+    &quot;JavaScript Debug.textChallenge.html.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/Julian/WebstormProjects/julianjocquecom&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;reference.settings.ide.settings.web.browsers&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
       <recent name="C:\Users\Julian\WebstormProjects\julianjocquecom\assets\cats" />
@@ -151,7 +128,8 @@
       <workItem from="1770700785270" duration="87000" />
       <workItem from="1770700884134" duration="35000" />
       <workItem from="1770949850467" duration="5826000" />
-      <workItem from="1770962349141" duration="1849000" />
+      <workItem from="1770962349141" duration="2347000" />
+      <workItem from="1771009474558" duration="790000" />
     </task>
     <task id="LOCAL-00001" summary="Update I guess to prod why not">
       <option name="closed" value="true" />
@@ -265,7 +243,15 @@
       <option name="project" value="LOCAL" />
       <updated>1770963409304</updated>
     </task>
-    <option name="localTasksCounter" value="15" />
+    <task id="LOCAL-00015" summary="cats">
+      <option name="closed" value="true" />
+      <created>1770964257036</created>
+      <option name="number" value="00015" />
+      <option name="presentableId" value="LOCAL-00015" />
+      <option name="project" value="LOCAL" />
+      <updated>1770964257036</updated>
+    </task>
+    <option name="localTasksCounter" value="16" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -296,6 +282,7 @@
     <MESSAGE value="add cat break links" />
     <MESSAGE value="Fix link" />
     <MESSAGE value="cleanup" />
-    <option name="LAST_COMMIT_MESSAGE" value="cleanup" />
+    <MESSAGE value="cats" />
+    <option name="LAST_COMMIT_MESSAGE" value="cats" />
   </component>
 </project>
