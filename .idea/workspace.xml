@@ -4,7 +4,32 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="e78bf4a9-838f-42d3-92b5-6643cc3bcc46" name="Changes" comment="text chat done" />
+    <list default="true" id="e78bf4a9-838f-42d3-92b5-6643cc3bcc46" name="Changes" comment="cleanup">
+      <change afterPath="$PROJECT_DIR$/assets/cats/20180409_140807.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/cats/20180411_161104.mp4" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/cats/20180412_201529.mp4" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/cats/20181110_111159.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/cats/20200315_161530_HDR.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/cats/20210721_213654.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/cats/20231002_202216.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/cats/IMG_20210406_182607379.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/cats/PXL_20240127_011037186.MP.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/cats/PXL_20240504_172600802.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/cats/PXL_20241030_221542945.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/cats/PXL_20241102_160027638.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/cats/PXL_20251208_143720572.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/cats/PXL_20251217_222941472.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/cats/PXL_20251217_233027367.MP.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/cats/PXL_20251217_233442450.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/cats/PXL_20251219_200651626.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/cats/PXL_20251226_141621549.MP.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/cats/PXL_20251226_143450520.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/cats/PXL_20260118_011906690.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/cats/image000000.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/cats/image000000_4.jpg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/cats/phone backup 225.jpg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -40,6 +65,7 @@
     "DefaultHtmlFileTemplate": "HTML File",
     "JavaScript Debug.Collected_Poems_Snap.html.executor": "Run",
     "JavaScript Debug.blog.html.executor": "Run",
+    "JavaScript Debug.cats.html.executor": "Run",
     "JavaScript Debug.index.html (1).executor": "Run",
     "JavaScript Debug.poetry.html.executor": "Run",
     "JavaScript Debug.textChallenge.html.executor": "Run",
@@ -56,20 +82,21 @@
 }]]></component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\Julian\WebstormProjects\julianjocquecom\assets\cats" />
       <recent name="C:\Users\Julian\WebstormProjects\julianjocquecom" />
       <recent name="C:\Users\Julian\WebstormProjects\julianjocquecom\drive_poetry" />
       <recent name="C:\Users\Julian\WebstormProjects\julianjocquecom\assets" />
       <recent name="C:\Users\Julian\WebstormProjects\julianjocquecom\games" />
     </key>
   </component>
-  <component name="RunManager" selected="JavaScript Debug.textChallenge.html">
+  <component name="RunManager" selected="JavaScript Debug.cats.html">
     <configuration name="Collected_Poems_Snap_2.html" type="JavascriptDebugType" temporary="true" nameIsGenerated="true" uri="http://localhost:63342/julianjocquecom/drive_poetry/Collected_Poems_Snap_2.html" useBuiltInWebServerPort="true">
       <method v="2" />
     </configuration>
-    <configuration name="Collected_Poems_Snap.html" type="JavascriptDebugType" temporary="true" nameIsGenerated="true" uri="http://localhost:63342/julianjocquecom/drive_poetry/Collected_Poems_Snap.html" useBuiltInWebServerPort="true">
+    <configuration name="blog.html" type="JavascriptDebugType" temporary="true" nameIsGenerated="true" uri="http://localhost:63342/julianjocquecom/blog.html" useBuiltInWebServerPort="true">
       <method v="2" />
     </configuration>
-    <configuration name="blog.html" type="JavascriptDebugType" temporary="true" nameIsGenerated="true" uri="http://localhost:63342/julianjocquecom/blog.html" useBuiltInWebServerPort="true">
+    <configuration name="cats.html" type="JavascriptDebugType" temporary="true" nameIsGenerated="true" uri="http://localhost:63342/julianjocquecom/cats.html" useBuiltInWebServerPort="true">
       <method v="2" />
     </configuration>
     <configuration name="index.html (1)" type="JavascriptDebugType" temporary="true" nameIsGenerated="true" uri="http://localhost:63342/julianjocquecom/bill/index.html" useBuiltInWebServerPort="true">
@@ -80,11 +107,11 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="JavaScript Debug.cats.html" />
         <item itemvalue="JavaScript Debug.textChallenge.html" />
         <item itemvalue="JavaScript Debug.blog.html" />
         <item itemvalue="JavaScript Debug.index.html (1)" />
         <item itemvalue="JavaScript Debug.Collected_Poems_Snap_2.html" />
-        <item itemvalue="JavaScript Debug.Collected_Poems_Snap.html" />
       </list>
     </recent_temporary>
   </component>
@@ -124,6 +151,7 @@
       <workItem from="1770700785270" duration="87000" />
       <workItem from="1770700884134" duration="35000" />
       <workItem from="1770949850467" duration="5826000" />
+      <workItem from="1770962349141" duration="1849000" />
     </task>
     <task id="LOCAL-00001" summary="Update I guess to prod why not">
       <option name="closed" value="true" />
@@ -197,7 +225,47 @@
       <option name="project" value="LOCAL" />
       <updated>1770956342869</updated>
     </task>
-    <option name="localTasksCounter" value="10" />
+    <task id="LOCAL-00010" summary="add cat">
+      <option name="closed" value="true" />
+      <created>1770962435211</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1770962435212</updated>
+    </task>
+    <task id="LOCAL-00011" summary="add cat break links">
+      <option name="closed" value="true" />
+      <created>1770962781397</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1770962781397</updated>
+    </task>
+    <task id="LOCAL-00012" summary="Fix link">
+      <option name="closed" value="true" />
+      <created>1770963169631</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1770963169631</updated>
+    </task>
+    <task id="LOCAL-00013" summary="Fix link">
+      <option name="closed" value="true" />
+      <created>1770963385284</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1770963385284</updated>
+    </task>
+    <task id="LOCAL-00014" summary="cleanup">
+      <option name="closed" value="true" />
+      <created>1770963409304</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1770963409304</updated>
+    </task>
+    <option name="localTasksCounter" value="15" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -224,6 +292,10 @@
     <MESSAGE value="implement footers, add SHREK!" />
     <MESSAGE value="fix blog" />
     <MESSAGE value="text chat done" />
-    <option name="LAST_COMMIT_MESSAGE" value="text chat done" />
+    <MESSAGE value="add cat" />
+    <MESSAGE value="add cat break links" />
+    <MESSAGE value="Fix link" />
+    <MESSAGE value="cleanup" />
+    <option name="LAST_COMMIT_MESSAGE" value="cleanup" />
   </component>
 </project>
