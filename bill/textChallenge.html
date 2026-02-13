@@ -5,31 +5,7 @@
     <title>Wuh oh hope you wanna text chat soon</title>
 </head>
 
-<script type="module">
-    import { argon2id } from './hash-wasm/index.esm.js';
-    const guess = document.getElementById('guess');
-
-    const guessPassword = async function (event) {
-        event.preventDefault();
-        // The output 'hash' is your Master Key.
-        // Slice 0-32 = Room ID (Public location)
-        // Slice 32-64 = AES Key (Private encryption)
-        const hash = await argon2id({
-            password: guess,
-            salt: new Uint8Array(992), // Use a fixed salt if you want the Room ID to be deterministic
-            parallelism: 1,
-            iterations: 60,       // TUNE THIS: Controls CPU time (linear scaling)
-            memorySize: 262144,   // TUNE THIS: Controls RAM (256MB). Stops parallel GPU cracking.
-            hashLength: 64,       // We need 64 bytes total output
-            outputType: 'binary'
-        });
-        const hexHash = Array.from(hash).map(b => b.toString(16).padStart(2, '0')).join('');
-        console.log(hexHash);
-        console.log(hash);
-    }
-</script>
-
-<body>
+<body style="color: #ff7648; background-color: #0f1f35; line-height: 1.5;">
 Howdy<br/>
 <br/>
 Let's get down to business.<br/><br/>
@@ -38,8 +14,8 @@ The challenge is simple, but it may not be easy.<br/>
 
 <br/>
 I have structured this challenge as follows: <br/>
-Each guess will engage an Argon2id key stretching algorithm. This has been tuned so that, on my Google Pixel 9a, each guess uses up about 60 seconds of processing time. <br/>
-This is a necessity to ensure the source code for this page does not contain the password, and what's more, even attempting a guess requires burning cycles so you computationally and spacetimally can't brute force it.<br/>
+Each guess will engage an Argon2id key stretching algorithm. This has been tuned so that, on my Sick Gaming PC, each guess uses up about 3 seconds of processing time. <br/>
+This is a necessity to ensure the source code for this page does not contain the password, and what's more, even attempting a guess requires burning cycles so you computationally and spacetimally can't brute force it. I originally set this to 60 seconds but man, that was no fun at all.<br/>
 The password checking check doesn't check text, it checks gobldigook that this hashing algorithm outputs. <br/>
 I'm quite proud of this innovation, as it does not require any server-side processing to hide the password (lame, boring, solution too obvious! and I HATE hosting dynamic websites! The internet is such a pain!) <br/>
 <br/>
@@ -53,22 +29,98 @@ I will be using Mullvad VPN to hide my real IP, just seems like a good idea in g
 More deets when you get there. <br/>
 
 <br/>
-<input id="guess" type="text" value="password" onsubmit="guessPassword(event)">
+<br/>
+<br/>
+<form id="guessForm">
+<input id="guess" type="text" value="password">
 <button type="submit">takeAWhackAtIt</button>
+</form>
+<div id="judgement"></div>
 
+<script type="module">
+    import { argon2id } from './hash-wasm/index.esm.js';
+
+    function getCookie(name) {
+        const match = document.cookie.match(new RegExp('(?:^|; )' + name + '=([^;]*)'));
+        return match ? match[1] : null;
+    }
+    function setCookie(name, value) {
+        document.cookie = name + '=' + value + '; max-age=31536000; path=/; SameSite=Lax';
+    }
+
+    const form = document.getElementById('guessForm');
+    const button = form.querySelector('button');
+    const judgement = document.getElementById('judgement');
+
+    // If already solved, skip the challenge
+    if (getCookie('billSolved') === '1') {
+        window._scrambleBillpinions(window._billKey, true);
+        form.style.display = 'none';
+        judgement.innerHTML = 'Welcome back. <a href="./textChat.html">Go to the text chat waiting room</a>';
+    }
+
+    form.addEventListener('submit', async function (event) {
+        event.preventDefault();
+        const guess = document.getElementById('guess').value;
+        button.disabled = true;
+        button.textContent = 'hashing...';
+        judgement.textContent = '';
+        try {
+            const hash = await argon2id({
+                password: guess,
+                salt: new Uint8Array(992),
+                parallelism: 1,
+                iterations: 5,
+                memorySize: 262144,
+                hashLength: 64,
+                outputType: 'binary'
+            });
+            const hexHash = Array.from(hash).map(b => b.toString(16).padStart(2, '0')).join('');
+            console.log(hexHash);
+
+            var count = parseInt(getCookie('billGuessCount') || '0') + 1;
+            setCookie('billGuessCount', count);
+
+            if (hexHash === window._billHash) {
+                setCookie('billSolved', '1');
+                window._scrambleBillpinions(window._billKey, true);
+                form.style.display = 'none';
+                const chatLink = ' <a href="./textChat.html">Go to the text chat waiting room</a>';
+                if (count === 1) {
+                    judgement.innerHTML = 'First try. Damnit, too easy.' + chatLink;
+                } else if (count <= 5) {
+                    judgement.innerHTML = 'good job!' + chatLink;
+                } else if (count <= 10) {
+                    judgement.innerHTML = 'aight job!' + chatLink;
+                } else {
+                    judgement.innerHTML = 'You clearly tried your best and I blame myself for including Capitalization' + chatLink;
+                }
+            } else {
+                judgement.textContent = '';
+            }
+        } catch (err) {
+            console.error('Hash error:', err);
+        }
+        button.disabled = false;
+        button.textContent = 'takeAWhackAtIt';
+    });
+</script>
+
+<br/>
+<br/>
 <br/>
 <br/>
 As a fun / terrifying little bonus, once you get this right, there's a (TODO encrypt this using the same hash, it can be used instead of DHT to show Bill got it) pile of me Bill thoughts that will unlock.<br/>
-I've been careful and kind to allow you to delve as deeply in them as you care to.<br/>
+I've been careful and kind to allow you to delve as deeply in them as you care to.<br/> <br/> <br/>
 
 <div id="billpinions">
-To my knowledge, I have seen and listened to each public interview and appearance you've given. I have some brief thoughts below if you're interested. Click to unspoil, opinions are scary for me to readshare.<br/>
-<i>unrelated I just learned about the details and summary tags for this, what a delight</i><br/>
+To my knowledge, I have seen and listened to each public interview and appearance you've given. I have some brief thoughts below if you're interested. Click to unspoil, opinions are scary for me to readshare.<br/> <br/>
+<i>unrelated I just learned about the details and summary tags for this, what a treat!</i><br/> <br/>
 <details>
     <summary><b>Nolan Brewer</b></summary>
     Now *there's* a friend you can hang with! Nolan is just such an absolute delight that I've really enjoyed following him since the interviews. I don't love all of his music but I love that he's making it. Honestly I don't have much else to say, it was so fun watching you learn from his
     raw demeanor. He's just so good at being a raw human, he's just there, and he's him, and he's giving you him, and it's just such a nice, fun, chill hang. This one I came back to a few times.
-</details>
+</details><br/>
 <details>
     <summary><b>Smosh</b></summary>
     The fact I paid fucking greenbacks to see the full episode is hilarious to me on an existential level. It was fun seeing Bill Wurtz do Bill Wurtz cosplay, and there were moments of true brilliance. That said, this was the most instructive in terms of seeing what I perceive to be your
@@ -76,13 +128,13 @@ To my knowledge, I have seen and listened to each public interview and appearanc
     Someone pirated this heh https://drive.google.com/file/d/1-h4pGjcv1bTTh6qvmZAMSer4s4wnNGOJ/view
     <summary><b>H3 Podcast</b></summary>
     I lumped this one in with Smosh becuase it's basically the same thing in my head. I may give it another listen, at least it's long.
-</details>
+</details><br/>
 <details>
     <summary><b>HTML Energy</b></summary>
     This struck me as Bill at their most comfortable being in a room with other people and in a public setting imaginable. It makes sense to me, since it's a podcast so buried deep that it's not like `public` public but you know what I mean.
     You mentioned quite consistently, especially on The Vibe Chamber that in many ways the thing you struggle not to focus on is The Making Of. This was basically putting you in a room full of people who care about The Making Of The Internet but Not Evil, and your comfort seemed apparent.
     A real joy to listen to, but not one I've returned to, I think because it didn't have any blinky lights to look at while listening.
-</details>
+</details><br/>
 <details>
     <summary><b>Vibe Chamber</b></summary>
     This one is definitely the most interesting to me. Or two, rather (right?) (wait no 3 but I did listen to em all). My perception is that this is the closest to what you may imagine when you imagine a Bill Wurtz interview show. Pretty barebones, while following the cultural consciousness within reason.
@@ -93,27 +145,114 @@ To my knowledge, I have seen and listened to each public interview and appearanc
     that there's a couple of extra Bills in there that need expressing now and again and that's absolutely something I can relate to as an in-between-y 'all personas are kinda fake so why not have a bit of fun with it?'
     kinda gal myself, as you saw with the whole OF/softboyike gambit (which did work mwahaha) (I should probably still delete that (but those pictures are so fire)) -->
     but other than that, it was a true delight, and again, the one I come back to because it's got some really high quality blinky lights to look at while I listen and watch and think and ponder and listen.
-</details>
+</details><br/>
     <details>
         <summary><b>All The Rest (I found out there a lot of Content I was missing)</b></summary>
-    </details>
-    I saw the other ones like the award show one too but not much to say, except, I think maybe that's the only other one I saw. There's a BoingBoing article about the Smosh one, this internet here sure does like to swallow its own tail.<br/>
-    Oh wait that one Beatles one, I don't really care about Beatles, but I do like that one guy that was like "if you talk shit about Ringo Starr remember he's the highest paid drummer on earth, so maybe be a Ringo if you can" and John Lennon is dead or wait is that Paul is a Dead Man miss him miss him? I don't recall.<br/>
-    Oh yeah that eric the yung gawd one was aight but I don't remember anything about it besides I think I liked the cut of Eric The Yung Gawd's jib, good jib, good good jib there.
-    oh wait this reddit post https://www.reddit.com/r/billwurtz/comments/18yqag0/new_recap_of_bill_wurtz_interviews_public/ I'll get caught up hold on one second...<br/>
+        I saw the other ones like the award show one too but not much to say, except, I think maybe that's the only other one I saw. There's a BoingBoing article about the Smosh one, this internet here sure does like to swallow its own tail.<br/>
+    </details><br/>
+    <details>
+        <summary><b>that one Beatles one</b></summary>
+    I don't really care about Beatles, but I do like that one guy that was like "if you talk shit about Ringo Starr remember he's the highest paid drummer on earth, so maybe be a Ringo if you can" and John Lennon is dead or wait is that Paul is a Dead Man miss him miss him? I don't recall.<br/>
+    </details><br/>
+    <details>
+        <summary><b>eric the yung gawd</b></summary>
+        This one was aight but I don't remember anything about it besides I think I liked the cut of Eric The Yung Gawd's jib, good jib, good good jib there.
+    </details><br/>
+    <details>
+        <summary><b>this reddit post https://www.reddit.com/r/billwurtz/comments/18yqag0/new_recap_of_bill_wurtz_interviews_public/ </b></summary>
+        I'll get caught up hold on one second...
+    </details><br/>
     whoa you went in person to vidcom 2018? Wild stuff.<br/>
-    an inspiring vidcon 2018 - cool to hear your voice, but I got plenty of that to catch up on, gives questions.html vibes, in particular recent ideas on like you're extra special unique because AI<br/>
-    https://www.youtube.com/shorts/IXQIAR1NOBM watched this in between, this series and creator are a delight<br/>
-    CASEY NEISTAT, BILL WURTZ, AND MORE // VIDCON US 2018 VLOG DAY 2 - the sideways hat returns, the guitar background is lovely. I found classical guitar through Dwarf Fortress. I played many, many hours of it one summer when I was in high school. The main theme is a beautifully improvised tune by the creator, Tarn Adams, who actually was in a classical guitar conservatory before moving to mathematics then creating some of the most complete simulation software known to man, and it has the perfect "sitting around a campfire" vibe. However, I great tired and found the masters, Segovia, Williams, Russell, Vidovic. One of the first things I did my freshman year of undergrad was get tutelage under Harry George Pellegrin, who also writes crime novels. His best piece is, bt far, Elaine, written for his wife https://www.youtube.com/watch?v=xzIXC1XBOMc and my favorite of his repertoire was Un Dia de Noviember https://www.youtube.com/watch?v=AKcFwyey1j4 he was/is a really funny guy and he'd open that one with "this was written on the sunny coast of Cuba, but it sounds like a crisp New England day". That joke made the heartfelt, "I've been playing Elaine for N years now, and it only grows in depth as does my love, {insert tear jerker}". Oh yeah and you're not really in this one. <br/>
-    MIRANDA SINGS & THE EXPO HALL | VidCon US 2018 | Day 2 - blinky lights of the earlier one, cool! It is funny how funny people take what you say simply because it's so odd, but you're so darn serious about being odd. Or at least you were here, and also every other time I've seen you express.<br/>
-    https://lineup.2018.xoxofest.com/ dead https://x.com/zoink/status/1038300207056748544 dead https://www.eventbrite.com/e/too-short-to-fail-tickets-82231375257 dead <br/>
-    https://www.youtube.com/watch?v=80HRXgEeXts yo! you did a Genius interview, that's actually kinda sick! Seems like a good format, 26 seconds in and I'm digging discussing the logistics, and it's interesting / obvious you can recall your lyrics with such clarity but maybe there's cuts but I kinda don't think there's cuts. "I'm not sure what that means" got a smile outta me, this art stuff really is flowing. Reasonable is a fun word to say, I wish it were a bit better to type. Reasonable. Actually, not bad, but I like my left hand. Bridge talk is fascinating, your technical mind is pretty interesting. The "I don't know" about climate change goes a lil chuckle, that was a good "ahhh yeah, let's yeah uhhh yeah. anyways" agreed on world blowing up but being safe from it being kinda nice. DUDE "it's list form but it's going diagonally" struck an INSTANT chord with me and shoutouts satan. I think of lists a lot a lot a lot and they do often disobey the usual expectations of linearity. Trees (like the data structure) come up a lot in this, or I guess people call them graphs too but ramble ramble computer science. <br/>
-    Don't You Want Me - Funk cover feat. Bruno Major & Bill Wurtz - You collaborated?? I thought your whole thing was you can't do that. Consider my seat seated. Oh drums! Okay wait this is actually just sick. I would love if you could manage more of this, I think you've alluded to church gigs (and maybe even drums?) but all I can really say is that this is just good music you did a part of, good job good musicing. With other people, in public and everything, maybe you're less of a weirdo than I thought. Man that boy can sing. The main boy, I typed that then another boy sang good but I meant the main singing boy in the front. "Scary Pockets" is a nice name for a thing.<br/>
-    https://www.musicradar.com/news/bill-wurtz-bass-is-a-hypnosis-tool-if-its-done-properly-it-makes-you-like-the-song-better-without-knowing-why Text interview, neato! <br/>
-    The Post It Note Episode, (W/Bill Wurtz), DBAP #136 <br/>
+    <details>
+        <summary><b>an inspiring vidcon 2018</b></summary>
+        cool to hear your voice, but I got plenty of that to catch up on, gives questions.html vibes, in particular recent ideas on like you're extra special unique because AI<br/>
+    </details><br/>
+    <details>
+        <summary><b>https://www.youtube.com/shorts/IXQIAR1NOBM</b></summary>
+        watched this in between, this series and creator are a delight<br/>
+    </details><br/>
+    <details>
+        <summary><b>CASEY NEISTAT, BILL WURTZ, AND MORE // VIDCON US 2018 VLOG DAY 2</b></summary>
+        the sideways hat returns, the guitar background is lovely. I found classical guitar through Dwarf Fortress. I played many, many hours of it one summer when I was in high school. The main theme is a beautifully improvised tune by the creator, Tarn Adams, who actually was in a classical guitar conservatory before moving to mathematics then creating some of the most complete simulation software known to man, and it has the perfect "sitting around a campfire" vibe. However, I great tired and found the masters, Segovia, Williams, Russell, Vidovic. One of the first things I did my freshman year of undergrad was get tutelage under Harry George Pellegrin, who also writes crime novels. His best piece is, bt far, Elaine, written for his wife https://www.youtube.com/watch?v=xzIXC1XBOMc and my favorite of his repertoire was Un Dia de Noviember https://www.youtube.com/watch?v=AKcFwyey1j4 he was/is a really funny guy and he'd open that one with "this was written on the sunny coast of Cuba, but it sounds like a crisp New England day". That joke made the heartfelt, "I've been playing Elaine for N years now, and it only grows in depth as does my love, {insert tear jerker}". Oh yeah and you're not really in this one. <br/>
+    </details><br/>
+    <details>
+        <summary><b>MIRANDA SINGS & THE EXPO HALL | VidCon US 2018 | Day 2</b></summary>
+        blinky lights of the earlier one, cool! It is funny how funny people take what you say simply because it's so odd, but you're so darn serious about being odd. Or at least you were here, and also every other time I've seen you express.<br/>
+    </details><br/>
+    <details>
+        <summary><b>Genius interview</b></summary>
+        This one's actually kinda sick! Seems like a good format, 26 seconds in and I'm digging discussing the logistics, and it's interesting / obvious you can recall your lyrics with such clarity but maybe there's cuts but I kinda don't think there's cuts. "I'm not sure what that means" got a smile outta me, this art stuff really is flowing. Reasonable is a fun word to say, I wish it were a bit better to type. Reasonable. Actually, not bad, but I like my left hand. Bridge talk is fascinating, your technical mind is pretty interesting. The "I don't know" about climate change goes a lil chuckle, that was a good "ahhh yeah, let's yeah uhhh yeah. anyways" agreed on world blowing up but being safe from it being kinda nice. DUDE "it's list form but it's going diagonally" struck an INSTANT chord with me and shoutouts satan. I think of lists a lot a lot a lot and they do often disobey the usual expectations of linearity. Trees (like the data structure) come up a lot in this, or I guess people call them graphs too but ramble ramble computer science. <br/>
+    </details><br/>
+    <details>
+        <summary><b>Don't You Want Me - Funk cover feat. Bruno Major & Bill Wurtz</b></summary>
+        You collaborated?? I thought your whole thing was you can't do that. Consider my seat seated. Oh drums! Okay wait this is actually just sick. I would love if you could manage more of this, I think you've alluded to church gigs (and maybe even drums?) but all I can really say is that this is just good music you did a part of, good job good musicing. With other people, in public and everything, maybe you're less of a weirdo than I thought. Man that boy can sing. The main boy, I typed that then another boy sang good but I meant the main singing boy in the front. "Scary Pockets" is a nice name for a thing.<br/>
+    </details><br/>
+    <details>
+        <summary><b>https://www.musicradar.com/news/bill-wurtz-bass-is-a-hypnosis-tool-if-its-done-properly-it-makes-you-like-the-song-better-without-knowing-why</b></summary>
+        Text interview, neato! Wow, this has some extreme gems, I love that quote from the classical composer. <br/>
+    </details><br/>
     I'm not sure why but downloading an interview off an anonymous Google Drive link feels weird but here we are https://drive.google.com/file/d/13nks_Q3uf_2ji7hAjpD3cb8iZWnmFXf1/view - anyways, <br/>
-    https://soundcloud.com/init-201501289/the_bunny_20230402mp3 now this is what I call a deep cut, SoundCloud `.mp3` hell yeah - <br/>
-    Okay it's a few days later I'm bored.
+    <details>
+        <summary><b>https://soundcloud.com/init-201501289/the_bunny_20230402mp3 </b></summary>
+        now this is what I call a deep cut, SoundCloud `.mp3` hell yeah<br/>
+        I am quite enjoying this, the pure audio context suits you and I like the things you're saying.<br/>
+        A very nice little diddy, the questions page has me so well sated I feel like I maybe didn't particularly need this one, I'm gonna go back to crawling Expert Mode.
+    </details><br/>
+    <br/><br/>
+    https://lineup.2018.xoxofest.com/ dead https://x.com/zoink/status/1038300207056748544 dead https://www.eventbrite.com/e/too-short-to-fail-tickets-82231375257 dead <br/>
+    The Post It Note Episode, (W/Bill Wurtz), DBAP #136 dead? <br/>
 </div>
+<script>
+    (function() {
+        var EXPECTED = 'a4f106ffa30e4ad3f3b575624953b7ce9310de3bf3a166cf7f6fb598626b4fb0c0cbf9f824cee431d8e7225a74b1e3fb772482d7f0c3c3d8433ca5e41b203566';
+        var hashBytes = [];
+        for (var i = 0; i < EXPECTED.length; i += 2) {
+            hashBytes.push(parseInt(EXPECTED.substr(i, 2), 16));
+        }
+        window._billHash = EXPECTED;
+        window._billKey = hashBytes;
+        window._scrambleBillpinions = function(bytes, decrypt) {
+            var ki = { v: 0 };
+            function processText(text) {
+                var result = '';
+                for (var j = 0; j < text.length; j++) {
+                    var c = text.charCodeAt(j);
+                    var shift = bytes[ki.v % bytes.length] % 26;
+                    var shiftD = bytes[ki.v % bytes.length] % 10;
+                    if (c >= 65 && c <= 90) {
+                        result += String.fromCharCode(decrypt
+                            ? (c - 65 - shift + 26) % 26 + 65
+                            : (c - 65 + shift) % 26 + 65);
+                        ki.v++;
+                    } else if (c >= 97 && c <= 122) {
+                        result += String.fromCharCode(decrypt
+                            ? (c - 97 - shift + 26) % 26 + 97
+                            : (c - 97 + shift) % 26 + 97);
+                        ki.v++;
+                    } else if (c >= 48 && c <= 57) {
+                        result += String.fromCharCode(decrypt
+                            ? (c - 48 - shiftD + 10) % 10 + 48
+                            : (c - 48 + shiftD) % 10 + 48);
+                        ki.v++;
+                    } else {
+                        result += text[j];
+                    }
+                }
+                return result;
+            }
+            function walk(node) {
+                if (node.nodeType === 3 || node.nodeType === 8) {
+                    node.nodeValue = processText(node.nodeValue);
+                } else {
+                    for (var i = 0; i < node.childNodes.length; i++) {
+                        walk(node.childNodes[i]);
+                    }
+                }
+            }
+            walk(document.getElementById('billpinions'));
+        };
+        window._scrambleBillpinions(hashBytes, false);
+    })();
+</script>
 </body>
 </html>

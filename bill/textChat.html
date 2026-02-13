@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>text chat waiting room</title>
+    <style>
+        body {
+            color: #ff7648;
+            background-color: #0f1f35;
+            line-height: 1.5;
+            font-family: monospace;
+            margin: 20px;
+            max-width: 700px;
+        }
+        a { color: #ff9970; }
+        b { color: #ffaa80; }
+
+        #consentPage h3 { margin-bottom: 4px; }
+
+        .tech-section {
+            color: #cc9080;
+            margin: 12px 0;
+        }
+        .tech-section ol {
+            margin: 6px 0 6px 20px;
+            padding: 0;
+        }
+        .tech-section li {
+            margin-bottom: 6px;
+        }
+
+        .join-section {
+            margin-top: 24px;
+            padding: 16px;
+            border: 1px solid #ff764844;
+            border-radius: 6px;
+        }
+        .join-section label {
+            display: block;
+            margin-bottom: 6px;
+        }
+        #nameInput {
+            padding: 8px;
+            background: #1a2a3f;
+            border: 1px solid #ff764855;
+            color: #ddd;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 14px;
+            width: 200px;
+        }
+        #joinBtn {
+            padding: 8px 20px;
+            background: #ff7648;
+            color: #0f1f35;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-family: monospace;
+            font-weight: bold;
+            font-size: 14px;
+            margin-left: 10px;
+        }
+        #joinBtn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* --- Chat UI (hidden until join) --- */
+        #chatPage { display: none; }
+
+        .status-bar {
+            display: flex;
+            gap: 24px;
+            align-items: center;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+        }
+        .status-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+        .dot-yellow {
+            background: #e6c300;
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+        .dot-green { background: #2ecc40; }
+        .dot-red { background: #e74c3c; }
+        .dot-gray { background: #666; }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+
+        #messages {
+            height: 400px;
+            overflow-y: auto;
+            border: 1px solid #ff764833;
+            border-radius: 4px;
+            padding: 8px;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            margin-bottom: 8px;
+        }
+
+        .msg {
+            max-width: 70%;
+            padding: 6px 10px;
+            border-radius: 6px;
+            word-wrap: break-word;
+            font-size: 14px;
+        }
+        .msg-self {
+            align-self: flex-end;
+            background: #1a3a5c;
+            color: #ddd;
+        }
+        .msg-peer {
+            align-self: flex-start;
+            background: #2a1a0a;
+            color: #ddd;
+        }
+        .msg-system {
+            align-self: center;
+            color: #888;
+            font-style: italic;
+            font-size: 12px;
+        }
+        .msg-name {
+            font-size: 11px;
+            font-weight: bold;
+            margin-bottom: 2px;
+            color: #ff7648;
+        }
+        .msg-peer .msg-name {
+            color: #cc9070;
+        }
+        .msg-time {
+            font-size: 10px;
+            color: #666;
+            margin-top: 2px;
+        }
+
+        #chatForm {
+            display: flex;
+            gap: 8px;
+        }
+        #chatInput {
+            flex: 1;
+            padding: 8px;
+            background: #1a2a3f;
+            border: 1px solid #ff764855;
+            color: #ddd;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+        #chatInput:disabled {
+            opacity: 0.5;
+        }
+        #sendBtn {
+            padding: 8px 16px;
+            background: #ff7648;
+            color: #0f1f35;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-family: monospace;
+            font-weight: bold;
+        }
+        #sendBtn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* --- Connection log --- */
+        #connLog {
+            margin-top: 20px;
+            border: 1px solid #ff764822;
+            border-radius: 4px;
+            padding: 8px;
+            max-height: 200px;
+            overflow-y: auto;
+            font-size: 11px;
+            line-height: 1.4;
+            color: #667;
+        }
+        #connLog b { color: #889; }
+        .log-entry { margin-bottom: 2px; }
+        .log-ws { color: #6a9fb5; }
+        .log-rtc { color: #8a6fb5; }
+        .log-ice { color: #6ab585; }
+        .log-dc { color: #b5a56a; }
+        .log-err { color: #b56a6a; }
+        .log-label { font-weight: bold; }
+    </style>
+</head>
+<body>
+
+<script>
+    // Cookie gate
+    (function() {
+        var match = document.cookie.match(/(?:^|; )billSolved=([^;]*)/);
+        if (!match || match[1] !== '1') {
+            window.location.href = './textChallenge.html';
+        }
+    })();
+</script>
+
+<!-- Connection log function — must exist before monkey-patches fire -->
+<script>
+    window._connLog = function(cls, label, detail) {
+        var el = document.getElementById('connLog');
+        if (!el) return;
+        var entry = document.createElement('div');
+        entry.className = 'log-entry';
+        var t = new Date();
+        var ts = t.toLocaleTimeString([], {hour:'2-digit',minute:'2-digit',second:'2-digit'});
+        entry.innerHTML = '<span style="color:#555">' + ts + '</span> '
+            + '<span class="' + cls + ' log-label">' + label + '</span> '
+            + '<span class="' + cls + '">' + detail + '</span>';
+        el.appendChild(entry);
+        el.scrollTop = el.scrollHeight;
+    };
+</script>
+
+<!-- Monkey-patch WebSocket and RTCPeerConnection BEFORE Trystero loads -->
+<script>
+    (function() {
+        // --- WebSocket ---
+        var OrigWS = window.WebSocket;
+        window.WebSocket = function(url, protocols) {
+            var ws = protocols ? new OrigWS(url, protocols) : new OrigWS(url);
+            window._connLog('log-ws', 'WebSocket', 'connecting to ' + url);
+            ws.addEventListener('open', function() {
+                window._connLog('log-ws', 'WebSocket', 'opened ' + url);
+            });
+            ws.addEventListener('close', function(e) {
+                window._connLog('log-ws', 'WebSocket', 'closed ' + url + ' (code ' + e.code + ')');
+            });
+            ws.addEventListener('error', function() {
+                window._connLog('log-err', 'WebSocket', 'error on ' + url);
+            });
+            return ws;
+        };
+        window.WebSocket.prototype = OrigWS.prototype;
+        window.WebSocket.CONNECTING = OrigWS.CONNECTING;
+        window.WebSocket.OPEN = OrigWS.OPEN;
+        window.WebSocket.CLOSING = OrigWS.CLOSING;
+        window.WebSocket.CLOSED = OrigWS.CLOSED;
+
+        // --- RTCPeerConnection ---
+        var OrigRTC = window.RTCPeerConnection;
+        var origProto = OrigRTC.prototype;
+        window.RTCPeerConnection = function(config) {
+            var pc = new OrigRTC(config);
+            var servers = (config && config.iceServers || []).map(function(s) {
+                return Array.isArray(s.urls) ? s.urls.join(', ') : s.urls;
+            }).join('; ');
+            window._connLog('log-rtc', 'RTCPeerConnection', 'created — ICE servers: ' + (servers || 'none'));
+
+            pc.addEventListener('iceconnectionstatechange', function() {
+                window._connLog('log-ice', 'ICE', 'state → ' + pc.iceConnectionState);
+            });
+            pc.addEventListener('icegatheringstatechange', function() {
+                window._connLog('log-ice', 'ICE', 'gathering → ' + pc.iceGatheringState);
+            });
+            pc.addEventListener('connectionstatechange', function() {
+                window._connLog('log-rtc', 'RTCPeerConnection', 'state → ' + pc.connectionState);
+            });
+            pc.addEventListener('datachannel', function(e) {
+                window._connLog('log-dc', 'DataChannel', 'received: "' + e.channel.label + '"');
+            });
+
+            // Wrap createDataChannel to log outgoing channels
+            var origCreateDC = pc.createDataChannel.bind(pc);
+            pc.createDataChannel = function(label, opts) {
+                window._connLog('log-dc', 'DataChannel', 'created: "' + label + '"');
+                return origCreateDC(label, opts);
+            };
+
+            return pc;
+        };
+        window.RTCPeerConnection.prototype = origProto;
+    })();
+</script>
+
+<!-- ========== CONSENT PAGE ========== -->
+<div id="consentPage">
+    <h3>text chat waiting room</h3>
+
+    <p>Before anything happens, here's exactly what this page does and doesn't do. Nothing connects until you say so.</p>
+
+    <div class="tech-section">
+        <b>What this is</b>
+        <p>A peer-to-peer text chat. Once connected, data flows directly between two browsers over WebRTC. No third parties are involved in the conversation. The only infrastructure used is:</p>
+        <ul>
+            <li><b>A private relay on writeshite.com</b> &mdash; Julian's server, the same Digital Ocean droplet that hosts the writing game. It runs a ~180-line Node.js script that holds encrypted handshake blobs in memory for 5 minutes then discards them. It is used only for the initial handshake so our browsers can find each other. No public relays, no third-party services. Julian controls the server, the code, and the logs.</li>
+            <li><b>Google STUN server</b> &mdash; helps browsers figure out how to reach each other through NATs. It sees IP addresses but zero message content.</li>
+        </ul>
+        <p>After the handshake completes, the relay and STUN are out of the picture entirely. It's just you and me.</p>
+
+        <b>No third parties can read anything</b>
+        <p>Even though the relay and STUN are involved briefly, they never see anything useful. Three layers of encryption make sure of that:</p>
+        <ol>
+            <li><b>Signaling encryption</b> &mdash; The WebRTC handshake (which contains IP addresses) is encrypted before it touches the relay. The password is derived from the argon2id hash you just cracked. Even Julian's own relay cannot read the signaling data or extract IPs from it.</li>
+            <li><b>WebRTC DTLS</b> &mdash; Standard transport encryption on the data channel. Automatic and always-on.</li>
+            <li><b>AES-256-GCM (application layer)</b> &mdash; Every message is encrypted with the Web Crypto API using a key derived from the same argon2id hash. Each message gets a unique 12-byte random IV. Even if someone somehow intercepted the data channel, they'd need the hash output to read anything.</li>
+        </ol>
+
+        <b>What gets shared</b>
+        <p>The only sensitive thing exchanged is IP addresses, and that happens inside the encrypted signaling layer. I use Mullvad VPN on my end so my real IP isn't exposed regardless. Once connected, message content is encrypted end-to-end.</p>
+
+        <b>What gets stored</b>
+        <p>Chat history is saved in your browser's localStorage so it persists across refreshes. It never leaves your machine. Clear your browser data to wipe it.</p>
+
+        <b>What doesn't happen</b>
+        <p>No accounts. No analytics. No tracking. No public services. No message content ever touches a server. The chat library (<a href="https://github.com/dmotz/trystero">Trystero</a>) is open source and ~8KB. The relay code is ~180 lines of plain Node.js with zero dependencies.</p>
+
+        <b>Full transparency</b>
+        <p>Once you join, every network connection this page makes is logged in real time at the bottom of the page &mdash; WebSocket connections, WebRTC peer connections, ICE negotiation, data channels. All of it, as it happens. Nothing hidden.</p>
+    </div>
+
+    <div class="join-section">
+        <label for="nameInput"><b>Pick a name for the chat</b></label>
+        <div style="display: flex; align-items: center; flex-wrap: wrap; gap: 8px;">
+            <input type="text" id="nameInput" placeholder="your name" maxlength="24" autocomplete="off" />
+            <button id="joinBtn" disabled>Join chat</button>
+        </div>
+        <div style="margin-top: 8px; color: #888; font-size: 12px;">Clicking "Join chat" will connect to the relay on writeshite.com and begin the WebRTC handshake.</div>
+    </div>
+</div>
+
+<!-- ========== CHAT PAGE (hidden until join) ========== -->
+<div id="chatPage">
+    <div class="status-bar">
+        <div class="status-item">
+            <span class="dot dot-yellow" id="connDot"></span>
+            <span id="connLabel">Connecting to relays...</span>
+        </div>
+        <div class="status-item">
+            <span class="dot dot-gray" id="peerDot"></span>
+            <span id="peerLabel">Julian's not here at the moment, feel free to join and wait.</span>
+        </div>
+    </div>
+
+    <div id="messages"></div>
+
+    <form id="chatForm">
+        <input type="text" id="chatInput" placeholder="waiting for Julian..." disabled autocomplete="off" />
+        <button type="submit" id="sendBtn" disabled>Send</button>
+    </form>
+
+    <div style="margin-top: 16px; color: #556; font-size: 12px;"><b style="color:#778;">connection log</b> &mdash; every network connection this page makes</div>
+    <div id="connLog"></div>
+</div>
+
+<script type="module">
+    import { joinRoom } from 'https://esm.run/trystero/nostr';
+
+    const HASH = 'a4f106ffa30e4ad3f3b575624953b7ce9310de3bf3a166cf7f6fb598626b4fb0c0cbf9f824cee431d8e7225a74b1e3fb772482d7f0c3c3d8433ca5e41b203566';
+    const roomIdHex = HASH.slice(0, 64);
+    const aesKeyHex = HASH.slice(64);
+
+    // DOM refs
+    const consentPage = document.getElementById('consentPage');
+    const chatPage = document.getElementById('chatPage');
+    const nameInput = document.getElementById('nameInput');
+    const joinBtn = document.getElementById('joinBtn');
+    const connDot = document.getElementById('connDot');
+    const connLabel = document.getElementById('connLabel');
+    const peerDot = document.getElementById('peerDot');
+    const peerLabel = document.getElementById('peerLabel');
+    const messagesEl = document.getElementById('messages');
+    const chatInput = document.getElementById('chatInput');
+    const sendBtn = document.getElementById('sendBtn');
+    const chatForm = document.getElementById('chatForm');
+
+    // State
+    let myName = '';
+    let peerName = null;
+    let peerCount = 0;
+    let sendChat = null;
+    let sendIdent = null;
+    let cryptoKey = null;
+
+    // Enable join button only when name is entered
+    nameInput.addEventListener('input', function() {
+        joinBtn.disabled = nameInput.value.trim().length === 0;
+    });
+
+    // --- localStorage persistence ---
+    const STORAGE_KEY = 'billChat_' + roomIdHex.slice(0, 16);
+
+    function loadHistory() {
+        try {
+            const raw = localStorage.getItem(STORAGE_KEY);
+            if (raw) return JSON.parse(raw);
+        } catch {}
+        return [];
+    }
+
+    function saveHistory(history) {
+        try {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(history));
+        } catch {}
+    }
+
+    let chatHistory = loadHistory();
+
+    // --- AES-256-GCM ---
+    async function initCryptoKey() {
+        const keyBytes = new Uint8Array(32);
+        for (let i = 0; i < 32; i++) {
+            keyBytes[i] = parseInt(aesKeyHex.substr(i * 2, 2), 16);
+        }
+        cryptoKey = await crypto.subtle.importKey(
+            'raw', keyBytes, { name: 'AES-GCM' }, false, ['encrypt', 'decrypt']
+        );
+    }
+
+    async function encryptMessage(plaintext) {
+        const iv = crypto.getRandomValues(new Uint8Array(12));
+        const encoded = new TextEncoder().encode(plaintext);
+        const ciphertext = await crypto.subtle.encrypt(
+            { name: 'AES-GCM', iv }, cryptoKey, encoded
+        );
+        const combined = new Uint8Array(iv.length + ciphertext.byteLength);
+        combined.set(iv);
+        combined.set(new Uint8Array(ciphertext), iv.length);
+        return btoa(String.fromCharCode(...combined));
+    }
+
+    async function decryptMessage(base64) {
+        const binary = atob(base64);
+        const bytes = new Uint8Array(binary.length);
+        for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+        const iv = bytes.slice(0, 12);
+        const ciphertext = bytes.slice(12);
+        const decrypted = await crypto.subtle.decrypt(
+            { name: 'AES-GCM', iv }, cryptoKey, ciphertext
+        );
+        return new TextDecoder().decode(decrypted);
+    }
+
+    // --- UI helpers ---
+    function formatTime(ts) {
+        const d = new Date(ts);
+        return d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    }
+
+    function appendMessage(from, name, text, time, isSystem) {
+        const wrapper = document.createElement('div');
+        if (isSystem) {
+            wrapper.className = 'msg msg-system';
+            wrapper.textContent = text;
+        } else {
+            wrapper.className = 'msg ' + (from === 'self' ? 'msg-self' : 'msg-peer');
+            if (name) {
+                const nameEl = document.createElement('div');
+                nameEl.className = 'msg-name';
+                nameEl.textContent = name;
+                wrapper.appendChild(nameEl);
+            }
+            const content = document.createElement('div');
+            content.textContent = text;
+            wrapper.appendChild(content);
+            const timeEl = document.createElement('div');
+            timeEl.className = 'msg-time';
+            timeEl.textContent = formatTime(time);
+            wrapper.appendChild(timeEl);
+        }
+        messagesEl.appendChild(wrapper);
+        messagesEl.scrollTop = messagesEl.scrollHeight;
+    }
+
+    function updatePeerUI() {
+        const isJulian = peerName && peerName.toLowerCase() === 'julian';
+        if (peerCount > 0) {
+            peerDot.className = 'dot dot-green';
+            peerLabel.textContent = isJulian ? 'Julian is here.' : (peerName || 'Someone') + ' is here.';
+            chatInput.disabled = false;
+            sendBtn.disabled = false;
+            chatInput.placeholder = 'Type a message...';
+        } else {
+            peerDot.className = 'dot dot-gray';
+            peerLabel.textContent = "Julian's not here at the moment, feel free to join and wait.";
+            chatInput.disabled = true;
+            sendBtn.disabled = true;
+            chatInput.placeholder = 'waiting for Julian...';
+            peerName = null;
+        }
+    }
+
+    // --- Join handler ---
+    joinBtn.addEventListener('click', function() {
+        myName = nameInput.value.trim();
+        if (!myName) return;
+        consentPage.style.display = 'none';
+        chatPage.style.display = 'block';
+        initChat();
+    });
+
+    nameInput.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter' && nameInput.value.trim().length > 0) {
+            e.preventDefault();
+            joinBtn.click();
+        }
+    });
+
+    async function initChat() {
+        await initCryptoKey();
+
+        // Load history into UI
+        chatHistory.forEach(function(entry) {
+            appendMessage(entry.from, entry.name || null, entry.text, entry.time, false);
+        });
+
+        let room;
+        try {
+            room = joinRoom(
+                {
+                    appId: 'julianjocquecom-bill',
+                    password: aesKeyHex,
+                    relayUrls: [
+                        'wss://writeshite.com/nostr'
+                    ],
+                    rtcConfig: {
+                        iceServers: [{ urls: 'stun:stun.l.google.com:19302' }]
+                    }
+                },
+                roomIdHex
+            );
+        } catch (err) {
+            connDot.className = 'dot dot-red';
+            connLabel.textContent = 'Connection error: ' + err.message;
+            appendMessage(null, null, 'Failed to connect: ' + err.message, Date.now(), true);
+            return;
+        }
+
+        connDot.className = 'dot dot-green';
+        connLabel.textContent = 'Connected to relays.';
+
+        // Data channels
+        const [sendChatMsg, onChatMsg] = room.makeAction('chat');
+        const [sendIdentMsg, onIdentMsg] = room.makeAction('ident');
+        sendChat = sendChatMsg;
+        sendIdent = sendIdentMsg;
+
+        // Presence
+        room.onPeerJoin(function(peerId) {
+            peerCount++;
+            sendIdent(myName);
+            updatePeerUI();
+            appendMessage(null, null, 'Someone joined.', Date.now(), true);
+        });
+
+        room.onPeerLeave(function(peerId) {
+            peerCount = Math.max(0, peerCount - 1);
+            updatePeerUI();
+            appendMessage(null, null, (peerName || 'Someone') + ' left.', Date.now(), true);
+        });
+
+        // Receive identity
+        onIdentMsg(function(name, peerId) {
+            peerName = name;
+            updatePeerUI();
+        });
+
+        // Receive chat messages
+        onChatMsg(async function(data, peerId) {
+            try {
+                const plaintext = await decryptMessage(data);
+                const time = Date.now();
+                appendMessage('peer', peerName, plaintext, time, false);
+                chatHistory.push({ from: 'peer', name: peerName, text: plaintext, time });
+                saveHistory(chatHistory);
+            } catch (err) {
+                appendMessage(null, null, 'Failed to decrypt a message.', Date.now(), true);
+            }
+        });
+
+        // Send chat messages
+        chatForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const text = chatInput.value.trim();
+            if (!text || peerCount === 0) return;
+
+            const time = Date.now();
+            const encrypted = await encryptMessage(text);
+            sendChat(encrypted);
+
+            appendMessage('self', myName, text, time, false);
+            chatHistory.push({ from: 'self', name: myName, text, time });
+            saveHistory(chatHistory);
+            chatInput.value = '';
+        });
+
+        chatInput.focus();
+    }
+</script>
+
+</body>
+</html>
