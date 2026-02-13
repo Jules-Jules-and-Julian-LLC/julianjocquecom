@@ -56,7 +56,7 @@ More deets when you get there. <br/>
     if (getCookie('billSolved') === '1') {
         window._scrambleBillpinions(window._billKey, true);
         form.style.display = 'none';
-        judgement.innerHTML = 'Welcome back. <a href="./textChat.html">Go to the text chat waiting room</a>';
+        judgement.innerHTML = 'Welcome back. <a href="./bill/textChat.html">Go to the text chat waiting room</a>';
     }
 
     form.addEventListener('submit', async function (event) {
@@ -85,7 +85,7 @@ More deets when you get there. <br/>
                 setCookie('billSolved', '1');
                 window._scrambleBillpinions(window._billKey, true);
                 form.style.display = 'none';
-                const chatLink = ' <a href="./textChat.html">Go to the text chat waiting room</a>';
+                const chatLink = ' <a href="./bill/textChat.html">Go to the text chat waiting room</a>';
                 if (count === 1) {
                     judgement.innerHTML = 'First try. Damnit, too easy.' + chatLink;
                 } else if (count <= 5) {
