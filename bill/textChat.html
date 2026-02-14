@@ -295,21 +295,21 @@
 
 <!-- ========== CONSENT PAGE ========== -->
 <div id="consentPage">
-    <h3>text chat waiting room</h3>
+    <h3>Julian's sole attention waiting room</h3>
 
-    <h1>I THINK MAYBE YOU GOT HERE EARLY?? IF SO PLEASE NOTE I HAD TO USE AI TO MAKE THIS TO MAKE THE DEADLINE AND I AM GOING TO REDO ALL OF THIS PROSE I DON'T EVER WANT AI SPEAKING FOR ME BUT I DON'T MIND IF IT HELPS ME MAKE STUFF FASTER</h1>
-
-    <p>Before anything happens, here's exactly what this page does and doesn't do. Nothing connects until you say so.</p>
+    <p>As before this page respects your privacy and consent above almost all else. I know I'm scary, I'm doing what I can to not be.</p>
 
     <div class="tech-section">
-        <b>What this is</b>
-        <p>A peer-to-peer text chat. Once connected, data flows directly between two browsers over WebRTC. No third parties are involved in the conversation. The only infrastructure used is:</p>
+        <b>techblology</b>
+        <p>This is as close to a you and me and we're gonna get online, I think it's clear I don't mind a corporeal meetup but it also sounds like that's more of a 2/15 kind of happening</p>
         <ul>
-            <li><b>A private relay on writeshite.com</b> &mdash; Julian's server, the same Digital Ocean droplet that hosts the writing game. It runs a ~180-line Node.js script that holds encrypted handshake blobs in memory for 5 minutes then discards them. It is used only for the initial handshake so our browsers can find each other. No public relays, no third-party services. Julian controls the server, the code, and the logs.</li>
-            <li><b>Google STUN server</b> &mdash; helps browsers figure out how to reach each other through NATs. It sees IP addresses but zero message content.</li>
+            <li>This uses a relay on <b>my private domain writeshite.com</b> everything is encrypyed on top, but worst case, it's on my own server (hosted admittedly on Digital Ocean (and it has logs (but not the chat messages, that's actually impossible (on the server/wire)))</li>
+            <li>The worst part of the ""stack"" is the <b>Google STUN server</b> basically, the internet is a thorny, angry place, and people trust Google, so this lets us punch from IP to IP without running into problems between. It doesn't see the messages and is again encrypted. </li>
         </ul>
-        <p>After the handshake completes, the relay and STUN are out of the picture entirely. It's just you and me.</p>
+        <p>These are needed for us to shake hands, pass notes from hand to hand like a crisp fresh 20 dolla bill, then they're gone, and it's just us, on encrypted WebRTC chat. </p>
 
+        <p>I commented out some AI crap that explains this in detail:</p>
+        <!--
         <b>No third parties can read anything</b>
         <p>Even though the relay and STUN are involved briefly, they never see anything useful. Three layers of encryption make sure of that:</p>
         <ol>
@@ -317,35 +317,30 @@
             <li><b>WebRTC DTLS</b> &mdash; Standard transport encryption on the data channel. Automatic and always-on.</li>
             <li><b>AES-256-GCM (application layer)</b> &mdash; Every message is encrypted with the Web Crypto API using a key derived from the same argon2id hash. Each message gets a unique 12-byte random IV. Even if someone somehow intercepted the data channel, they'd need the hash output to read anything.</li>
         </ol>
+        -->
 
-        <b>What gets shared</b>
-        <p>The only sensitive thing exchanged is IP addresses, and that happens inside the encrypted signaling layer. I use Mullvad VPN on my end so my real IP isn't exposed regardless. Once connected, message content is encrypted end-to-end.</p>
+        <b>One major minor note</b>
+        <p>IP Addresses ARE exchanged, that's like, how you talk online. Use a VPN to hide yours, I can't be bothered but I like Mullvad, it works well</p>
 
-        <b>What gets stored</b>
-        <p>Chat history is saved in your browser's localStorage so it persists across refreshes. It never leaves your machine. Clear your browser data to wipe it.</p>
+        <p>I made it so the chat history sticks to the browser storage, not just session, so our chats will be there. If you're uncool with this, let me know and I'll clear my history and be on with it.</p>
 
-        <b>What doesn't happen</b>
-        <p>No accounts. No analytics. No tracking. No public services. No message content ever touches a server. The chat library (<a href="https://github.com/dmotz/trystero">Trystero</a>) is open source and ~8KB. The relay code is ~180 lines of plain Node.js with zero dependencies.</p>
-
-        <b>Full transparency</b>
-        <p>Once you join, every network connection this page makes is logged in real time at the bottom of the page &mdash; WebSocket connections, WebRTC peer connections, interactive connectivity negotiation, data channels. All of it, as it happens. Nothing hidden.</p>
+        <p>Last thing is that it has a little thingamabob showing the connections and stuff at the bottom so you can know exactly what's up, you can validated in your console as well, but I thought it looked cool and made me feel better knowing what was going on.</p>
     </div>
 
     <div class="join-section">
         <div id="presenceSection">
-            <b>Is Julian around?</b>
-            <div style="margin-top: 8px; color: #888; font-size: 12px;">This will briefly connect to the relay to check if Julian is currently in the chat, then disconnect. No continuous connection.</div>
-            <button id="presenceBtn" style="margin-top: 10px; padding: 8px 20px; background: #ff7648; color: #0f1f35; border: none; border-radius: 4px; cursor: pointer; font-family: monospace; font-weight: bold; font-size: 14px;">Check presence</button>
+            <b>Julian Cheeccckkkkk</b>
+            <div style="margin-top: 8px; color: #888; font-size: 12px;">This pings the server (joins and leaves chat) to see if Julian (me, I'm Julian Davis Jocque), is present and lets ya know, just so ya know, ya know? I will see the connection attempt, sorry.</div>
+            <button id="presenceBtn" style="margin-top: 10px; padding: 8px 20px; background: #ff7648; color: #0f1f35; border: none; border-radius: 4px; cursor: pointer; font-family: monospace; font-weight: bold; font-size: 14px;">Jules Check</button>
             <div id="presenceResult" style="margin-top: 10px; display: none;"></div>
         </div>
 
         <div id="joinSection" style="display: none; margin-top: 16px; padding-top: 16px; border-top: 1px solid #ff764833;">
-            <label for="nameInput"><b>Pick a name for the chat</b></label>
+            <label for="nameInput"><b>Name?</b></label>
             <div style="display: flex; align-items: center; flex-wrap: wrap; gap: 8px;">
                 <input type="text" id="nameInput" placeholder="your name" maxlength="24" autocomplete="off" />
-                <button id="joinBtn" disabled>Join chat</button>
+                <button id="joinBtn" disabled>Join</button>
             </div>
-            <div style="margin-top: 8px; color: #888; font-size: 12px;">Clicking "Join chat" will connect to the relay on writeshite.com and begin the WebRTC handshake.</div>
         </div>
     </div>
 </div>
@@ -359,7 +354,7 @@
         </div>
         <div class="status-item">
             <span class="dot dot-gray" id="peerDot"></span>
-            <span id="peerLabel">Julian's not here at the moment.</span>
+            <span id="peerLabel">Julian's out (to (not) food)</span>
         </div>
     </div>
 
@@ -432,8 +427,8 @@
             );
         } catch (err) {
             presenceResult.style.color = '#e74c3c';
-            presenceResult.textContent = 'Could not connect: ' + err.message;
-            presenceBtn.textContent = 'Check presence';
+            presenceResult.textContent = 'Wuh oh fail mail! ' + err.message;
+            presenceBtn.textContent = 'Jules Check';
             presenceBtn.disabled = false;
             presenceBtn.style.opacity = '1';
             return;
@@ -559,16 +554,16 @@
         const isJulian = peerName && peerName.toLowerCase() === 'julian';
         if (peerCount > 0) {
             peerDot.className = 'dot dot-green';
-            peerLabel.textContent = isJulian ? 'Julian is here.' : (peerName || 'Someone') + ' is here.';
+            peerLabel.textContent = isJulian ? 'The Julian abides.' : (peerName || 'Someone') + ' is here.';
             chatInput.disabled = false;
             sendBtn.disabled = false;
             chatInput.placeholder = 'Type a message...';
         } else {
             peerDot.className = 'dot dot-gray';
-            peerLabel.textContent = "Julian's not here at the moment.";
+            peerLabel.textContent = "Julian Out SRY.";
             chatInput.disabled = true;
             sendBtn.disabled = true;
-            chatInput.placeholder = 'waiting for Julian...';
+            chatInput.placeholder = 'Woe is thee, no Julian to Julian...';
             peerName = null;
         }
     }
