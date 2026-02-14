@@ -4,8 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="e78bf4a9-838f-42d3-92b5-6643cc3bcc46" name="Changes" comment="cats">
+    <list default="true" id="e78bf4a9-838f-42d3-92b5-6643cc3bcc46" name="Changes" comment="add music video">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bill/textChat.html" beforeDir="false" afterPath="$PROJECT_DIR$/bill/textChat.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -129,7 +130,7 @@
       <workItem from="1770700884134" duration="35000" />
       <workItem from="1770949850467" duration="5826000" />
       <workItem from="1770962349141" duration="2347000" />
-      <workItem from="1771009474558" duration="790000" />
+      <workItem from="1771009474558" duration="5350000" />
     </task>
     <task id="LOCAL-00001" summary="Update I guess to prod why not">
       <option name="closed" value="true" />
@@ -251,7 +252,15 @@
       <option name="project" value="LOCAL" />
       <updated>1770964257036</updated>
     </task>
-    <option name="localTasksCounter" value="16" />
+    <task id="LOCAL-00016" summary="add music video">
+      <option name="closed" value="true" />
+      <created>1771011021811</created>
+      <option name="number" value="00016" />
+      <option name="presentableId" value="LOCAL-00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1771011021811</updated>
+    </task>
+    <option name="localTasksCounter" value="17" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -283,6 +292,7 @@
     <MESSAGE value="Fix link" />
     <MESSAGE value="cleanup" />
     <MESSAGE value="cats" />
-    <option name="LAST_COMMIT_MESSAGE" value="cats" />
+    <MESSAGE value="add music video" />
+    <option name="LAST_COMMIT_MESSAGE" value="add music video" />
   </component>
 </project>

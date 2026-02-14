@@ -265,13 +265,13 @@
             var servers = (config && config.iceServers || []).map(function(s) {
                 return Array.isArray(s.urls) ? s.urls.join(', ') : s.urls;
             }).join('; ');
-            window._connLog('log-rtc', 'RTCPeerConnection', 'created — ICE servers: ' + (servers || 'none'));
+            window._connLog('log-rtc', 'RTCPeerConnection', 'created — interactive connectivity servers: ' + (servers || 'none'));
 
             pc.addEventListener('iceconnectionstatechange', function() {
-                window._connLog('log-ice', 'ICE', 'state → ' + pc.iceConnectionState);
+                window._connLog('log-ice', 'connectivity', 'state → ' + pc.iceConnectionState);
             });
             pc.addEventListener('icegatheringstatechange', function() {
-                window._connLog('log-ice', 'ICE', 'gathering → ' + pc.iceGatheringState);
+                window._connLog('log-ice', 'connectivity', 'gathering → ' + pc.iceGatheringState);
             });
             pc.addEventListener('connectionstatechange', function() {
                 window._connLog('log-rtc', 'RTCPeerConnection', 'state → ' + pc.connectionState);
@@ -326,16 +326,25 @@
         <p>No accounts. No analytics. No tracking. No public services. No message content ever touches a server. The chat library (<a href="https://github.com/dmotz/trystero">Trystero</a>) is open source and ~8KB. The relay code is ~180 lines of plain Node.js with zero dependencies.</p>
 
         <b>Full transparency</b>
-        <p>Once you join, every network connection this page makes is logged in real time at the bottom of the page &mdash; WebSocket connections, WebRTC peer connections, ICE negotiation, data channels. All of it, as it happens. Nothing hidden.</p>
+        <p>Once you join, every network connection this page makes is logged in real time at the bottom of the page &mdash; WebSocket connections, WebRTC peer connections, interactive connectivity negotiation, data channels. All of it, as it happens. Nothing hidden.</p>
     </div>
 
     <div class="join-section">
-        <label for="nameInput"><b>Pick a name for the chat</b></label>
-        <div style="display: flex; align-items: center; flex-wrap: wrap; gap: 8px;">
-            <input type="text" id="nameInput" placeholder="your name" maxlength="24" autocomplete="off" />
-            <button id="joinBtn" disabled>Join chat</button>
+        <div id="presenceSection">
+            <b>Is Julian around?</b>
+            <div style="margin-top: 8px; color: #888; font-size: 12px;">This will briefly connect to the relay to check if Julian is currently in the chat, then disconnect. No continuous connection.</div>
+            <button id="presenceBtn" style="margin-top: 10px; padding: 8px 20px; background: #ff7648; color: #0f1f35; border: none; border-radius: 4px; cursor: pointer; font-family: monospace; font-weight: bold; font-size: 14px;">Check presence</button>
+            <div id="presenceResult" style="margin-top: 10px; display: none;"></div>
         </div>
-        <div style="margin-top: 8px; color: #888; font-size: 12px;">Clicking "Join chat" will connect to the relay on writeshite.com and begin the WebRTC handshake.</div>
+
+        <div id="joinSection" style="display: none; margin-top: 16px; padding-top: 16px; border-top: 1px solid #ff764833;">
+            <label for="nameInput"><b>Pick a name for the chat</b></label>
+            <div style="display: flex; align-items: center; flex-wrap: wrap; gap: 8px;">
+                <input type="text" id="nameInput" placeholder="your name" maxlength="24" autocomplete="off" />
+                <button id="joinBtn" disabled>Join chat</button>
+            </div>
+            <div style="margin-top: 8px; color: #888; font-size: 12px;">Clicking "Join chat" will connect to the relay on writeshite.com and begin the WebRTC handshake.</div>
+        </div>
     </div>
 </div>
 
@@ -373,6 +382,10 @@
     // DOM refs
     const consentPage = document.getElementById('consentPage');
     const chatPage = document.getElementById('chatPage');
+    const presenceBtn = document.getElementById('presenceBtn');
+    const presenceResult = document.getElementById('presenceResult');
+    const presenceSection = document.getElementById('presenceSection');
+    const joinSection = document.getElementById('joinSection');
     const nameInput = document.getElementById('nameInput');
     const joinBtn = document.getElementById('joinBtn');
     const connDot = document.getElementById('connDot');
@@ -391,6 +404,64 @@
     let sendChat = null;
     let sendIdent = null;
     let cryptoKey = null;
+
+    // --- Presence check (one-shot) ---
+    presenceBtn.addEventListener('click', async function() {
+        presenceBtn.disabled = true;
+        presenceBtn.textContent = 'Checking...';
+        presenceBtn.style.opacity = '0.5';
+        presenceResult.style.display = 'block';
+        presenceResult.style.color = '#cc9080';
+        presenceResult.textContent = 'Connecting to relay...';
+
+        let found = false;
+        let probeRoom;
+        try {
+            probeRoom = joinRoom(
+                {
+                    appId: 'julianjocquecom-bill',
+                    password: aesKeyHex,
+                    relayUrls: ['wss://writeshite.com/nostr'],
+                    rtcConfig: {
+                        iceServers: [{ urls: 'stun:stun.l.google.com:19302' }]
+                    }
+                },
+                roomIdHex
+            );
+        } catch (err) {
+            presenceResult.style.color = '#e74c3c';
+            presenceResult.textContent = 'Could not connect: ' + err.message;
+            presenceBtn.textContent = 'Check presence';
+            presenceBtn.disabled = false;
+            presenceBtn.style.opacity = '1';
+            return;
+        }
+
+        probeRoom.onPeerJoin(function() {
+            found = true;
+        });
+
+        // Wait a few seconds for peers to show up, then report and disconnect
+        await new Promise(function(resolve) { setTimeout(resolve, 5000); });
+
+        probeRoom.leave();
+
+        if (found) {
+            presenceResult.style.color = '#2ecc40';
+            presenceResult.innerHTML = '<span class="dot dot-green" style="display:inline-block;vertical-align:middle;margin-right:6px;"></span>Julian is in the chat right now.';
+        } else {
+            presenceResult.style.color = '#888';
+            presenceResult.innerHTML = '<span class="dot dot-gray" style="display:inline-block;vertical-align:middle;margin-right:6px;"></span>Julian is not in the chat right now.';
+        }
+
+        presenceBtn.textContent = 'Check again';
+        presenceBtn.disabled = false;
+        presenceBtn.style.opacity = '1';
+
+        // Show the join section regardless of result
+        joinSection.style.display = 'block';
+        nameInput.focus();
+    });
 
     // Enable join button only when name is entered
     nameInput.addEventListener('input', function() {
