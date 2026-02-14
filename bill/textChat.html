@@ -297,6 +297,8 @@
 <div id="consentPage">
     <h3>text chat waiting room</h3>
 
+    <h1>I THINK MAYBE YOU GOT HERE EARLY?? IF SO PLEASE NOTE I HAD TO USE AI TO MAKE THIS TO MAKE THE DEADLINE AND I AM GOING TO REDO ALL OF THIS PROSE I DON'T EVER WANT AI SPEAKING FOR ME BUT I DON'T MIND IF IT HELPS ME MAKE STUFF FASTER</h1>
+
     <p>Before anything happens, here's exactly what this page does and doesn't do. Nothing connects until you say so.</p>
 
     <div class="tech-section">
@@ -357,7 +359,7 @@
         </div>
         <div class="status-item">
             <span class="dot dot-gray" id="peerDot"></span>
-            <span id="peerLabel">Julian's not here at the moment, feel free to join and wait.</span>
+            <span id="peerLabel">Julian's not here at the moment.</span>
         </div>
     </div>
 
@@ -563,7 +565,7 @@
             chatInput.placeholder = 'Type a message...';
         } else {
             peerDot.className = 'dot dot-gray';
-            peerLabel.textContent = "Julian's not here at the moment, feel free to join and wait.";
+            peerLabel.textContent = "Julian's not here at the moment.";
             chatInput.disabled = true;
             sendBtn.disabled = true;
             chatInput.placeholder = 'waiting for Julian...';
@@ -571,10 +573,57 @@
         }
     }
 
+    // --- Julian-only alerts (Web Audio API) ---
+    function isJulianUser() {
+        return myName.toLowerCase() === 'julian';
+    }
+
+    function playJoinAlert() {
+        const ctx = new AudioContext();
+        // Three rapid harsh beeps
+        [0, 0.25, 0.5].forEach(function(offset) {
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.type = 'square';
+            osc.frequency.setValueAtTime(880, ctx.currentTime + offset);
+            osc.frequency.setValueAtTime(1200, ctx.currentTime + offset + 0.06);
+            osc.frequency.setValueAtTime(880, ctx.currentTime + offset + 0.12);
+            gain.gain.setValueAtTime(0.4, ctx.currentTime + offset);
+            gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + offset + 0.18);
+            osc.connect(gain).connect(ctx.destination);
+            osc.start(ctx.currentTime + offset);
+            osc.stop(ctx.currentTime + offset + 0.18);
+        });
+    }
+
+    function playMessageSound() {
+        const ctx = new AudioContext();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(660, ctx.currentTime);
+        osc.frequency.setValueAtTime(880, ctx.currentTime + 0.08);
+        gain.gain.setValueAtTime(0.25, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.15);
+        osc.connect(gain).connect(ctx.destination);
+        osc.start();
+        osc.stop(ctx.currentTime + 0.15);
+    }
+
+    function sendDesktopNotification(title, body) {
+        if (Notification.permission === 'granted') {
+            new Notification(title, { body: body });
+        }
+    }
+
     // --- Join handler ---
     joinBtn.addEventListener('click', function() {
         myName = nameInput.value.trim();
         if (!myName) return;
+        // Request notification permission for Julian
+        if (myName.toLowerCase() === 'julian' && 'Notification' in window && Notification.permission === 'default') {
+            Notification.requestPermission();
+        }
         consentPage.style.display = 'none';
         chatPage.style.display = 'block';
         initChat();
@@ -632,6 +681,10 @@
             sendIdent(myName);
             updatePeerUI();
             appendMessage(null, null, 'Someone joined.', Date.now(), true);
+            if (isJulianUser()) {
+                playJoinAlert();
+                sendDesktopNotification('Someone joined the chat', 'A visitor is in the text chat waiting room.');
+            }
         });
 
         room.onPeerLeave(function(peerId) {
@@ -654,6 +707,7 @@
                 appendMessage('peer', peerName, plaintext, time, false);
                 chatHistory.push({ from: 'peer', name: peerName, text: plaintext, time });
                 saveHistory(chatHistory);
+                if (isJulianUser()) playMessageSound();
             } catch (err) {
                 appendMessage(null, null, 'Failed to decrypt a message.', Date.now(), true);
             }
