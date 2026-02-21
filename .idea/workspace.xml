@@ -4,9 +4,14 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="e78bf4a9-838f-42d3-92b5-6643cc3bcc46" name="Changes" comment="add music video">
+    <list default="true" id="e78bf4a9-838f-42d3-92b5-6643cc3bcc46" name="Changes" comment="redo the prose">
+      <change afterPath="$PROJECT_DIR$/.claude/settings.local.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/hello_faz/1.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/hello_faz/2.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/hello_faz/3.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/assets/hello_faz/4.png" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bill/textChat.html" beforeDir="false" afterPath="$PROJECT_DIR$/bill/textChat.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/poetry.html" beforeDir="false" afterPath="$PROJECT_DIR$/poetry.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -67,10 +72,7 @@
       <recent name="C:\Users\Julian\WebstormProjects\julianjocquecom\games" />
     </key>
   </component>
-  <component name="RunManager" selected="JavaScript Debug.cats.html">
-    <configuration name="Collected_Poems_Snap_2.html" type="JavascriptDebugType" temporary="true" nameIsGenerated="true" uri="http://localhost:63342/julianjocquecom/drive_poetry/Collected_Poems_Snap_2.html" useBuiltInWebServerPort="true">
-      <method v="2" />
-    </configuration>
+  <component name="RunManager" selected="JavaScript Debug.poetry.html">
     <configuration name="blog.html" type="JavascriptDebugType" temporary="true" nameIsGenerated="true" uri="http://localhost:63342/julianjocquecom/blog.html" useBuiltInWebServerPort="true">
       <method v="2" />
     </configuration>
@@ -80,16 +82,19 @@
     <configuration name="index.html (1)" type="JavascriptDebugType" temporary="true" nameIsGenerated="true" uri="http://localhost:63342/julianjocquecom/bill/index.html" useBuiltInWebServerPort="true">
       <method v="2" />
     </configuration>
+    <configuration name="poetry.html" type="JavascriptDebugType" temporary="true" nameIsGenerated="true" uri="http://localhost:63342/julianjocquecom/poetry.html" useBuiltInWebServerPort="true">
+      <method v="2" />
+    </configuration>
     <configuration name="textChallenge.html" type="JavascriptDebugType" temporary="true" nameIsGenerated="true" uri="http://localhost:63342/julianjocquecom/bill/textChallenge.html" useBuiltInWebServerPort="true">
       <method v="2" />
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="JavaScript Debug.poetry.html" />
         <item itemvalue="JavaScript Debug.cats.html" />
         <item itemvalue="JavaScript Debug.textChallenge.html" />
         <item itemvalue="JavaScript Debug.blog.html" />
         <item itemvalue="JavaScript Debug.index.html (1)" />
-        <item itemvalue="JavaScript Debug.Collected_Poems_Snap_2.html" />
       </list>
     </recent_temporary>
   </component>
@@ -130,7 +135,9 @@
       <workItem from="1770700884134" duration="35000" />
       <workItem from="1770949850467" duration="5826000" />
       <workItem from="1770962349141" duration="2347000" />
-      <workItem from="1771009474558" duration="5350000" />
+      <workItem from="1771009474558" duration="8083000" />
+      <workItem from="1771276399043" duration="1058000" />
+      <workItem from="1771642916185" duration="3650000" />
     </task>
     <task id="LOCAL-00001" summary="Update I guess to prod why not">
       <option name="closed" value="true" />
@@ -260,7 +267,31 @@
       <option name="project" value="LOCAL" />
       <updated>1771011021811</updated>
     </task>
-    <option name="localTasksCounter" value="17" />
+    <task id="LOCAL-00017" summary="try that out">
+      <option name="closed" value="true" />
+      <created>1771028071377</created>
+      <option name="number" value="00017" />
+      <option name="presentableId" value="LOCAL-00017" />
+      <option name="project" value="LOCAL" />
+      <updated>1771028071377</updated>
+    </task>
+    <task id="LOCAL-00018" summary="Now I just need to redo all the prose">
+      <option name="closed" value="true" />
+      <created>1771028952191</created>
+      <option name="number" value="00018" />
+      <option name="presentableId" value="LOCAL-00018" />
+      <option name="project" value="LOCAL" />
+      <updated>1771028952191</updated>
+    </task>
+    <task id="LOCAL-00019" summary="redo the prose">
+      <option name="closed" value="true" />
+      <created>1771030946402</created>
+      <option name="number" value="00019" />
+      <option name="presentableId" value="LOCAL-00019" />
+      <option name="project" value="LOCAL" />
+      <updated>1771030946402</updated>
+    </task>
+    <option name="localTasksCounter" value="20" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -293,6 +324,9 @@
     <MESSAGE value="cleanup" />
     <MESSAGE value="cats" />
     <MESSAGE value="add music video" />
-    <option name="LAST_COMMIT_MESSAGE" value="add music video" />
+    <MESSAGE value="try that out" />
+    <MESSAGE value="Now I just need to redo all the prose" />
+    <MESSAGE value="redo the prose" />
+    <option name="LAST_COMMIT_MESSAGE" value="redo the prose" />
   </component>
 </project>
