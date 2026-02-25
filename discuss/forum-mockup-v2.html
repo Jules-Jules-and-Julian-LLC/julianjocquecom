@@ -1,0 +1,1426 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>julianjocque.com/discuss</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,500;0,600;1,400&display=swap');
+
+  :root {
+    --bg: #f5f2eb;
+    --bg-alt: #ece8df;
+    --fg: #2a2520;
+    --fg-dim: #7a7168;
+    --fg-faint: #a8a096;
+    --fg-visited: #b8b0a6;
+    --border: #d4cfc6;
+    --border-heavy: #b0a898;
+    --link: #2a2520;
+    --owner-accent: #4a8a6e;
+    --owner-border: #4a8a6e40;
+    --removed-bg: #f0ece5;
+    --collapsed-bg: #f0ece5;
+    --mono: 'IBM Plex Mono', 'Courier New', monospace;
+    --max-w: 680px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: var(--mono);
+    font-size: 14px;
+    line-height: 1.65;
+    color: var(--fg);
+    background: var(--bg);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ---- LAYOUT ---- */
+
+  .page {
+    max-width: var(--max-w);
+    margin: 0 auto;
+    padding: 24px 20px 80px;
+  }
+
+  /* ---- HEADER ---- */
+
+  header {
+    border-bottom: 2px solid var(--fg);
+    padding-bottom: 12px;
+    margin-bottom: 32px;
+  }
+
+  header h1 {
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: lowercase;
+  }
+
+  header nav {
+    margin-top: 6px;
+    font-size: 13px;
+    display: flex;
+    gap: 16px;
+  }
+
+  header nav a {
+    color: var(--fg-dim);
+    text-decoration: none;
+  }
+
+  header nav a:hover {
+    color: var(--fg);
+  }
+
+  header nav a.active {
+    color: var(--fg);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  header nav .nav-spacer {
+    flex-grow: 1;
+  }
+
+  header nav a.stumble {
+    color: var(--fg-faint);
+    font-style: italic;
+  }
+
+  header nav a.stumble:hover {
+    color: var(--fg);
+  }
+
+  /* ---- VIEW TABS (for mockup switching) ---- */
+
+  .view-switcher {
+    display: flex;
+    gap: 1px;
+    margin-bottom: 32px;
+    background: var(--border);
+    border: 1px solid var(--border);
+  }
+
+  .view-switcher input[type="radio"] { display: none; }
+
+  .view-switcher label {
+    flex: 1;
+    text-align: center;
+    padding: 8px 6px;
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    background: var(--bg);
+    color: var(--fg-dim);
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s;
+  }
+
+  .view-switcher label:hover {
+    background: var(--bg-alt);
+  }
+
+  #view-threads:checked ~ .view-switcher label[for="view-threads"],
+  #view-thread:checked ~ .view-switcher label[for="view-thread"],
+  #view-mod:checked ~ .view-switcher label[for="view-mod"],
+  #view-mobile:checked ~ .view-switcher label[for="view-mobile"],
+  #view-submit:checked ~ .view-switcher label[for="view-submit"],
+  #view-about:checked ~ .view-switcher label[for="view-about"] {
+    background: var(--fg);
+    color: var(--bg);
+  }
+
+  .view { display: none; }
+  #view-threads:checked ~ .view-threads,
+  #view-thread:checked ~ .view-thread,
+  #view-mod:checked ~ .view-mod,
+  #view-mobile:checked ~ .view-mobile,
+  #view-submit:checked ~ .view-submit,
+  #view-about:checked ~ .view-about { display: block; }
+
+  /* ---- THREAD LISTING ---- */
+
+  .thread-list { list-style: none; }
+
+  .thread-item {
+    padding: 14px 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .thread-item:first-child {
+    padding-top: 0;
+  }
+
+  .thread-meta {
+    font-size: 12px;
+    color: var(--fg-dim);
+    margin-bottom: 3px;
+  }
+
+  .thread-title {
+    font-size: 14px;
+    font-weight: 500;
+  }
+
+  .thread-title a {
+    color: var(--fg);
+    text-decoration: none;
+  }
+
+  .thread-title a:visited {
+    color: var(--fg-visited);
+  }
+
+  .thread-title a:hover {
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+
+  .thread-url {
+    font-size: 12px;
+    color: var(--fg-faint);
+    margin-top: 2px;
+    word-break: break-all;
+  }
+
+  .thread-url a {
+    color: var(--fg-faint);
+    text-decoration: none;
+  }
+
+  .thread-url a:hover {
+    color: var(--fg-dim);
+  }
+
+  .thread-stats {
+    font-size: 12px;
+    color: var(--fg-faint);
+    margin-top: 4px;
+  }
+
+  .pinned-tag {
+    font-size: 11px;
+    letter-spacing: 0.04em;
+    color: var(--fg-dim);
+    font-weight: 500;
+  }
+
+  /* ---- OWNER DISTINCTION ---- */
+
+  .owner-name {
+    color: var(--owner-accent);
+    font-weight: 600;
+  }
+
+  /* ---- GRADIENT NAMES ---- */
+
+  .gradient-name {
+    font-weight: 500;
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent;
+    display: inline;
+  }
+
+  /* ---- COLOR PICKER ---- */
+
+  .color-picker-group {
+    margin-bottom: 10px;
+  }
+
+  .color-picker-label {
+    display: block;
+    font-size: 12px;
+    color: var(--fg-dim);
+    margin-bottom: 5px;
+  }
+
+  .color-picker-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 6px;
+  }
+
+  .color-picker-row-label {
+    font-size: 11px;
+    color: var(--fg-faint);
+    width: 14px;
+    flex-shrink: 0;
+  }
+
+  .color-grid {
+    display: flex;
+    gap: 4px;
+    flex-wrap: wrap;
+  }
+
+  .color-grid input[type="radio"] { display: none; }
+
+  .color-grid label {
+    width: 24px;
+    height: 24px;
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: border-color 0.1s, transform 0.1s;
+  }
+
+  .color-grid label:hover {
+    transform: scale(1.15);
+  }
+
+  .color-grid input[type="radio"]:checked + label {
+    border-color: var(--fg);
+  }
+
+  .color-picker-preview {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 8px;
+    min-height: 22px;
+  }
+
+  .color-picker-preview-name {
+    font-weight: 500;
+    font-size: 14px;
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent;
+  }
+
+  .color-picker-refresh {
+    font-size: 11px;
+    color: var(--fg-faint);
+    text-decoration: none;
+    margin-left: 4px;
+  }
+
+  .color-picker-refresh:hover {
+    color: var(--fg-dim);
+  }
+
+  /* ---- THREAD VIEW ---- */
+
+  .thread-header {
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 16px;
+    margin-bottom: 20px;
+  }
+
+  .thread-header h2 {
+    font-size: 15px;
+    font-weight: 600;
+    margin-bottom: 4px;
+  }
+
+  .thread-header .thread-url {
+    margin-bottom: 8px;
+  }
+
+  .thread-body {
+    margin-top: 10px;
+    white-space: pre-wrap;
+  }
+
+  /* ---- COMMENTS / REPLIES ---- */
+
+  .comment {
+    padding: 10px 0 10px 0;
+    border-top: 1px solid var(--border);
+  }
+
+  .comment.depth-1 { margin-left: 24px; }
+  .comment.depth-2 { margin-left: 48px; }
+  .comment.depth-3 { margin-left: 72px; }
+  .comment.depth-4 { margin-left: 96px; }
+
+  /* owner comments get a subtle left accent */
+  .comment.by-owner {
+    border-left: 2px solid var(--owner-border);
+    padding-left: 12px;
+  }
+
+  .comment.by-owner.depth-1 { margin-left: 22px; }
+  .comment.by-owner.depth-2 { margin-left: 46px; }
+  .comment.by-owner.depth-3 { margin-left: 70px; }
+
+  .comment-meta {
+    font-size: 12px;
+    color: var(--fg-dim);
+    margin-bottom: 4px;
+  }
+
+  .comment-author {
+    font-weight: 500;
+  }
+
+  .comment-body {
+    white-space: pre-wrap;
+  }
+
+  .comment-actions {
+    margin-top: 4px;
+    font-size: 12px;
+  }
+
+  .comment-actions a {
+    color: var(--fg-faint);
+    text-decoration: none;
+    margin-right: 12px;
+  }
+
+  .comment-actions a:hover {
+    color: var(--fg-dim);
+  }
+
+  .comment-url {
+    font-size: 12px;
+    color: var(--fg-faint);
+    margin-bottom: 4px;
+    word-break: break-all;
+  }
+
+  .comment-url a {
+    color: var(--fg-faint);
+    text-decoration: none;
+  }
+
+  .comment-url a:hover {
+    color: var(--fg-dim);
+  }
+
+  /* ---- REMOVED COMMENT ---- */
+
+  .comment-removed {
+    padding: 10px 0;
+    border-top: 1px solid var(--border);
+  }
+
+  .comment-removed.depth-1 { margin-left: 24px; }
+  .comment-removed.depth-2 { margin-left: 48px; }
+
+  .comment-removed-inner {
+    background: var(--removed-bg);
+    padding: 10px 14px;
+    font-size: 13px;
+    color: var(--fg-dim);
+    border-left: 2px solid var(--border-heavy);
+  }
+
+  .comment-removed-label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--fg-faint);
+    margin-bottom: 2px;
+  }
+
+  .comment-removed-reason {
+    font-style: italic;
+  }
+
+  /* ---- COLLAPSED COMMENT ---- */
+
+  .comment-collapsed {
+    padding: 10px 0;
+    border-top: 1px solid var(--border);
+  }
+
+  .comment-collapsed.depth-1 { margin-left: 24px; }
+  .comment-collapsed.depth-2 { margin-left: 48px; }
+
+  .comment-collapsed details {
+    font-size: 13px;
+    color: var(--fg-faint);
+  }
+
+  .comment-collapsed summary {
+    cursor: pointer;
+    font-size: 12px;
+    color: var(--fg-faint);
+    list-style: none;
+  }
+
+  .comment-collapsed summary::-webkit-details-marker { display: none; }
+  .comment-collapsed summary::marker { display: none; content: ''; }
+
+  .comment-collapsed summary::before {
+    content: '[+] ';
+  }
+
+  .comment-collapsed details[open] summary::before {
+    content: '[-] ';
+  }
+
+  .comment-collapsed .collapsed-body {
+    margin-top: 6px;
+    padding: 8px 12px;
+    background: var(--collapsed-bg);
+    color: var(--fg-dim);
+    white-space: pre-wrap;
+  }
+
+  /* ---- FORMS ---- */
+
+  .reply-form {
+    margin-top: 28px;
+    padding-top: 20px;
+    border-top: 2px solid var(--border-heavy);
+  }
+
+  .reply-form h3 {
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: 12px;
+    text-transform: lowercase;
+    letter-spacing: 0.03em;
+  }
+
+  .form-row {
+    margin-bottom: 10px;
+  }
+
+  .form-row label {
+    display: block;
+    font-size: 12px;
+    color: var(--fg-dim);
+    margin-bottom: 3px;
+  }
+
+  input[type="text"],
+  input[type="url"],
+  textarea {
+    width: 100%;
+    font-family: var(--mono);
+    font-size: 13px;
+    line-height: 1.5;
+    padding: 8px 10px;
+    border: 1px solid var(--border-heavy);
+    background: #fff;
+    color: var(--fg);
+    outline: none;
+  }
+
+  input[type="text"]:focus,
+  input[type="url"]:focus,
+  textarea:focus {
+    border-color: var(--fg);
+  }
+
+  textarea {
+    resize: vertical;
+    min-height: 80px;
+  }
+
+  .form-hint {
+    font-size: 11px;
+    color: var(--fg-faint);
+    margin-top: 2px;
+  }
+
+  button[type="submit"] {
+    font-family: var(--mono);
+    font-size: 13px;
+    padding: 8px 20px;
+    border: 1px solid var(--fg);
+    background: var(--fg);
+    color: var(--bg);
+    cursor: pointer;
+    letter-spacing: 0.03em;
+  }
+
+  button[type="submit"]:hover {
+    background: transparent;
+    color: var(--fg);
+  }
+
+  /* ---- MODERATION QUEUE ---- */
+
+  .queue-item {
+    padding: 16px;
+    border: 1px solid var(--border);
+    margin-bottom: 12px;
+    background: #faf6ee;
+  }
+
+  .queue-context {
+    font-size: 12px;
+    color: var(--fg-faint);
+    margin-bottom: 8px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .mod-actions {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-top: 10px;
+  }
+
+  .mod-actions button,
+  .mod-actions select {
+    font-family: var(--mono);
+    font-size: 12px;
+    padding: 5px 14px;
+    border: 1px solid;
+    cursor: pointer;
+    background: transparent;
+  }
+
+  .btn-approve { border-color: #5a7a50; color: #5a7a50; }
+  .btn-approve:hover { background: #5a7a50; color: #fff; }
+  .btn-collapse { border-color: var(--fg-faint); color: var(--fg-faint); }
+  .btn-collapse:hover { background: var(--fg-faint); color: var(--bg); }
+  .btn-remove { border-color: #8a5050; color: #8a5050; }
+  .btn-remove:hover { background: #8a5050; color: #fff; }
+
+  .mod-reason-row {
+    margin-top: 8px;
+  }
+
+  .mod-reason-row input {
+    width: 100%;
+    font-family: var(--mono);
+    font-size: 12px;
+    padding: 5px 8px;
+    border: 1px solid var(--border);
+    background: #fff;
+    color: var(--fg);
+  }
+
+  .queue-count {
+    font-size: 12px;
+    color: var(--fg-dim);
+    margin-bottom: 16px;
+  }
+
+  /* ---- MOBILE /read VIEW ---- */
+
+  .mobile-frame {
+    max-width: 375px;
+    margin: 0 auto;
+    border: 2px solid var(--border-heavy);
+    border-radius: 4px;
+    overflow: hidden;
+    background: var(--bg);
+  }
+
+  .mobile-frame .page {
+    padding: 16px 14px 40px;
+  }
+
+  .mobile-frame header {
+    margin-bottom: 20px;
+    padding-bottom: 8px;
+  }
+
+  .mobile-note {
+    text-align: center;
+    font-size: 12px;
+    color: var(--fg-faint);
+    margin-bottom: 16px;
+    font-style: italic;
+  }
+
+  /* ---- ABOUT / PHILOSOPHY ---- */
+
+  .about-page {
+    max-width: 560px;
+  }
+
+  .about-page h2 {
+    font-size: 15px;
+    font-weight: 600;
+    margin-bottom: 20px;
+    text-transform: lowercase;
+    letter-spacing: 0.03em;
+  }
+
+  .about-page p {
+    margin-bottom: 14px;
+  }
+
+  .about-page .separator {
+    color: var(--fg-faint);
+    text-align: center;
+    margin: 24px 0;
+    letter-spacing: 0.3em;
+  }
+
+  .about-page .principles {
+    margin: 20px 0;
+    padding-left: 0;
+  }
+
+  .about-page .principle {
+    margin-bottom: 16px;
+  }
+
+  .about-page .principle-name {
+    font-weight: 600;
+    font-size: 13px;
+  }
+
+  .about-page .principle-text {
+    color: var(--fg-dim);
+    margin-top: 2px;
+  }
+
+  /* ---- RSS LINK ---- */
+
+  .rss-link {
+    font-size: 12px;
+    color: var(--fg-faint);
+    margin-top: 24px;
+    padding-top: 16px;
+    border-top: 1px solid var(--border);
+  }
+
+  .rss-link a {
+    color: var(--fg-dim);
+    text-decoration: none;
+  }
+
+  .rss-link a:hover {
+    text-decoration: underline;
+  }
+
+  /* ---- FOOTER ---- */
+
+  footer {
+    margin-top: 40px;
+    padding-top: 12px;
+    border-top: 1px solid var(--border);
+    font-size: 12px;
+    color: var(--fg-faint);
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- mockup view switcher -->
+  <input type="radio" name="view" id="view-threads" checked>
+  <input type="radio" name="view" id="view-thread">
+  <input type="radio" name="view" id="view-mod">
+  <input type="radio" name="view" id="view-mobile">
+  <input type="radio" name="view" id="view-submit">
+  <input type="radio" name="view" id="view-about">
+
+  <div class="view-switcher">
+    <label for="view-threads">threads</label>
+    <label for="view-thread">thread</label>
+    <label for="view-mod">mod</label>
+    <label for="view-mobile">mobile</label>
+    <label for="view-submit">submit</label>
+    <label for="view-about">about</label>
+  </div>
+
+  <!-- ==================== THREAD LISTING ==================== -->
+  <div class="view view-threads">
+    <header>
+      <h1>julianjocque.com/discuss</h1>
+      <nav>
+        <a href="#" class="active">threads</a>
+        <a href="#">chat</a>
+        <a href="#">submit</a>
+        <a href="#">about</a>
+        <span class="nav-spacer"></span>
+        <a href="/discuss?stumble" class="stumble">stumble</a>
+      </nav>
+    </header>
+
+    <ul class="thread-list">
+      <li class="thread-item">
+        <div class="thread-meta">
+          <span class="pinned-tag">[pinned]</span>
+          <span class="owner-name">julian</span> · 2025-02-01
+        </div>
+        <div class="thread-title">
+          <a href="#">welcome -- what this place is</a>
+        </div>
+        <div class="thread-stats">3 replies</div>
+      </li>
+
+      <!-- day-seeded shuffle order below pinned -->
+
+      <li class="thread-item">
+        <div class="thread-meta">
+          <span class="owner-name">julian</span> · 2025-01-15
+        </div>
+        <div class="thread-title">
+          <!-- simulating :visited on this one -->
+          <a href="#visited1" style="color: var(--fg-visited);">neuropixels data is free and nobody is using it</a>
+        </div>
+        <div class="thread-url">
+          <a href="#">allensdk.readthedocs.io/en/latest/visual_coding_neuropixels.html</a>
+        </div>
+        <div class="thread-stats">21 replies</div>
+      </li>
+
+      <li class="thread-item">
+        <div class="thread-meta">
+          <span class="gradient-name" style="background:linear-gradient(90deg,#7a5a3e,#c4a24e);">driftwood</span> · 2025-02-21
+        </div>
+        <div class="thread-title">
+          <a href="#">sqlite as the universal application file format</a>
+        </div>
+        <div class="thread-url">
+          <a href="#">sqlite.org/appfileformat.html</a>
+        </div>
+        <div class="thread-stats">5 replies</div>
+      </li>
+
+      <li class="thread-item">
+        <div class="thread-meta">
+          <span class="owner-name">julian</span> · 2025-02-23
+        </div>
+        <div class="thread-title">
+          <a href="#">quantum coherence timescales in warm biological systems</a>
+        </div>
+        <div class="thread-url">
+          <a href="#">arxiv.org/abs/2501.09832</a>
+        </div>
+        <div class="thread-stats">12 replies</div>
+      </li>
+
+      <li class="thread-item">
+        <div class="thread-meta">
+          <span class="comment-author">anon</span> · 2025-02-20
+        </div>
+        <div class="thread-title">
+          <a href="#">thoughts on gunpei yokoi and lateral thinking</a>
+        </div>
+        <div class="thread-stats">2 replies</div>
+      </li>
+
+      <li class="thread-item">
+        <div class="thread-meta">
+          <span class="owner-name">julian</span> · 2025-02-22
+        </div>
+        <div class="thread-title">
+          <!-- simulating :visited -->
+          <a href="#visited2" style="color: var(--fg-visited);">the bloch-redfield equation is routinely misparameterized</a>
+        </div>
+        <div class="thread-url">
+          <a href="#">julianjocque.com/blog/bloch-redfield-errors</a>
+        </div>
+        <div class="thread-stats">8 replies</div>
+      </li>
+
+      <li class="thread-item">
+        <div class="thread-meta">
+          <span class="owner-name">julian</span> · 2024-11-03
+        </div>
+        <div class="thread-title">
+          <a href="#">f-zero gx is the best racing game ever made</a>
+        </div>
+        <div class="thread-stats">14 replies</div>
+      </li>
+    </ul>
+
+    <div class="rss-link">
+      <a href="#">rss</a>
+    </div>
+
+    <footer>
+      ascii only · be interesting or be quiet
+    </footer>
+  </div>
+
+  <!-- ==================== THREAD VIEW ==================== -->
+  <div class="view view-thread">
+    <header>
+      <h1>julianjocque.com/discuss</h1>
+      <nav>
+        <a href="#">threads</a>
+        <a href="#">chat</a>
+        <a href="#">submit</a>
+        <a href="#">about</a>
+        <span class="nav-spacer"></span>
+        <a href="/discuss?stumble" class="stumble">stumble</a>
+      </nav>
+    </header>
+
+    <div class="thread-header">
+      <h2>quantum coherence timescales in warm biological systems</h2>
+      <div class="thread-url">
+        <a href="#">arxiv.org/abs/2501.09832</a>
+      </div>
+      <div class="thread-meta">
+        <span class="owner-name">julian</span> · 2025-02-23 · 12 replies
+      </div>
+      <div class="thread-body">This preprint claims 600fs coherence lifetimes in FMO at
+room temperature. That number has been contentious since
+Engel 2007. Their methodology looks tighter than previous
+attempts but I have questions about the spectral density
+they used. Posting here to think through it.</div>
+    </div>
+
+    <!-- julian's comment - owner styling -->
+    <div class="comment depth-0 by-owner">
+      <div class="comment-meta">
+        <span class="owner-name">julian</span> · 2025-02-23 14:32
+      </div>
+      <div class="comment-body">The Drude-Lorentz spectral density they chose gives a
+reorganization energy of ~35 cm-1. Compare with Adolphs
+and Renger (2006) who got 39 cm-1 from fluorescence line
+narrowing. Close but I think the discrepancy matters at
+these timescales.</div>
+      <div class="comment-actions">
+        <a href="#">reply</a>
+      </div>
+    </div>
+
+    <div class="comment depth-1">
+      <div class="comment-meta">
+        <span class="gradient-name" style="background:linear-gradient(90deg,#8a5a7a,#5a7a8a);">chromatic</span> · 2025-02-23 15:01
+      </div>
+      <div class="comment-body">Have you looked at the Cho group's 2D-ES data on this?
+They get shorter lifetimes with a different bath model.</div>
+      <div class="comment-actions">
+        <a href="#">reply</a>
+      </div>
+    </div>
+
+    <div class="comment depth-2 by-owner">
+      <div class="comment-meta">
+        <span class="owner-name">julian</span> · 2025-02-23 15:18
+      </div>
+      <div class="comment-body">Yeah, Cho uses an Ohmic spectral density with exponential
+cutoff which kills coherence faster. The choice of bath
+model basically determines your answer, which is the whole
+problem with this subfield. You can get whatever lifetime
+you want by picking the right spectral density.</div>
+      <div class="comment-actions">
+        <a href="#">reply</a>
+      </div>
+    </div>
+
+    <!-- REMOVED comment example -->
+    <div class="comment-removed depth-1">
+      <div class="comment-removed-inner">
+        <div class="comment-removed-label">removed</div>
+        <div class="comment-removed-reason">this isn't a quantum consciousness thread. stay on the physics.</div>
+      </div>
+    </div>
+
+    <div class="comment depth-1">
+      <div class="comment-meta">
+        <span class="comment-author">anon</span> · 2025-02-23 16:44
+      </div>
+      <div class="comment-body">Is this related to the Gassab et al work on microtubule
+tryptophan networks?</div>
+      <div class="comment-actions">
+        <a href="#">reply</a>
+      </div>
+    </div>
+
+    <div class="comment depth-2 by-owner">
+      <div class="comment-meta">
+        <span class="owner-name">julian</span> · 2025-02-23 17:02
+      </div>
+      <div class="comment-body">Different system but same fundamental question -- can
+quantum effects survive decoherence at biological
+temperatures? The FMO complex is better characterized
+experimentally. I'm working on the microtubule side
+separately and the parameterization issues are worse
+there, which is why I care about methodology in papers
+like this one.</div>
+      <div class="comment-actions">
+        <a href="#">reply</a>
+      </div>
+    </div>
+
+    <!-- COLLAPSED comment example -->
+    <div class="comment-collapsed depth-0">
+      <details>
+        <summary><span class="comment-author">anon</span> · 2025-02-23 19:15 · collapsed</summary>
+        <div class="collapsed-body">Yeah I saw a youtube video about this once, pretty
+crazy stuff. The universe is basically a hologram
+right? Quantum everything.</div>
+      </details>
+    </div>
+
+    <div class="comment depth-0">
+      <div class="comment-meta">
+        <span class="gradient-name" style="background:linear-gradient(90deg,#7a5a3e,#c4a24e);">driftwood</span> · 2025-02-23 18:30
+      </div>
+      <div class="comment-url">
+        <a href="#">nature.com/articles/s41567-023-02145-w</a>
+      </div>
+      <div class="comment-body">Tangentially related -- this Nature Physics piece from
+last year argues most "quantum biology" effects are
+actually semiclassical. Provocative but worth engaging
+with seriously.</div>
+      <div class="comment-actions">
+        <a href="#">reply</a>
+      </div>
+    </div>
+
+    <!-- reply form -->
+    <div class="reply-form">
+      <h3>reply</h3>
+      <form method="POST" action="/thread/2/reply">
+        <div class="form-row">
+          <label for="author">name</label>
+          <input type="text" id="author" name="author" placeholder="anon" maxlength="32" pattern="[!-~]*">
+        </div>
+
+        <div class="color-picker-group">
+          <span class="color-picker-label">colors (optional)</span>
+          <div class="color-picker-row">
+            <span class="color-picker-row-label">1</span>
+            <div class="color-grid">
+              <input type="radio" name="color1" value="#4a8a6e" id="r1a"><label for="r1a" style="background:#4a8a6e"></label>
+              <input type="radio" name="color1" value="#8a5a7a" id="r1b"><label for="r1b" style="background:#8a5a7a"></label>
+              <input type="radio" name="color1" value="#7a5a3e" id="r1c" checked><label for="r1c" style="background:#7a5a3e"></label>
+              <input type="radio" name="color1" value="#5a7a8a" id="r1d"><label for="r1d" style="background:#5a7a8a"></label>
+              <input type="radio" name="color1" value="#8a7a5a" id="r1e"><label for="r1e" style="background:#8a7a5a"></label>
+              <input type="radio" name="color1" value="#6a5a8a" id="r1f"><label for="r1f" style="background:#6a5a8a"></label>
+              <input type="radio" name="color1" value="#5a8a7a" id="r1g"><label for="r1g" style="background:#5a8a7a"></label>
+              <input type="radio" name="color1" value="#8a6a5a" id="r1h"><label for="r1h" style="background:#8a6a5a"></label>
+              <input type="radio" name="color1" value="#5a6a8a" id="r1i"><label for="r1i" style="background:#5a6a8a"></label>
+              <input type="radio" name="color1" value="#7a8a5a" id="r1j"><label for="r1j" style="background:#7a8a5a"></label>
+              <input type="radio" name="color1" value="#8a5a5a" id="r1k"><label for="r1k" style="background:#8a5a5a"></label>
+              <input type="radio" name="color1" value="#5a8a5a" id="r1l"><label for="r1l" style="background:#5a8a5a"></label>
+              <input type="radio" name="color1" value="#3e5a7a" id="r1m"><label for="r1m" style="background:#3e5a7a"></label>
+              <input type="radio" name="color1" value="#7a3e5a" id="r1n"><label for="r1n" style="background:#7a3e5a"></label>
+              <input type="radio" name="color1" value="#c4a24e" id="r1o"><label for="r1o" style="background:#c4a24e"></label>
+              <input type="radio" name="color1" value="#4e8ac4" id="r1p"><label for="r1p" style="background:#4e8ac4"></label>
+            </div>
+          </div>
+          <div class="color-picker-row">
+            <span class="color-picker-row-label">2</span>
+            <div class="color-grid">
+              <input type="radio" name="color2" value="#4a8a6e" id="r2a"><label for="r2a" style="background:#4a8a6e"></label>
+              <input type="radio" name="color2" value="#8a5a7a" id="r2b"><label for="r2b" style="background:#8a5a7a"></label>
+              <input type="radio" name="color2" value="#7a5a3e" id="r2c"><label for="r2c" style="background:#7a5a3e"></label>
+              <input type="radio" name="color2" value="#5a7a8a" id="r2d"><label for="r2d" style="background:#5a7a8a"></label>
+              <input type="radio" name="color2" value="#8a7a5a" id="r2e"><label for="r2e" style="background:#8a7a5a"></label>
+              <input type="radio" name="color2" value="#6a5a8a" id="r2f"><label for="r2f" style="background:#6a5a8a"></label>
+              <input type="radio" name="color2" value="#5a8a7a" id="r2g"><label for="r2g" style="background:#5a8a7a"></label>
+              <input type="radio" name="color2" value="#8a6a5a" id="r2h"><label for="r2h" style="background:#8a6a5a"></label>
+              <input type="radio" name="color2" value="#5a6a8a" id="r2i"><label for="r2i" style="background:#5a6a8a"></label>
+              <input type="radio" name="color2" value="#7a8a5a" id="r2j"><label for="r2j" style="background:#7a8a5a"></label>
+              <input type="radio" name="color2" value="#8a5a5a" id="r2k"><label for="r2k" style="background:#8a5a5a"></label>
+              <input type="radio" name="color2" value="#5a8a5a" id="r2l"><label for="r2l" style="background:#5a8a5a"></label>
+              <input type="radio" name="color2" value="#3e5a7a" id="r2m"><label for="r2m" style="background:#3e5a7a"></label>
+              <input type="radio" name="color2" value="#7a3e5a" id="r2n"><label for="r2n" style="background:#7a3e5a"></label>
+              <input type="radio" name="color2" value="#c4a24e" id="r2o" checked><label for="r2o" style="background:#c4a24e"></label>
+              <input type="radio" name="color2" value="#4e8ac4" id="r2p"><label for="r2p" style="background:#4e8ac4"></label>
+            </div>
+          </div>
+          <div class="color-picker-preview">
+            <span class="color-picker-preview-name" style="background:linear-gradient(90deg,#7a5a3e,#c4a24e);-webkit-background-clip:text;color:transparent;">preview</span>
+            <a href="#" class="color-picker-refresh">refresh palette</a>
+          </div>
+          <div class="form-hint">pick two colors for your name gradient · refresh for new options</div>
+        </div>
+
+        <div class="form-row">
+          <label for="url">url (optional)</label>
+          <input type="url" id="url" name="url" maxlength="512">
+        </div>
+        <div class="form-row">
+          <label for="body">comment</label>
+          <textarea id="body" name="body" maxlength="4096" rows="6" required></textarea>
+          <div class="form-hint">ascii only · 4096 chars</div>
+        </div>
+        <button type="submit">post</button>
+      </form>
+    </div>
+
+    <footer>
+      ascii only · be interesting or be quiet
+    </footer>
+  </div>
+
+  <!-- ==================== MOD QUEUE ==================== -->
+  <div class="view view-mod">
+    <header>
+      <h1>julianjocque.com/discuss</h1>
+      <nav>
+        <a href="#">threads</a>
+        <a href="#">chat</a>
+        <a href="#">submit</a>
+        <a href="#">about</a>
+        <span class="nav-spacer"></span>
+        <a href="/discuss?stumble" class="stumble">stumble</a>
+      </nav>
+    </header>
+
+    <h2 style="font-size: 15px; font-weight: 600; margin-bottom: 8px; text-transform: lowercase; letter-spacing: 0.03em;">queue</h2>
+    <div class="queue-count">3 pending</div>
+
+    <div class="queue-item">
+      <div class="queue-context">
+        reply to: "quantum coherence timescales..." · 89.134.22.17
+      </div>
+      <div class="comment-meta">
+        <span class="gradient-name" style="background:linear-gradient(90deg,#6a8a5a,#8a6a5a);">newposter</span> · 2025-02-24 09:12
+      </div>
+      <div class="comment-body" style="margin-bottom: 4px;">The spectral density debate is a red herring. What matters
+is whether the coherence is functional or just an artifact
+of the initial state preparation. Cao et al (2020) made
+this argument pretty convincingly.</div>
+      <div class="mod-actions">
+        <form method="POST" action="/mod/13" style="display:inline">
+          <button type="submit" name="action" value="approve" class="btn-approve">approve</button>
+        </form>
+        <form method="POST" action="/mod/13" style="display:inline">
+          <button type="submit" name="action" value="collapse" class="btn-collapse">collapse</button>
+        </form>
+        <form method="POST" action="/mod/13" style="display:inline">
+          <input type="text" name="reason" placeholder="reason (required)" class="mod-reason-row" style="width: 200px; display: inline; margin: 0; padding: 4px 8px;">
+          <button type="submit" name="action" value="remove" class="btn-remove">remove</button>
+        </form>
+      </div>
+    </div>
+
+    <div class="queue-item">
+      <div class="queue-context">
+        new thread · 203.45.67.89
+      </div>
+      <div class="comment-meta">
+        <span class="comment-author">anon</span> · 2025-02-24 08:45
+      </div>
+      <div class="comment-body"><strong style="font-weight:500;">withered technology and software longevity</strong></div>
+      <div class="comment-url" style="margin: 4px 0 8px;">
+        <a href="#">permacomputing.net/withered_technology/</a>
+      </div>
+      <div class="comment-body">Good overview of yokoi's philosophy applied to software
+design. Relevant to the ethos of this site.</div>
+      <div class="mod-actions">
+        <form method="POST" action="/mod/14" style="display:inline">
+          <button type="submit" name="action" value="approve" class="btn-approve">approve</button>
+        </form>
+        <form method="POST" action="/mod/14" style="display:inline">
+          <button type="submit" name="action" value="collapse" class="btn-collapse">collapse</button>
+        </form>
+        <form method="POST" action="/mod/14" style="display:inline">
+          <input type="text" name="reason" placeholder="reason (required)" style="width: 200px; display: inline; font-family: var(--mono); font-size: 12px; padding: 4px 8px; border: 1px solid var(--border);">
+          <button type="submit" name="action" value="remove" class="btn-remove">remove</button>
+        </form>
+      </div>
+    </div>
+
+    <div class="queue-item">
+      <div class="queue-context">
+        reply to: "sqlite as the universal application file format" · 45.33.128.201
+      </div>
+      <div class="comment-meta">
+        <span class="comment-author">anon</span> · 2025-02-24 07:30
+      </div>
+      <div class="comment-body">BUY CRYPTO NOW visit scamsite dot com best returns
+guaranteed click here now</div>
+      <div class="mod-actions">
+        <form method="POST" action="/mod/15" style="display:inline">
+          <button type="submit" name="action" value="approve" class="btn-approve">approve</button>
+        </form>
+        <form method="POST" action="/mod/15" style="display:inline">
+          <button type="submit" name="action" value="collapse" class="btn-collapse">collapse</button>
+        </form>
+        <form method="POST" action="/mod/15" style="display:inline">
+          <input type="text" name="reason" placeholder="reason (required)" style="width: 200px; display: inline; font-family: var(--mono); font-size: 12px; padding: 4px 8px; border: 1px solid var(--border);">
+          <button type="submit" name="action" value="remove" class="btn-remove">remove</button>
+        </form>
+      </div>
+    </div>
+
+    <footer>
+      ascii only · be interesting or be quiet
+    </footer>
+  </div>
+
+  <!-- ==================== MOBILE /read VIEW ==================== -->
+  <div class="view view-mobile">
+    <div class="mobile-note">simulated 375px · read only · no forms, no submit link</div>
+    <div class="mobile-frame">
+      <div class="page">
+        <header>
+          <h1 style="font-size: 13px;">julianjocque.com/discuss</h1>
+          <nav>
+            <a href="#" class="active">threads</a>
+            <a href="#">chat</a>
+            <a href="#">about</a>
+            <span class="nav-spacer"></span>
+            <a href="#" class="stumble">stumble</a>
+          </nav>
+        </header>
+
+        <ul class="thread-list">
+          <li class="thread-item">
+            <div class="thread-meta">
+              <span class="pinned-tag">[pinned]</span>
+              <span class="owner-name">julian</span>
+            </div>
+            <div class="thread-title">
+              <a href="#" style="color: var(--fg-visited);">welcome -- what this place is</a>
+            </div>
+            <div class="thread-stats">3 replies</div>
+          </li>
+
+          <li class="thread-item">
+            <div class="thread-meta">
+              <span class="owner-name">julian</span>
+            </div>
+            <div class="thread-title">
+              <a href="#">quantum coherence timescales in warm biological systems</a>
+            </div>
+            <div class="thread-stats">12 replies</div>
+          </li>
+
+          <li class="thread-item">
+            <div class="thread-meta">
+              <span class="gradient-name" style="background:linear-gradient(90deg,#7a5a3e,#c4a24e);">driftwood</span>
+            </div>
+            <div class="thread-title">
+              <a href="#">sqlite as the universal application file format</a>
+            </div>
+            <div class="thread-stats">5 replies</div>
+          </li>
+
+          <li class="thread-item">
+            <div class="thread-meta">
+              <span class="owner-name">julian</span>
+            </div>
+            <div class="thread-title">
+              <a href="#">f-zero gx is the best racing game ever made</a>
+            </div>
+            <div class="thread-stats">14 replies</div>
+          </li>
+        </ul>
+
+        <footer>
+          read only · discuss on a real machine
+        </footer>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== SUBMIT PAGE ==================== -->
+  <div class="view view-submit">
+    <header>
+      <h1>julianjocque.com/discuss</h1>
+      <nav>
+        <a href="#">threads</a>
+        <a href="#">chat</a>
+        <a href="#" class="active">submit</a>
+        <a href="#">about</a>
+        <span class="nav-spacer"></span>
+        <a href="/discuss?stumble" class="stumble">stumble</a>
+      </nav>
+    </header>
+
+    <div class="submit-form" style="max-width: 480px;">
+      <h2 style="font-size: 15px; font-weight: 600; margin-bottom: 20px; text-transform: lowercase; letter-spacing: 0.03em;">submit</h2>
+      <form method="POST" action="/submit">
+        <div class="form-row">
+          <label for="s-author">name</label>
+          <input type="text" id="s-author" name="author" placeholder="anon" maxlength="32" pattern="[!-~]*">
+        </div>
+
+        <div class="color-picker-group">
+          <span class="color-picker-label">colors (optional)</span>
+          <div class="color-picker-row">
+            <span class="color-picker-row-label">1</span>
+            <div class="color-grid">
+              <input type="radio" name="s-color1" value="#4a8a6e" id="s1a"><label for="s1a" style="background:#4a8a6e"></label>
+              <input type="radio" name="s-color1" value="#8a5a7a" id="s1b"><label for="s1b" style="background:#8a5a7a"></label>
+              <input type="radio" name="s-color1" value="#7a5a3e" id="s1c"><label for="s1c" style="background:#7a5a3e"></label>
+              <input type="radio" name="s-color1" value="#5a7a8a" id="s1d"><label for="s1d" style="background:#5a7a8a"></label>
+              <input type="radio" name="s-color1" value="#8a7a5a" id="s1e"><label for="s1e" style="background:#8a7a5a"></label>
+              <input type="radio" name="s-color1" value="#6a5a8a" id="s1f"><label for="s1f" style="background:#6a5a8a"></label>
+              <input type="radio" name="s-color1" value="#5a8a7a" id="s1g"><label for="s1g" style="background:#5a8a7a"></label>
+              <input type="radio" name="s-color1" value="#8a6a5a" id="s1h"><label for="s1h" style="background:#8a6a5a"></label>
+              <input type="radio" name="s-color1" value="#5a6a8a" id="s1i"><label for="s1i" style="background:#5a6a8a"></label>
+              <input type="radio" name="s-color1" value="#7a8a5a" id="s1j"><label for="s1j" style="background:#7a8a5a"></label>
+              <input type="radio" name="s-color1" value="#8a5a5a" id="s1k"><label for="s1k" style="background:#8a5a5a"></label>
+              <input type="radio" name="s-color1" value="#5a8a5a" id="s1l"><label for="s1l" style="background:#5a8a5a"></label>
+              <input type="radio" name="s-color1" value="#3e5a7a" id="s1m"><label for="s1m" style="background:#3e5a7a"></label>
+              <input type="radio" name="s-color1" value="#7a3e5a" id="s1n"><label for="s1n" style="background:#7a3e5a"></label>
+              <input type="radio" name="s-color1" value="#c4a24e" id="s1o"><label for="s1o" style="background:#c4a24e"></label>
+              <input type="radio" name="s-color1" value="#4e8ac4" id="s1p"><label for="s1p" style="background:#4e8ac4"></label>
+            </div>
+          </div>
+          <div class="color-picker-row">
+            <span class="color-picker-row-label">2</span>
+            <div class="color-grid">
+              <input type="radio" name="s-color2" value="#4a8a6e" id="s2a"><label for="s2a" style="background:#4a8a6e"></label>
+              <input type="radio" name="s-color2" value="#8a5a7a" id="s2b"><label for="s2b" style="background:#8a5a7a"></label>
+              <input type="radio" name="s-color2" value="#7a5a3e" id="s2c"><label for="s2c" style="background:#7a5a3e"></label>
+              <input type="radio" name="s-color2" value="#5a7a8a" id="s2d"><label for="s2d" style="background:#5a7a8a"></label>
+              <input type="radio" name="s-color2" value="#8a7a5a" id="s2e"><label for="s2e" style="background:#8a7a5a"></label>
+              <input type="radio" name="s-color2" value="#6a5a8a" id="s2f"><label for="s2f" style="background:#6a5a8a"></label>
+              <input type="radio" name="s-color2" value="#5a8a7a" id="s2g"><label for="s2g" style="background:#5a8a7a"></label>
+              <input type="radio" name="s-color2" value="#8a6a5a" id="s2h"><label for="s2h" style="background:#8a6a5a"></label>
+              <input type="radio" name="s-color2" value="#5a6a8a" id="s2i"><label for="s2i" style="background:#5a6a8a"></label>
+              <input type="radio" name="s-color2" value="#7a8a5a" id="s2j"><label for="s2j" style="background:#7a8a5a"></label>
+              <input type="radio" name="s-color2" value="#8a5a5a" id="s2k"><label for="s2k" style="background:#8a5a5a"></label>
+              <input type="radio" name="s-color2" value="#5a8a5a" id="s2l"><label for="s2l" style="background:#5a8a5a"></label>
+              <input type="radio" name="s-color2" value="#3e5a7a" id="s2m"><label for="s2m" style="background:#3e5a7a"></label>
+              <input type="radio" name="s-color2" value="#7a3e5a" id="s2n"><label for="s2n" style="background:#7a3e5a"></label>
+              <input type="radio" name="s-color2" value="#c4a24e" id="s2o"><label for="s2o" style="background:#c4a24e"></label>
+              <input type="radio" name="s-color2" value="#4e8ac4" id="s2p"><label for="s2p" style="background:#4e8ac4"></label>
+            </div>
+          </div>
+          <div class="color-picker-preview">
+            <span class="color-picker-preview-name" style="background:linear-gradient(90deg,#888,#888);-webkit-background-clip:text;color:transparent;">preview</span>
+            <a href="#" class="color-picker-refresh">refresh palette</a>
+          </div>
+          <div class="form-hint">pick two colors for your name gradient · refresh for new options</div>
+        </div>
+
+        <div class="form-row">
+          <label for="s-title">title</label>
+          <input type="text" id="s-title" name="title" maxlength="128" required>
+        </div>
+        <div class="form-row">
+          <label for="s-url">url</label>
+          <input type="url" id="s-url" name="url" maxlength="512">
+          <div class="form-hint">optional -- self-posts welcome</div>
+        </div>
+        <div class="form-row">
+          <label for="s-body">why is this interesting?</label>
+          <textarea id="s-body" name="body" maxlength="4096" rows="6" required></textarea>
+          <div class="form-hint">ascii only · 4096 chars</div>
+        </div>
+        <button type="submit">submit</button>
+        <div class="form-hint" style="margin-top: 8px;">goes to the queue. be patient, be interesting.</div>
+      </form>
+    </div>
+
+    <footer>
+      ascii only · be interesting or be quiet
+    </footer>
+  </div>
+
+  <!-- ==================== ABOUT / PHILOSOPHY ==================== -->
+  <div class="view view-about">
+    <header>
+      <h1>julianjocque.com/discuss</h1>
+      <nav>
+        <a href="#">threads</a>
+        <a href="#">chat</a>
+        <a href="#">submit</a>
+        <a href="#" class="active">about</a>
+        <span class="nav-spacer"></span>
+        <a href="/discuss?stumble" class="stumble">stumble</a>
+      </nav>
+    </header>
+
+    <div class="about-page">
+      <h2>what this place is</h2>
+
+      <p>This is my reading room. I collect links to things I find
+interesting and think about them here, sometimes out loud.
+You're welcome to sit down and join the conversation.</p>
+
+      <p>I built this because the internet used to have places
+where you could think slowly about interesting things
+with strangers who cared about the same stuff. Most
+of those places are gone or have been swallowed by
+engagement metrics, rage bait, and infinite scroll.
+This is not that.</p>
+
+      <p>There is no algorithm. The front page shuffles daily
+so nothing decays and nothing trends. Old threads sit
+next to new ones. Everything here was interesting enough
+to post; nothing expires.</p>
+
+      <div class="separator">* * *</div>
+
+      <p>I am the sole curator. Every post and comment passes
+through me before it appears. This is not a democracy
+and not a platform. It is one person's judgment about
+what's worth reading and discussing. If that sounds
+authoritarian -- it is, in the same way a bookshelf is
+authoritarian. Someone has to choose what goes on it.</p>
+
+      <p>When I remove something, you'll see why. The reason
+is always visible. This is how the site teaches you
+what it values -- not through a rules page, but through
+the accumulation of editorial decisions. Read the
+removals. They're part of the content.</p>
+
+      <p>Comments that aren't bad but aren't great get collapsed.
+Still there, just quieter. Think of it as me tilting my
+head and saying "eh."</p>
+
+      <div class="separator">* * *</div>
+
+      <div class="principles">
+        <div class="principle">
+          <div class="principle-name">be interesting or be quiet</div>
+          <div class="principle-text">This is the only rule. "Interesting" means you engaged
+with the material, thought about it, and have something
+to add. Agreement is not interesting. Disagreement without
+substance is not interesting. A link to a related paper
+with two sentences about why it matters is interesting.</div>
+        </div>
+
+        <div class="principle">
+          <div class="principle-name">ascii only</div>
+          <div class="principle-text">No emoji, no unicode tricks, no formatting beyond line
+breaks. If you can't make your point in plain text,
+the problem is the point, not the medium.</div>
+        </div>
+
+        <div class="principle">
+          <div class="principle-name">withered technology</div>
+          <div class="principle-text">This site runs on SQLite, Java, HTML, and CSS. No
+JavaScript on the forum. No frameworks. No analytics.
+No cookies except one, mine. It will outlive whatever
+you're reading this on.</div>
+        </div>
+
+        <div class="principle">
+          <div class="principle-name">discuss on a real machine</div>
+          <div class="principle-text">You can read the forum on your phone. You cannot post
+from it. Thoughtful writing happens at a keyboard, not
+a touchscreen. The chat is different -- chat from
+wherever you want.</div>
+        </div>
+
+        <div class="principle">
+          <div class="principle-name">no identity required</div>
+          <div class="principle-text">Post as anon. Or pick a name and two colors. Your name
+renders as a gradient -- it won't be cryptographic
+proof of anything, but regulars become recognizable
+at a glance. Nobody needs to know who you are. What
+you say is enough.</div>
+        </div>
+      </div>
+
+      <div class="separator">* * *</div>
+
+      <p>If you want to talk in real time, there's a chat. It's
+casual, it's ephemeral-ish, and you can use your phone.
+Different space, different energy.</p>
+
+      <p>If you have a link worth sharing, submit it. Tell me
+why it's interesting. I'll read it. If I agree, it goes
+up. If I don't, it doesn't. Nothing personal.</p>
+
+      <p style="margin-top: 20px; color: var(--fg-dim);">-- julian</p>
+    </div>
+
+    <div class="rss-link">
+      <a href="#">rss</a>
+    </div>
+
+    <footer>
+      ascii only · be interesting or be quiet
+    </footer>
+  </div>
+
+</div>
+</body>
+</html>
