@@ -4,14 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="e78bf4a9-838f-42d3-92b5-6643cc3bcc46" name="Changes" comment="redo the prose">
-      <change afterPath="$PROJECT_DIR$/.claude/settings.local.json" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/assets/hello_faz/1.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/assets/hello_faz/2.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/assets/hello_faz/3.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/assets/hello_faz/4.png" afterDir="false" />
+    <list default="true" id="e78bf4a9-838f-42d3-92b5-6643cc3bcc46" name="Changes" comment="don't push yet">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/poetry.html" beforeDir="false" afterPath="$PROJECT_DIR$/poetry.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/blogs.html" beforeDir="false" afterPath="$PROJECT_DIR$/blogs.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/index.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -53,6 +49,9 @@
     &quot;JavaScript Debug.poetry.html.executor&quot;: &quot;Run&quot;,
     &quot;JavaScript Debug.textChallenge.html.executor&quot;: &quot;Run&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.typescript.service.memoryLimit.init&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
     &quot;last_opened_file_path&quot;: &quot;C:/Users/Julian/WebstormProjects/julianjocquecom&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
@@ -101,7 +100,7 @@
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-js-predefined-1d06a55b98c1-0b3e54e931b4-JavaScript-WS-241.18034.50" />
+        <option value="bundled-js-predefined-d6986cc7102b-9b0f141eb926-JavaScript-WS-253.31033.133" />
       </set>
     </attachedChunks>
   </component>
@@ -137,7 +136,9 @@
       <workItem from="1770962349141" duration="2347000" />
       <workItem from="1771009474558" duration="8083000" />
       <workItem from="1771276399043" duration="1058000" />
-      <workItem from="1771642916185" duration="3650000" />
+      <workItem from="1771642916185" duration="3673000" />
+      <workItem from="1772848451192" duration="497000" />
+      <workItem from="1774652242470" duration="1278000" />
     </task>
     <task id="LOCAL-00001" summary="Update I guess to prod why not">
       <option name="closed" value="true" />
@@ -291,7 +292,15 @@
       <option name="project" value="LOCAL" />
       <updated>1771030946402</updated>
     </task>
-    <option name="localTasksCounter" value="20" />
+    <task id="LOCAL-00020" summary="don't push yet">
+      <option name="closed" value="true" />
+      <created>1771646631028</created>
+      <option name="number" value="00020" />
+      <option name="presentableId" value="LOCAL-00020" />
+      <option name="project" value="LOCAL" />
+      <updated>1771646631028</updated>
+    </task>
+    <option name="localTasksCounter" value="21" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -327,6 +336,7 @@
     <MESSAGE value="try that out" />
     <MESSAGE value="Now I just need to redo all the prose" />
     <MESSAGE value="redo the prose" />
-    <option name="LAST_COMMIT_MESSAGE" value="redo the prose" />
+    <MESSAGE value="don't push yet" />
+    <option name="LAST_COMMIT_MESSAGE" value="don't push yet" />
   </component>
 </project>
