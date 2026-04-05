@@ -4,9 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="e78bf4a9-838f-42d3-92b5-6643cc3bcc46" name="Changes" comment="minor fixes">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/blogs.html" beforeDir="false" afterPath="$PROJECT_DIR$/blogs.html" afterDir="false" />
+    <list default="true" id="e78bf4a9-838f-42d3-92b5-6643cc3bcc46" name="Changes" comment="Cleanup poetry">
       <change beforePath="$PROJECT_DIR$/poetry.html" beforeDir="false" afterPath="$PROJECT_DIR$/poetry.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -72,7 +70,7 @@
       <recent name="C:\Users\Julian\WebstormProjects\julianjocquecom\games" />
     </key>
   </component>
-  <component name="RunManager" selected="JavaScript Debug.blogs.html">
+  <component name="RunManager" selected="JavaScript Debug.poetry.html">
     <configuration name="blog.html" type="JavascriptDebugType" temporary="true" nameIsGenerated="true" uri="http://localhost:63342/julianjocquecom/blog.html" useBuiltInWebServerPort="true">
       <method v="2" />
     </configuration>
@@ -90,8 +88,8 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="JavaScript Debug.blogs.html" />
         <item itemvalue="JavaScript Debug.poetry.html" />
+        <item itemvalue="JavaScript Debug.blogs.html" />
         <item itemvalue="JavaScript Debug.cats.html" />
         <item itemvalue="JavaScript Debug.textChallenge.html" />
         <item itemvalue="JavaScript Debug.blog.html" />
@@ -141,7 +139,7 @@
       <workItem from="1772848451192" duration="497000" />
       <workItem from="1774652242470" duration="1278000" />
       <workItem from="1775262450559" duration="419000" />
-      <workItem from="1775409636639" duration="1126000" />
+      <workItem from="1775409636639" duration="1577000" />
     </task>
     <task id="LOCAL-00001" summary="Update I guess to prod why not">
       <option name="closed" value="true" />
@@ -311,7 +309,15 @@
       <option name="project" value="LOCAL" />
       <updated>1775262635922</updated>
     </task>
-    <option name="localTasksCounter" value="22" />
+    <task id="LOCAL-00022" summary="Cleanup poetry">
+      <option name="closed" value="true" />
+      <created>1775410783681</created>
+      <option name="number" value="00022" />
+      <option name="presentableId" value="LOCAL-00022" />
+      <option name="project" value="LOCAL" />
+      <updated>1775410783681</updated>
+    </task>
+    <option name="localTasksCounter" value="23" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -349,6 +355,7 @@
     <MESSAGE value="redo the prose" />
     <MESSAGE value="don't push yet" />
     <MESSAGE value="minor fixes" />
-    <option name="LAST_COMMIT_MESSAGE" value="minor fixes" />
+    <MESSAGE value="Cleanup poetry" />
+    <option name="LAST_COMMIT_MESSAGE" value="Cleanup poetry" />
   </component>
 </project>
