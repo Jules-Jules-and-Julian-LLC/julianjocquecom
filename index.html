@@ -29,13 +29,13 @@ julian davis jocque
         if (navigator.webdriver) return;
 
         let loaded = false;
-        const events = ['pointermove', 'touchstart', 'scroll', 'keydown'];
+        const events = ['mousemove', 'pointermove', 'touchstart', 'scroll', 'keydown'];
 
         function countHuman() {
-            if (loaded || document.visibilityState !== 'visible') return;
+            if (loaded) return;
             loaded = true;
 
-            events.forEach(e => window.removeEventListener(e, countHuman));
+            events.forEach(e => document.removeEventListener(e, countHuman));
 
             const container = document.getElementById('hit-counter');
             if (container) {
@@ -46,7 +46,9 @@ julian davis jocque
             }
         }
 
-        events.forEach(e => window.addEventListener(e, countHuman, { passive: true }));
+        events.forEach(e => document.addEventListener(e, countHuman, { passive: true }));
+        // 2-second fallback in case the visitor reads without moving the pointer
+        setTimeout(countHuman, 2000);
     })();
 </script>
 <script src="footer.js"></script>
