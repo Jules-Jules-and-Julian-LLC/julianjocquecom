@@ -70,7 +70,7 @@ a:hover {
     border: none;
 }
 
-/* Hits.sh counter badge (footer bottom-left) */
+/* Increment hit counter (footer bottom-left) */
 .hit-counter {
     position: fixed;
     bottom: 20px;
@@ -80,25 +80,17 @@ a:hover {
     z-index: 1000;
 }
 
-.hit-counter-link {
-    display: inline-flex;
-    align-items: center;
-    text-decoration: none;
+.hit-counter iframe {
     border: none;
-    opacity: 0.8;
+    width: 88px;
+    height: 31px;
+    opacity: 0.85;
     transition: opacity 0.2s ease, transform 0.2s ease;
 }
 
-.hit-counter-link:hover {
+.hit-counter iframe:hover {
     opacity: 1;
     transform: scale(1.05);
-    border: none;
-}
-
-.hit-counter-badge {
-    display: block;
-    height: 20px;
-    vertical-align: middle;
 }
 
 .writeshite-text {

@@ -22,35 +22,9 @@ julian davis jocque
         <li><a href="contact.html">📧</a></li>
     </ul>
 </nav>
-<div class="hit-counter" id="hit-counter"></div>
-<script>
-    (function () {
-        // Discard automated/headless browsers
-        if (navigator.webdriver) return;
-
-        let loaded = false;
-        const events = ['mousemove', 'pointermove', 'touchstart', 'scroll', 'keydown'];
-
-        function countHuman() {
-            if (loaded) return;
-            loaded = true;
-
-            events.forEach(e => document.removeEventListener(e, countHuman));
-
-            const container = document.getElementById('hit-counter');
-            if (container) {
-                container.innerHTML =
-                    '<a href="https://hits.sh/julianjocque.com/" target="_blank" rel="noopener noreferrer" class="hit-counter-link" title="Home page hits">' +
-                    '<img src="https://hits.sh/julianjocque.com.svg?style=flat-square&color=666666&labelColor=333333" alt="Hits" class="hit-counter-badge"/>' +
-                    '</a>';
-            }
-        }
-
-        events.forEach(e => document.addEventListener(e, countHuman, { passive: true }));
-        // 2-second fallback in case the visitor reads without moving the pointer
-        setTimeout(countHuman, 2000);
-    })();
-</script>
+<div class="hit-counter">
+    <iframe src="https://incr.easrng.net/badge?key=julianjocque.com" style="background: url('https://incr.easrng.net/bg.gif'); border: 0;" title="increment badge" width="88" height="31" frameborder="0"></iframe>
+</div>
 <script src="footer.js"></script>
 </body>
 </html>
