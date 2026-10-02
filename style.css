@@ -70,6 +70,37 @@ a:hover {
     border: none;
 }
 
+/* Hits.sh counter badge (footer bottom-left) */
+.hit-counter {
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    display: flex;
+    align-items: center;
+    z-index: 1000;
+}
+
+.hit-counter-link {
+    display: inline-flex;
+    align-items: center;
+    text-decoration: none;
+    border: none;
+    opacity: 0.8;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.hit-counter-link:hover {
+    opacity: 1;
+    transform: scale(1.05);
+    border: none;
+}
+
+.hit-counter-badge {
+    display: block;
+    height: 20px;
+    vertical-align: middle;
+}
+
 .writeshite-text {
     font-family: 'Dancing Script', Georgia, serif;
     font-weight: bold;
